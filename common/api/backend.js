@@ -1,41 +1,46 @@
-/**
- * Mocking client-server processing
- */
 'use strict';
 
 var Backend = exports;
 
+var moment = require('moment')
 var request = require('superagent')
 var sprintf = require('util').format
-var BASE_URL = 'http://127.0.0.1:4567/sap/zrest/STC'
-var SME_ENTITY = 'SME'
-var EQUIPMENT_ENTITY = 'EQUIPMENT'
+// var BASE_URL = 'http://127.0.0.1:4567/sap/zrest/STC'
+var BASE_URL = '/sap/zrest/stc'
+var SME_ENTITY = 'sme'
+var EQUIPMENT_ENTITY = 'equipment'
 
 var _equipment = require('./equipment.json');
 var _operations = require('./operations.json');
 
-var TIMEOUT = 1000;
+var TIMEOUT = 100;
 
 Backend.getEquipment = function (payload, cb, cb_error) {
   request
-    .get(sprintf('%s/%s/%s', BASE_URL, EQUIPMENT_ENTITY, payload))
+    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY, payload))
     .auth('AIR14977','Atlas2015')
     .accept('json')
     .end(function (err, res) {
-      if (res.body) {
+      if (!err && res.body) {
         var data = res.body[0].model;
         var result
         if (data.length > 0) {
           result = {
+            'equipment': data[0].id,
             'name': data[0].description,
             'serial': data[0].serial_number,
             'plant': data[0].planning_plant,
             'main_workctr': data[0].workcenter,
             'street': data[0].street,
+            'house_number': data[0].house_number,
             'post_code': data[0].post_code,
             'city': data[0].city,
             'annual_estimated_running_hours': data[0].annual_estimated_running_hours,
-            'actual_annual_running_hours': data[0].actual_annual_running_hours
+            'actual_annual_running_hours': data[0].actual_annual_running_hours,
+            'actual_running_hours': data[0].actual_running_hours,
+            'vendor_warranty_end': moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY'),
+            'internal_note': data[0].internal_note,
+            'installed_at_name': data[0].installed_at_name
           }
           cb(result)
         } else {
@@ -53,12 +58,18 @@ Backend.getOperations = function (cb, timeout) {
 };
 
 Backend.submitJob = function(job, cb) {
+  console.log("Submitting Job to " + sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY));
+  console.log("Params: " + job)
+  var j = job
+  j.execution_date = moment(job.execution_date, 'DD.MM.YYYY').format("YYYYMMDD")
   request
-   .post(sprintf('%s/%s', BASE_URL, SME_ENTITY))
+   .post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY))
+   .type('form')
    .auth('AIR14977','Atlas2015')
-   .send({'json': job, "method": "create"})
-   .accept('json')
+   .send({json: JSON.stringify(j)})
+   .send({action: 'create'})
    .end(function (err, res) {
+    if (!err && res.body)
       cb();
    });
 

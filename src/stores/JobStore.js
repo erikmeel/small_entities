@@ -6,10 +6,11 @@ export default Store({
   getInitialState() {
     return toImmutable({
       process: "X1",
-      maint_act_type: "FP",
+      maint_act_type: "select",
       fixed_price: 500.0,
       execution_date: moment().format("DD.MM.YYYY"),
-      description: "Test ",
+      description: moment().format("YYYYMMDD") + " ",
+      equipment: "",
       plant: "",
     })
   },
@@ -30,5 +31,7 @@ function updateOperation(state, { operationId, fieldName, value }) {
 }
 
 function receiveEquipment(state, { equipment }) {
-  return state.merge(equipment)
+  var s = state.merge(equipment);
+  s.merge({'equipment': equipment.id})
+  return s
 }

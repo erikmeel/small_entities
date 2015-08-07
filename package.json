@@ -27,6 +27,7 @@
   "author": "Jordan Garcia",
   "license": "MIT",
   "devDependencies": {
-    "json-loader": "^0.5.2"
+    "json-loader": "^0.5.2",
+    "webpack-dev-server": "^1.10.1"
   }
 }

@@ -1,9 +1,10 @@
 import React from 'react'
 
+import JobFixedPrice from '../../common/components/JobFixedPrice'
+
 import reactor from '../reactor'
 import getters from '../getters'
 import actions from '../actions'
-
 
 export default React.createClass({
   mixins: [reactor.ReactMixin],
@@ -25,6 +26,10 @@ export default React.createClass({
 
   render: function () {
     let job = this.state.job.toJS();
+    var fixedPrice = <div></div>;
+    if (job.maint_act_type === 'FP') {
+      fixedPrice = <JobFixedPrice job={job} onUpdateField={this.updateField} />
+    }
     return (
       <div>
         <div className="form-group">
@@ -35,10 +40,7 @@ export default React.createClass({
             <option value="CH">Chargeable</option>
           </select>
         </div>
-        <div className="form-group">
-          <label>Price</label>
-          <input className="form-control" type="number" defaultValue={job.fixed_price} onChange={this.updateField.bind(this, "fixed_price")}/>
-        </div>
+        { fixedPrice }
         <div className="form-group">
           <label>Execution Date</label>
           <input className="form-control" type="text" defaultValue={job.execution_date} onChange={this.updateField.bind(this, "execution_date")}/>

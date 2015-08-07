@@ -9,6 +9,8 @@ import JobContainer from './JobContainer'
 import OperationsContainer from './OperationsContainer'
 
 export default React.createClass({
+
+
   handleSubmit: function(event) {
     actions.submitJob()
   },
@@ -17,6 +19,7 @@ export default React.createClass({
     return (
       <div className="container">
         <form onSubmit={this.handleSubmit}>
+          <h2>Small Entities - Job Confirmation</h2>
           <EquipmentContainer />
           <JobContainer />
           <OperationsContainer />
