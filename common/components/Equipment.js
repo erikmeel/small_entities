@@ -84,7 +84,7 @@ var Equipment = React.createClass({
     return (
       <div>
         <div className={classNameGroup}>
-          <label for="inputEquipment">Equipment</label>
+          <label htmlFor="inputEquipment">Equipment</label>
           <input type="text" className="form-control" id="inputEquipment" placeholder="Serial Number" defaultValue={this.props.equipment.serial} onChange={this.props.onEquipmentChanged} />
           <span className={classNameSpan} aria-hidden="true"></span>
         </div>
