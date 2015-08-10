@@ -37,7 +37,14 @@ export default React.createClass({
           <select className="form-control" defaultValue={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")}>
             <option value="select">Choose an option</option>
             <option value="FP">Fixed Price</option>
-            <option value="CH">Chargeable</option>
+            <option value="OH">Overhaul Fixed Price</option>
+            <option value="MX">Motor Xchange</option>
+            <option value="CX">Converter Xchange</option>
+            <option value="UC">Upgrades (Controls)</option>
+            <option value="UP">Upgrades (Protection)</option>
+            <option value="CH">Service Repair</option>
+            <option value="SG">Service Goodwill</option>
+            <option value="GW">Sales Goodwill</option>
           </select>
         </div>
         { fixedPrice }
@@ -52,6 +59,10 @@ export default React.createClass({
         <div className="form-group">
           <label>Description</label>
           <input className="form-control" type="text" defaultValue={job.description} onChange={this.updateField.bind(this, "description")}/>
+        </div>
+        <div className="form-group">
+          <label>Invoice Text</label>
+          <textarea className="form-control" rows="3" defaultValue={job.invoiceText}></textarea>
         </div>
       </div>
     );
