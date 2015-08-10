@@ -3,20 +3,18 @@
 var React = require('react');
 
 var MaterialInput = React.createClass({
-  handleMaterialNumberChange: function(event) {
-    this.setState({number: event.target.value})
-  },
-
   render: function () {
+    var addMaterialEnabled = "disabled";
+    if (this.props.validMaterial) {
+      addMaterialEnabled = ""
+    }
     return (
-      <div className="flex-table">
-        <div className="flex-table-item flex-table-item-primary">
-          <input className="input-block" type="text" placeholder="Material Number" onChange={this.handleMaterialNumberChange} />
+        <div className="input-group">
+          <input type="text" className="form-control" placeholder="Material Number ..." onChange={this.props.onChangeMaterial} defaultValue={this.props.material.id} />
+          <span className="input-group-btn">
+            <button className="btn btn-default" type="button" disabled={addMaterialEnabled} onClick={this.props.addMaterial}>Add Material</button>
+          </span>
         </div>
-        <div className="flex-table-item">
-          <button className="btn" type="button">Add Material</button>
-        </div>
-      </div>
     );
   }
 });

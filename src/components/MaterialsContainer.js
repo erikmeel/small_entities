@@ -10,9 +10,13 @@ import actions from '../actions'
 
 
 const MaterialContainer = React.createClass({
+  changeQuantity(number, event) {
+    actions.changeMaterialQuantity(number, parseInt(event.target.value))
+  },
+
   render() {
     return (
-      <Material material={this.props.material} />
+      <Material key={this.props.key} material={this.props.material} handleMaterialQuantityChange={this.changeQuantity} />
     );
   }
 });
@@ -21,9 +25,21 @@ const MaterialContainer = React.createClass({
 export default React.createClass({
   mixins: [reactor.ReactMixin],
 
+  changeMaterialInput(event) {
+    if (event.target.value.length === 10) {
+      actions.getMaterial(event.target.value)
+    }
+  },
+
+  addMaterial() {
+    actions.addMaterialToJob(this.state.material.toJS())
+  },
+
   getDataBindings() {
     return {
       materials: getters.materials,
+      material: getters.material,
+      validMaterial: getters.validMaterial
     }
   },
 
@@ -31,11 +47,11 @@ export default React.createClass({
     return (
       <div>
         <MaterialList title="Materials">
-          {this.state.materials.map(material => {
-            return <MaterialContainer key={material.get('id')} material={material.toJS()} />;
-          }).toList()}
+          {this.state.materials.map(function (material) {
+            return <MaterialContainer material={material.toJS()} />;
+          })}
         </MaterialList>
-        <MaterialInput key="material_input" />
+        <MaterialInput key="material_input" material={this.state.material.toJS()} onChangeMaterial={this.changeMaterialInput} validMaterial={this.state.validMaterial} addMaterial={this.addMaterial} />
       </div>
     );
   },

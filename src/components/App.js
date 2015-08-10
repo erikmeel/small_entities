@@ -7,6 +7,7 @@ import ProductsContainer from './ProductsContainer'
 import EquipmentContainer from './EquipmentContainer'
 import JobContainer from './JobContainer'
 import OperationsContainer from './OperationsContainer'
+import MaterialsContainer from './MaterialsContainer'
 
 export default React.createClass({
 
@@ -23,7 +24,9 @@ export default React.createClass({
           <EquipmentContainer />
           <JobContainer />
           <OperationsContainer />
+          <MaterialsContainer />
           <div>
+            <br />
             <input type="submit" value="Confirm" className="btn btn-primary" />
           </div>
         </form>

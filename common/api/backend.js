@@ -9,11 +9,12 @@ var sprintf = require('util').format
 var BASE_URL = '/sap/zrest/stc'
 var SME_ENTITY = 'sme'
 var EQUIPMENT_ENTITY = 'equipment'
+var MATERIAL_ENTITY = 'material'
 
 var _equipment = require('./equipment.json');
 var _operations = require('./operations.json');
 
-var TIMEOUT = 100;
+var TIMEOUT = 10;
 
 Backend.getEquipment = function (payload, cb, cb_error) {
   request
@@ -57,11 +58,13 @@ Backend.getOperations = function (cb, timeout) {
     }, timeout);
 };
 
-Backend.submitJob = function(job, cb) {
+Backend.submitJob = function(job, materials, cb) {
   console.log("Submitting Job to " + sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY));
   console.log("Params: " + job)
+  console.log("Material params: " + materials);
   var j = job
   j.execution_date = moment(job.execution_date, 'DD.MM.YYYY').format("YYYYMMDD")
+  j.t_mat_used = materials
   request
    .post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY))
    .type('form')
@@ -73,4 +76,26 @@ Backend.submitJob = function(job, cb) {
       cb();
    });
 
+};
+
+Backend.getMaterial = function (payload, cb, cb_error) {
+  request
+    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, payload))
+    .auth('AIR14977','Atlas2015')
+    .accept('json')
+    .end(function (err, res) {
+      if (!err && res.body) {
+        var data = res.body[0].model;
+        var result
+        if (data.length > 0) {
+          result = {
+            'id': data[0].id,
+            'name': data[0].description,
+          }
+          cb(result)
+        } else {
+          cb_error()
+        }
+      }
+    })
 };

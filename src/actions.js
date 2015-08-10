@@ -17,6 +17,11 @@ import {
   CONFIRM_FAILED,
   SET_JOB_VALUE,
   SET_OPERATION_VALUE,
+  RECEIVE_MATERIAL_START,
+  RECEIVE_MATERIAL_SUCCESS,
+  RECEIVE_MATERIAL_FAILED,
+  ADD_MATERIAL_TO_JOB,
+  CHANGE_MATERIAL_QUANTITY,
 } from './actionTypes'
 
 export default {
@@ -64,6 +69,10 @@ export default {
     reactor.dispatch(ADD_MATERIAL_TO_JOB, { material })
   },
 
+  changeMaterialQuantity(material_id, quantity) {
+    reactor.dispatch(CHANGE_MATERIAL_QUANTITY, { material_id, quantity })
+  },
+
   setJobValue(fieldName, value) {
     reactor.dispatch(SET_JOB_VALUE, { fieldName, value, });
   },
@@ -74,9 +83,16 @@ export default {
 
   submitJob() {
     reactor.dispatch(CONFIRM_START)
-    backend.submitJob(reactor.evaluateToJS(getters.job), () => {
+    backend.submitJob(reactor.evaluateToJS(getters.job), reactor.evaluateToJS(getters.materialsForSubmit), () => {
       reactor.dispatch(CONFIRM_SUCCESS)
     })
     // reactor.dispatch(RECEIVE_EQUIPMENT_FAILED)
+  },
+
+  getMaterial(number) {
+    reactor.dispatch(RECEIVE_MATERIAL_START)
+    backend.getMaterial(number, material => {
+      reactor.dispatch(RECEIVE_MATERIAL_SUCCESS, {material})
+    }, () => {reactor.dispatch(RECEIVE_MATERIAL_FAILED)});
   }
 }

@@ -7,15 +7,15 @@ var Material = React.createClass({
     this.setState({number: event.target.value})
   },
 
-  handleMaterialQuantityChange: function(event) {
-    this.setState({quantity: event.target.value})
-  },
-
   render: function () {
     return (
-      <div>
-        <input type="text" placeholder="Material Number" onChange={this.handleMaterialNumberChange} />
-        <input type="number" placeholder="Quantity" onChange={this.handleMaterialQuantityChange} />
+      <div className="row">
+      <div className="form-group col-xs-8">
+        <input type="text" className="form-control" placeholder="Material Number" value={this.props.material.name} onChange={this.handleMaterialNumberChange} readOnly />
+      </div>
+      <div className="form-group col-xs-4">
+        <input type="number" className="form-control" placeholder="Quantity" value={this.props.material.quantity} onChange={this.props.handleMaterialQuantityChange.bind(null, this.props.material.id)} />
+      </div>
       </div>
     );
   }
