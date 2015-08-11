@@ -20514,6 +20514,10 @@
 
 	var _OperationsContainer2 = _interopRequireDefault(_OperationsContainer);
 
+	var _MaterialsContainer = __webpack_require__(280);
+
+	var _MaterialsContainer2 = _interopRequireDefault(_MaterialsContainer);
+
 	exports['default'] = _react2['default'].createClass({
 	  displayName: 'App',
 
@@ -20536,9 +20540,11 @@
 	        _react2['default'].createElement(_EquipmentContainer2['default'], null),
 	        _react2['default'].createElement(_JobContainer2['default'], null),
 	        _react2['default'].createElement(_OperationsContainer2['default'], null),
+	        _react2['default'].createElement(_MaterialsContainer2['default'], null),
 	        _react2['default'].createElement(
 	          'div',
 	          null,
+	          _react2['default'].createElement('br', null),
 	          _react2['default'].createElement('input', { type: 'submit', value: 'Confirm', className: 'btn btn-primary' })
 	        )
 	      )
@@ -20621,7 +20627,11 @@
 	  },
 
 	  addMaterialToJob: function addMaterialToJob(material) {
-	    _reactor2['default'].dispatch(ADD_MATERIAL_TO_JOB, { material: material });
+	    _reactor2['default'].dispatch(_actionTypes.ADD_MATERIAL_TO_JOB, { material: material });
+	  },
+
+	  changeMaterialQuantity: function changeMaterialQuantity(material_id, quantity) {
+	    _reactor2['default'].dispatch(_actionTypes.CHANGE_MATERIAL_QUANTITY, { material_id: material_id, quantity: quantity });
 	  },
 
 	  setJobValue: function setJobValue(fieldName, value) {
@@ -20634,10 +20644,19 @@
 
 	  submitJob: function submitJob() {
 	    _reactor2['default'].dispatch(_actionTypes.CONFIRM_START);
-	    _commonApiBackend2['default'].submitJob(_reactor2['default'].evaluateToJS(_getters2['default'].job), function () {
+	    _commonApiBackend2['default'].submitJob(_reactor2['default'].evaluateToJS(_getters2['default'].job), _reactor2['default'].evaluateToJS(_getters2['default'].materialsForSubmit), function () {
 	      _reactor2['default'].dispatch(_actionTypes.CONFIRM_SUCCESS);
 	    });
 	    // reactor.dispatch(RECEIVE_EQUIPMENT_FAILED)
+	  },
+
+	  getMaterial: function getMaterial(number) {
+	    _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_START);
+	    _commonApiBackend2['default'].getMaterial(number, function (material) {
+	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_SUCCESS, { material: material });
+	    }, function () {
+	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_FAILED);
+	    });
 	  }
 	};
 	module.exports = exports['default'];
@@ -20714,14 +20733,18 @@
 	var BASE_URL = '/sap/zrest/stc';
 	var SME_ENTITY = 'sme';
 	var EQUIPMENT_ENTITY = 'equipment';
+	var MATERIAL_ENTITY = 'material';
 
 	var _equipment = __webpack_require__(256);
 	var _operations = __webpack_require__(257);
 
-	var TIMEOUT = 100;
+	var TIMEOUT = 10;
 
 	Backend.getEquipment = function (payload, cb, cb_error) {
-	  request.get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY, payload)).auth('AIR14977', 'Atlas2015').accept('json').end(function (err, res) {
+	  var j = {
+	    'serial_number': payload
+	  };
+	  request.get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY)).query({ json: JSON.stringify(j) }).query({ action: 'get_by_serial' }).auth('AIR14977', 'Atlas2015').accept('json').end(function (err, res) {
 	    if (!err && res.body) {
 	      var data = res.body[0].model;
 	      var result;
@@ -20758,13 +20781,33 @@
 	  }, timeout);
 	};
 
-	Backend.submitJob = function (job, cb) {
+	Backend.submitJob = function (job, materials, cb) {
 	  console.log("Submitting Job to " + sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY));
-	  console.log("Params: " + job);
+	  console.log("Params: " + JSON.stringify(job, null, 4));
+	  console.log("Material params: " + JSON.stringify(materials, null, 4));
 	  var j = job;
 	  j.execution_date = moment(job.execution_date, 'DD.MM.YYYY').format("YYYYMMDD");
+	  j.t_mat_used = materials;
 	  request.post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY)).type('form').auth('AIR14977', 'Atlas2015').send({ json: JSON.stringify(j) }).send({ action: 'create' }).end(function (err, res) {
 	    if (!err && res.body) cb();
+	  });
+	};
+
+	Backend.getMaterial = function (payload, cb, cb_error) {
+	  request.get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, payload)).auth('AIR14977', 'Atlas2015').accept('json').end(function (err, res) {
+	    if (!err && res.body) {
+	      var data = res.body[0].model;
+	      var result;
+	      if (data.length > 0) {
+	        result = {
+	          'id': data[0].id,
+	          'name': data[0].description
+	        };
+	        cb(result);
+	      } else {
+	        cb_error();
+	      }
+	    }
 	  });
 	};
 
@@ -34266,7 +34309,7 @@
 			"id": 2,
 			"name": "Expenses (Local Currency)",
 			"quantity": 0,
-			"key": "expense_qty"
+			"key": "expenses_qty"
 		},
 		{
 			"id": 3,
@@ -40510,10 +40553,18 @@
 	var equipment = ['equipment', 'equipment'];
 	var equipmentValid = ['equipment', 'equipmentValid'];
 	var operations = ['operations'];
-	var materials = ['materials'];
+	var materials = ['materials', 'itemQty'];
+	var material = ['materials', 'material'];
+	var validMaterial = ['materials', 'validMaterial'];
 	var job = ['job'];
 
-	exports['default'] = { products: products, cartProducts: cartProducts, cartTotal: cartTotal, equipment: equipment, equipmentValid: equipmentValid, operations: operations, materials: materials, job: job };
+	var materialsForSubmit = [['materials', 'itemQty'], function (itemQty) {
+	  return itemQty.map(function (material) {
+	    return material.set('material', material.get('id'));
+	  }).toList();
+	}];
+
+	exports['default'] = { products: products, cartProducts: cartProducts, cartTotal: cartTotal, equipment: equipment, equipmentValid: equipmentValid, operations: operations, materials: materials, material: material, validMaterial: validMaterial, job: job, materialsForSubmit: materialsForSubmit };
 	module.exports = exports['default'];
 
 /***/ },
@@ -40547,7 +40598,11 @@
 	    CONFIRM_FAILED: null,
 	    ADD_MATERIAL_TO_JOB: null,
 	    SET_JOB_VALUE: null,
-	    SET_OPERATION_VALUE: null
+	    SET_OPERATION_VALUE: null,
+	    RECEIVE_MATERIAL_START: null,
+	    RECEIVE_MATERIAL_SUCCESS: null,
+	    RECEIVE_MATERIAL_FAILED: null,
+	    CHANGE_MATERIAL_QUANTITY: null
 	});
 	module.exports = exports['default'];
 
@@ -41089,7 +41144,7 @@
 	        { className: classNameGroup },
 	        React.createElement(
 	          'label',
-	          { 'for': 'inputEquipment' },
+	          { htmlFor: 'inputEquipment' },
 	          'Equipment'
 	        ),
 	        React.createElement('input', { type: 'text', className: 'form-control', id: 'inputEquipment', placeholder: 'Serial Number', defaultValue: this.props.equipment.serial, onChange: this.props.onEquipmentChanged }),
@@ -41156,7 +41211,7 @@
 	  render: function render() {
 	    var job = this.state.job.toJS();
 	    var fixedPrice = _react2['default'].createElement('div', null);
-	    if (job.maint_act_type === 'FP') {
+	    if (job.maint_act_type.match(/^(FP|OH|MX|CX|UC|UP)/)) {
 	      fixedPrice = _react2['default'].createElement(_commonComponentsJobFixedPrice2['default'], { job: job, onUpdateField: this.updateField });
 	    }
 	    return _react2['default'].createElement(
@@ -41185,8 +41240,43 @@
 	          ),
 	          _react2['default'].createElement(
 	            'option',
+	            { value: 'OH' },
+	            'Overhaul Fixed Price'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'MX' },
+	            'Motor Xchange'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'CX' },
+	            'Converter Xchange'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'UC' },
+	            'Upgrades (Controls)'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'UP' },
+	            'Upgrades (Protection)'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
 	            { value: 'CH' },
-	            'Chargeable'
+	            'Service Repair'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'SG' },
+	            'Service Goodwill'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'GW' },
+	            'Sales Goodwill'
 	          )
 	        )
 	      ),
@@ -41209,7 +41299,7 @@
 	          null,
 	          'Work Center'
 	        ),
-	        _react2['default'].createElement('input', { className: 'form-control', type: 'text', value: job.main_workctr, onChange: this.updateField.bind(this, "main_workctr") })
+	        _react2['default'].createElement('input', { className: 'form-control', type: 'text', value: job.main_workctr, placeholder: 'BE01A201', onChange: this.updateField.bind(this, "main_workctr") })
 	      ),
 	      _react2['default'].createElement(
 	        'div',
@@ -41220,6 +41310,16 @@
 	          'Description'
 	        ),
 	        _react2['default'].createElement('input', { className: 'form-control', type: 'text', defaultValue: job.description, onChange: this.updateField.bind(this, "description") })
+	      ),
+	      _react2['default'].createElement(
+	        'div',
+	        { className: 'form-group' },
+	        _react2['default'].createElement(
+	          'label',
+	          null,
+	          'Invoice Text'
+	        ),
+	        _react2['default'].createElement('textarea', { className: 'form-control', rows: '3', defaultValue: job.invoiceText })
 	      )
 	    );
 	  }
@@ -41246,7 +41346,7 @@
 	        null,
 	        'Price'
 	      ),
-	      React.createElement('input', { className: 'form-control', type: 'number', pattern: '^\\d+(\\.|\\,)\\d{2}$', defaultValue: this.props.job.fixed_price, onChange: this.props.onUpdateField.bind(null, "fixed_price") })
+	      React.createElement('input', { className: 'form-control', type: 'number', step: 'any', min: '1', pattern: '^\\d+(\\.|\\,)\\d{2}$', defaultValue: this.props.job.fixed_price, onChange: this.props.onUpdateField.bind(null, "fixed_price") })
 	    );
 	  }
 	});
@@ -41348,7 +41448,7 @@
 	        null,
 	        this.props.operation.name
 	      ),
-	      React.createElement('input', { className: 'form-control', type: 'number', defaultValue: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
+	      React.createElement('input', { className: 'form-control', type: 'number', step: 'any', min: this.props.operation.key === "work_qty" ? "0.25" : "0", defaultValue: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
 	    );
 	  }
 	});
@@ -41605,20 +41705,55 @@
 
 	exports['default'] = (0, _nuclearJs.Store)({
 	  getInitialState: function getInitialState() {
-	    return (0, _nuclearJs.toImmutable)({ materials: [] });
+	    return (0, _nuclearJs.toImmutable)({
+	      'itemQty': {},
+	      'validMaterial': false,
+	      'material': {
+	        'id': ''
+	      }
+	    });
 	  },
 
 	  initialize: function initialize() {
 	    this.on(_actionTypes.ADD_MATERIAL_TO_JOB, addMaterialToJob);
+	    this.on(_actionTypes.CHANGE_MATERIAL_QUANTITY, handleChangeMaterialQuantity);
+	    this.on(_actionTypes.RECEIVE_MATERIAL_SUCCESS, receiveMaterial);
+	    this.on(_actionTypes.RECEIVE_MATERIAL_FAILED, resetMaterial);
 	  }
 	});
 
 	function addMaterialToJob(state, _ref) {
 	  var material = _ref.material;
 
-	  return state.hasIn(['itemQty', material.id]) ? state.updateIn(['itemQty', material.id], function (quantity) {
+	  return state.hasIn(['itemQty', material.id]) ? state.updateIn(['itemQty', material.id, 'quantity'], function (quantity) {
 	    return quantity + 1;
-	  }) : state.setIn(['itemQty', material.id], 1);
+	  }) : state.setIn(['itemQty', material.id], (0, _nuclearJs.toImmutable)(material)).setIn(['itemQty', material.id, 'quantity'], 1);
+	}
+
+	function handleChangeMaterialQuantity(state, _ref2) {
+	  var material_id = _ref2.material_id;
+	  var quantity = _ref2.quantity;
+
+	  if (quantity === 0) {
+	    return state.deleteIn(['itemQty', material_id]);
+	  } else {
+	    return state.setIn(['itemQty', material_id, 'quantity'], quantity);
+	  }
+	}
+
+	function receiveMaterial(state, _ref3) {
+	  var material = _ref3.material;
+
+	  return state.merge({
+	    'validMaterial': true,
+	    'material': material
+	  });
+	}
+
+	function resetMaterial(state) {
+	  return state.merge({
+	    'validMaterial': false
+	  });
 	}
 	module.exports = exports['default'];
 
@@ -41647,7 +41782,7 @@
 	    return (0, _nuclearJs.toImmutable)({
 	      process: "X1",
 	      maint_act_type: "select",
-	      fixed_price: 500.0,
+	      fixed_price: 0.0,
 	      execution_date: (0, _moment2['default'])().format("DD.MM.YYYY"),
 	      description: (0, _moment2['default'])().format("YYYYMMDD") + " ",
 	      equipment: "",
@@ -41683,6 +41818,203 @@
 	  return s;
 	}
 	module.exports = exports['default'];
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _commonComponentsMaterial = __webpack_require__(281);
+
+	var _commonComponentsMaterial2 = _interopRequireDefault(_commonComponentsMaterial);
+
+	var _commonComponentsMaterialList = __webpack_require__(282);
+
+	var _commonComponentsMaterialList2 = _interopRequireDefault(_commonComponentsMaterialList);
+
+	var _commonComponentsMaterialInput = __webpack_require__(283);
+
+	var _commonComponentsMaterialInput2 = _interopRequireDefault(_commonComponentsMaterialInput);
+
+	var _reactor = __webpack_require__(258);
+
+	var _reactor2 = _interopRequireDefault(_reactor);
+
+	var _getters = __webpack_require__(260);
+
+	var _getters2 = _interopRequireDefault(_getters);
+
+	var _actions = __webpack_require__(158);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
+	var MaterialContainer = _react2['default'].createClass({
+	  displayName: 'MaterialContainer',
+
+	  changeQuantity: function changeQuantity(number, event) {
+	    _actions2['default'].changeMaterialQuantity(number, parseInt(event.target.value));
+	  },
+
+	  render: function render() {
+	    return _react2['default'].createElement(_commonComponentsMaterial2['default'], { key: this.props.key, material: this.props.material, handleMaterialQuantityChange: this.changeQuantity });
+	  }
+	});
+
+	exports['default'] = _react2['default'].createClass({
+	  displayName: 'MaterialsContainer',
+
+	  mixins: [_reactor2['default'].ReactMixin],
+
+	  changeMaterialInput: function changeMaterialInput(event) {
+	    if (event.target.value.length === 10) {
+	      _actions2['default'].getMaterial(event.target.value);
+	    }
+	  },
+
+	  addMaterial: function addMaterial() {
+	    _actions2['default'].addMaterialToJob(this.state.material.toJS());
+	  },
+
+	  getDataBindings: function getDataBindings() {
+	    return {
+	      materials: _getters2['default'].materials,
+	      material: _getters2['default'].material,
+	      validMaterial: _getters2['default'].validMaterial
+	    };
+	  },
+
+	  render: function render() {
+	    return _react2['default'].createElement(
+	      'div',
+	      null,
+	      _react2['default'].createElement(
+	        _commonComponentsMaterialList2['default'],
+	        { title: 'Materials' },
+	        this.state.materials.map(function (material) {
+	          return _react2['default'].createElement(MaterialContainer, { material: material.toJS() });
+	        })
+	      ),
+	      _react2['default'].createElement(_commonComponentsMaterialInput2['default'], { key: 'material_input', material: this.state.material.toJS(), onChangeMaterial: this.changeMaterialInput, validMaterial: this.state.validMaterial, addMaterial: this.addMaterial })
+	    );
+	  }
+	});
+	module.exports = exports['default'];
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var Material = React.createClass({
+	  displayName: 'Material',
+
+	  handleMaterialNumberChange: function handleMaterialNumberChange(event) {
+	    this.setState({ number: event.target.value });
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'row' },
+	      React.createElement(
+	        'div',
+	        { className: 'form-group col-xs-8' },
+	        React.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Material Number', value: this.props.material.name, onChange: this.handleMaterialNumberChange, readOnly: true })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'form-group col-xs-4' },
+	        React.createElement('input', { type: 'number', className: 'form-control', placeholder: 'Quantity', value: this.props.material.quantity, onChange: this.props.handleMaterialQuantityChange.bind(null, this.props.material.id) })
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Material;
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var MaterialList = React.createClass({
+	  displayName: 'MaterialList',
+
+	  propTypes: {
+	    title: React.PropTypes.string.isRequired
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        this.props.title
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.children
+	      )
+	    );
+	  }
+	});
+
+	module.exports = MaterialList;
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var MaterialInput = React.createClass({
+	  displayName: 'MaterialInput',
+
+	  render: function render() {
+	    var addMaterialEnabled = "disabled";
+	    if (this.props.validMaterial) {
+	      addMaterialEnabled = "";
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'input-group' },
+	      React.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Material Number ...', onChange: this.props.onChangeMaterial, defaultValue: this.props.material.id }),
+	      React.createElement(
+	        'span',
+	        { className: 'input-group-btn' },
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default', type: 'button', disabled: addMaterialEnabled, onClick: this.props.addMaterial },
+	          'Add Material'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = MaterialInput;
 
 /***/ }
 /******/ ]);
