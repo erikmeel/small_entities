@@ -17,8 +17,13 @@ var _operations = require('./operations.json');
 var TIMEOUT = 10;
 
 Backend.getEquipment = function (payload, cb, cb_error) {
+  var j = {
+    'serial_number': payload
+  }
   request
-    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY, payload))
+    .get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY))
+    .query({json: JSON.stringify(j)})
+    .query({action: 'get_by_serial'})
     .auth('AIR14977','Atlas2015')
     .accept('json')
     .end(function (err, res) {
