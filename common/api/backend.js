@@ -65,8 +65,8 @@ Backend.getOperations = function (cb, timeout) {
 
 Backend.submitJob = function(job, materials, cb) {
   console.log("Submitting Job to " + sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY));
-  console.log("Params: " + job)
-  console.log("Material params: " + materials);
+  console.log("Params: " + JSON.stringify(job, null, 4))
+  console.log("Material params: " + JSON.stringify(materials, null, 4));
   var j = job
   j.execution_date = moment(job.execution_date, 'DD.MM.YYYY').format("YYYYMMDD")
   j.t_mat_used = materials
