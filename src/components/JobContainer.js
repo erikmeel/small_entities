@@ -27,7 +27,7 @@ export default React.createClass({
   render: function () {
     let job = this.state.job.toJS();
     var fixedPrice = <div></div>;
-    if (job.maint_act_type === 'FP') {
+    if (job.maint_act_type.match(/^(FP|OH|MX|CX|UC|UP)/)) {
       fixedPrice = <JobFixedPrice job={job} onUpdateField={this.updateField} />
     }
     return (

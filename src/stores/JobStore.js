@@ -7,7 +7,7 @@ export default Store({
     return toImmutable({
       process: "X1",
       maint_act_type: "select",
-      fixed_price: 500.0,
+      fixed_price: 0.0,
       execution_date: moment().format("DD.MM.YYYY"),
       description: moment().format("YYYYMMDD") + " ",
       equipment: "",
