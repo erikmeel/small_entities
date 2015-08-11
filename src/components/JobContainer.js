@@ -54,7 +54,7 @@ export default React.createClass({
         </div>
         <div className="form-group">
           <label>Work Center</label>
-          <input className="form-control" type="text" value={job.main_workctr} onChange={this.updateField.bind(this, "main_workctr")}/>
+          <input className="form-control" type="text" value={job.main_workctr} placeholder="BE01A201" onChange={this.updateField.bind(this, "main_workctr")}/>
         </div>
         <div className="form-group">
           <label>Description</label>
