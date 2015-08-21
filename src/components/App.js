@@ -1,6 +1,8 @@
 'use strict';
 
 import React from 'react'
+import { Button, ButtonToolbar } from 'react-bootstrap'
+
 import actions from '../actions'
 import CartContainer from './CartContainer'
 import ProductsContainer from './ProductsContainer'
@@ -10,16 +12,15 @@ import OperationsContainer from './OperationsContainer'
 import MaterialsContainer from './MaterialsContainer'
 
 export default React.createClass({
-
-
   handleSubmit: function(event) {
     actions.submitJob()
+    window.scrollTo (0,0)
   },
 
   render() {
     return (
       <div className="container">
-        <form onSubmit={this.handleSubmit}>
+        <form >
           <h2>Small Entities - Job Confirmation</h2>
           <EquipmentContainer />
           <JobContainer />
@@ -27,7 +28,10 @@ export default React.createClass({
           <MaterialsContainer />
           <div>
             <br />
-            <input type="submit" value="Confirm" className="btn btn-primary" />
+            <ButtonToolbar>
+              <Button onClick={this.handleSubmit} bsStyle="primary">Confirm</Button>
+              <Button onClick={this.handleSubmit}>Reset</Button>
+            </ButtonToolbar>
           </div>
         </form>
       </div>

@@ -8,3 +8,8 @@
     right: 50px;
     top: 30px;
 }
+body {
+  background-color: rgb(241, 242, 246);
+  color: #434a54;
+  font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+}

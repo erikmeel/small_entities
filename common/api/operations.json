@@ -1,5 +1,5 @@
 [
   {"id": 1, "name": "Work (Hours)", "quantity": 1.0, "key": "work_qty"},
-  {"id": 2, "name": "Expenses (Local Currency)", "quantity": 0.0, "key": "expenses_qty"},
+  {"id": 2, "name": "Additional Expenses (EUR)", "quantity": 0.0, "key": "expenses_qty"},
   {"id": 3, "name": "Travel Distance", "quantity": 0.0, "key": "travel_qty"}
 ]

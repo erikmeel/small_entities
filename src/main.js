@@ -19,7 +19,7 @@ reactor.registerStores({
   job: JobStore,
 })
 
-actions.fetchOperations()
+// actions.fetchOperations()
 
 React.render(
     React.createElement(App, null),

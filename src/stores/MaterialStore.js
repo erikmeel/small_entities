@@ -1,15 +1,17 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { ADD_MATERIAL_TO_JOB, RECEIVE_MATERIAL_SUCCESS, RECEIVE_MATERIAL_FAILED, CHANGE_MATERIAL_QUANTITY } from '../actionTypes'
+import { ADD_MATERIAL_TO_JOB, RECEIVE_MATERIAL_SUCCESS, RECEIVE_MATERIAL_FAILED, CHANGE_MATERIAL_QUANTITY, CONFIRM_SUCCESS, INVALID_MATERIAL_INPUT } from '../actionTypes'
+
+const initialState = toImmutable({
+  'itemQty': {},
+  'validMaterial': false,
+  'material' : {
+    'id': ''
+  }
+})
 
 export default Store({
   getInitialState() {
-    return toImmutable({
-      'itemQty': {},
-      'validMaterial': false,
-      'material' : {
-        'id': ''
-      }
-    })
+    return initialState
   },
 
   initialize() {
@@ -17,6 +19,8 @@ export default Store({
     this.on(CHANGE_MATERIAL_QUANTITY, handleChangeMaterialQuantity)
     this.on(RECEIVE_MATERIAL_SUCCESS, receiveMaterial)
     this.on(RECEIVE_MATERIAL_FAILED, resetMaterial)
+    this.on(CONFIRM_SUCCESS, confirmSuccess)
+    this.on(INVALID_MATERIAL_INPUT, resetMaterial)
   }
 })
 
@@ -45,4 +49,8 @@ function resetMaterial(state) {
   return state.merge({
     'validMaterial': false
   })
+}
+
+function confirmSuccess(state) {
+  return initialState
 }

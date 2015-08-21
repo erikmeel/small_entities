@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+import { Input } from 'react-bootstrap'
 
 var EquipmentInfo = React.createClass({
   render: function () {
@@ -65,17 +66,14 @@ var Equipment = React.createClass({
     onEquipmentChanged: React.PropTypes.func.isRequired
   },
 
-  render: function () {
-    var classNameGroup = "form-group";
-    var classNameSpan = "glyphicon"
+  validationState() {
     if (this.props.equipmentValid) {
-      classNameGroup += " has-success has-feedback"
-      classNameSpan += " glyphicon-ok form-control-feedback"
-    } else {
-      classNameGroup += " has-warning has-feedback"
-      classNameSpan += " glyphicon-warning-sign form-control-feedback"
+      return 'success'
     }
+    return 'error'
+  },
 
+  render: function () {
     var equipmentInfo = <div></div>;
     if (this.props.equipmentValid) {
       equipmentInfo = <EquipmentInfo equipment={this.props.equipment} />
@@ -83,11 +81,7 @@ var Equipment = React.createClass({
 
     return (
       <div>
-        <div className={classNameGroup}>
-          <label htmlFor="inputEquipment">Equipment</label>
-          <input type="text" className="form-control" id="inputEquipment" placeholder="Serial Number" defaultValue={this.props.equipment.serial} onChange={this.props.onEquipmentChanged} />
-          <span className={classNameSpan} aria-hidden="true"></span>
-        </div>
+        <Input type="text" ref="equipmentInput" label="Equipment" placeholder="Equipment" bsStyle={this.validationState()} hasFeedback onChange={this.props.onEquipmentChanged} value={this.props.equipment.serial} />
         { equipmentInfo }
       </div>
     );

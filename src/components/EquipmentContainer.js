@@ -18,7 +18,8 @@ export default React.createClass({
   },
 
   equipmentChange(event) {
-    if (event.target.value.length > 5) {
+    actions.setEquipmentValue(event.target.value)
+    if (event.target.value.length > 3) {
       actions.fetchEquipment(event.target.value)
     }
   },

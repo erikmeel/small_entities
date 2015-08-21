@@ -34,8 +34,12 @@ module.exports = {
     // host: hostname,
     // port: port,
     historyApiFallback: true,
+    quiet: false,
+    noInfo: false,
+    lazy: true,
+    stats: { colors: true },
     proxy: {
-      '/sap/zrest/stc/*': 'http://aq1sapr3.emea.group.atlascopco.com:8075/'
+      '/sap/zrest/*': 'http://aq1sapr3.emea.group.atlascopco.com:8075/'
     }
   }
 }

@@ -32,7 +32,7 @@ Backend.getEquipment = function (payload, cb, cb_error) {
         var result
         if (data.length > 0) {
           result = {
-            'equipment': data[0].id,
+            'id': data[0].id,
             'name': data[0].description,
             'serial': data[0].serial_number,
             'plant': data[0].planning_plant,
@@ -63,13 +63,20 @@ Backend.getOperations = function (cb, timeout) {
     }, timeout);
 };
 
-Backend.submitJob = function(job, materials, cb) {
+Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error) {
+  if (!equipment.id) {
+    return cb_error()
+  }
+  var j = job
+  j.equipment = equipment.id
+  j.execution_date = moment(job.execution_date, 'DD.MM.YYYY').format("YYYYMMDD")
+  j.work_qty = operations.work_qty.quantity
+  j.expenses_qty = operations.expenses_qty.quantity
+  j.travel_qty = operations.travel_qty.quantity
+  j.t_mat_used = materials
   console.log("Submitting Job to " + sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY));
   console.log("Params: " + JSON.stringify(job, null, 4))
   console.log("Material params: " + JSON.stringify(materials, null, 4));
-  var j = job
-  j.execution_date = moment(job.execution_date, 'DD.MM.YYYY').format("YYYYMMDD")
-  j.t_mat_used = materials
   request
    .post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY))
    .type('form')
@@ -77,16 +84,28 @@ Backend.submitJob = function(job, materials, cb) {
    .send({json: JSON.stringify(j)})
    .send({action: 'create'})
    .end(function (err, res) {
-    if (!err && res.body)
+    if (!err && res.body) {
       cb();
+    } else {
+      console.log(err);
+      cb_error();
+    }
    });
-
 };
 
-Backend.getMaterial = function (payload, cb, cb_error) {
+Backend.getMaterial = function (number, plant, storage_location, cb, cb_error) {
+  if (!(plant && storage_location)) {
+    return cb_error()
+  }
+  var j = {
+    'plant': plant,
+    'storage_location': storage_location
+  }
   request
-    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, payload))
+    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
     .auth('AIR14977','Atlas2015')
+    .query({'action': 'GET_STOCK'})
+    .query({'json': JSON.stringify(j)})
     .accept('json')
     .end(function (err, res) {
       if (!err && res.body) {
@@ -96,6 +115,10 @@ Backend.getMaterial = function (payload, cb, cb_error) {
           result = {
             'id': data[0].id,
             'name': data[0].description,
+            'uom': data[0].base_uom,
+            'plant': data[0].plant,
+            'storage_location': data[0].storage_location,
+            'stock_quantity': data[0].stock_quantity
           }
           cb(result)
         } else {

@@ -1,6 +1,8 @@
 import React from 'react'
+import { Input } from 'react-bootstrap'
 
 import JobFixedPrice from '../../common/components/JobFixedPrice'
+import validations from '../../common/utils/SmallEntityValidations'
 
 import reactor from '../reactor'
 import getters from '../getters'
@@ -34,7 +36,7 @@ export default React.createClass({
       <div>
         <div className="form-group">
           <label>Flow</label>
-          <select className="form-control" defaultValue={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")}>
+          <select className="form-control" value={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")}>
             <option value="select">Choose an option</option>
             <option value="FP">Fixed Price</option>
             <option value="OH">Overhaul Fixed Price</option>
@@ -48,22 +50,10 @@ export default React.createClass({
           </select>
         </div>
         { fixedPrice }
-        <div className="form-group">
-          <label>Execution Date</label>
-          <input className="form-control" type="text" defaultValue={job.execution_date} onChange={this.updateField.bind(this, "execution_date")}/>
-        </div>
-        <div className="form-group">
-          <label>Work Center</label>
-          <input className="form-control" type="text" value={job.main_workctr} placeholder="BE01A201" onChange={this.updateField.bind(this, "main_workctr")}/>
-        </div>
-        <div className="form-group">
-          <label>Description</label>
-          <input className="form-control" type="text" defaultValue={job.description} onChange={this.updateField.bind(this, "description")}/>
-        </div>
-        <div className="form-group">
-          <label>Invoice Text</label>
-          <textarea className="form-control" rows="3" defaultValue={job.invoiceText}></textarea>
-        </div>
+        <Input type="text" label="Execution Date" placeholder="Execution Date" value={job.execution_date} bsStyle={validations.validateExecutionDate(job.execution_date)} hasFeedback onChange={this.updateField.bind(this, "execution_date")} />
+        <Input type="text" label="Work Center" placeholder="Work Center" value={job.main_workctr} bsStyle={validations.validateMainWorkcenter(job.main_workctr)} hasFeedback onChange={this.updateField.bind(this, "main_workctr")} />
+        <Input type="text" label="Description" placeholder="Description" value={job.description} bsStyle={validations.validateDescription(job.description)} hasFeedback onChange={this.updateField.bind(this, "description")} />
+        <Input type="textarea" label="Customer Remarks" placeholder="Customer Remarks" value={job.sales_order_text} onChange={this.updateField.bind(this, "sales_order_text")} />
       </div>
     );
   },
