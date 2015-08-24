@@ -4,8 +4,6 @@ import React from 'react'
 import { Button, ButtonToolbar } from 'react-bootstrap'
 
 import actions from '../actions'
-import CartContainer from './CartContainer'
-import ProductsContainer from './ProductsContainer'
 import EquipmentContainer from './EquipmentContainer'
 import JobContainer from './JobContainer'
 import OperationsContainer from './OperationsContainer'

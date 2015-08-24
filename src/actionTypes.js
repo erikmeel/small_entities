@@ -1,11 +1,6 @@
 import keyMirror from 'react/lib/keyMirror'
 
 export default keyMirror({
-    RECEIVE_PRODUCTS: null,
-    ADD_TO_CART: null,
-    CHECKOUT_START: null,
-    CHECKOUT_SUCCESS: null,
-    CHECKOUT_FAILED: null,
     RECEIVE_EQUIPMENT_START: null,
     RECEIVE_EQUIPMENT_SUCCESS: null,
     RECEIVE_EQUIPMENT_FAILED: null,

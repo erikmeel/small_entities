@@ -1,4 +1,3 @@
-import shop from '../common/api/shop'
 import backend from '../common/api/backend'
 import reactor from './reactor'
 import getters from './getters'
