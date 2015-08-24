@@ -87,8 +87,6 @@
 	  job: _storesJobStore2['default']
 	});
 
-	// actions.fetchOperations()
-
 	_react2['default'].render(_react2['default'].createElement(_componentsApp2['default'], null), document.getElementById('app'));
 
 /***/ },
@@ -6358,22 +6356,22 @@
 	var _reactLibKeyMirror2 = _interopRequireDefault(_reactLibKeyMirror);
 
 	exports['default'] = (0, _reactLibKeyMirror2['default'])({
+	    SET_EQUIPMENT_VALUE: null,
 	    RECEIVE_EQUIPMENT_START: null,
 	    RECEIVE_EQUIPMENT_SUCCESS: null,
 	    RECEIVE_EQUIPMENT_FAILED: null,
-	    RECEIVE_OPERATIONS: null,
-	    CONFIRM_START: null,
-	    CONFIRM_SUCCESS: null,
-	    CONFIRM_FAILED: null,
-	    ADD_MATERIAL_TO_JOB: null,
-	    SET_EQUIPMENT_VALUE: null,
 	    SET_JOB_VALUE: null,
+	    RECEIVE_OPERATIONS: null,
 	    SET_OPERATION_VALUE: null,
 	    RECEIVE_MATERIAL_START: null,
 	    RECEIVE_MATERIAL_SUCCESS: null,
 	    RECEIVE_MATERIAL_FAILED: null,
 	    CHANGE_MATERIAL_QUANTITY: null,
-	    INVALID_MATERIAL_INPUT: null
+	    INVALID_MATERIAL_INPUT: null,
+	    ADD_MATERIAL_TO_JOB: null,
+	    CONFIRM_START: null,
+	    CONFIRM_SUCCESS: null,
+	    CONFIRM_FAILED: null
 	});
 	module.exports = exports['default'];
 
@@ -38322,31 +38320,9 @@
 	var _actionTypes = __webpack_require__(3);
 
 	exports['default'] = {
-	  fetchProducts: function fetchProducts() {
-	    shop.getProducts(function (products) {
-	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_PRODUCTS, { products: products });
-	    });
-	  },
 
-	  addToCart: function addToCart(product) {
-	    _reactor2['default'].dispatch(_actionTypes.ADD_TO_CART, { product: product });
-	  },
-
-	  cartCheckout: function cartCheckout() {
-	    var productsInCart = _reactor2['default'].evaluateToJS(_getters2['default'].cartProducts);
-
-	    _reactor2['default'].dispatch(_actionTypes.CHECKOUT_START);
-
-	    shop.buyProducts(productsInCart, function () {
-	      console.log("YOU BOUGHT: ", productsInCart);
-
-	      _reactor2['default'].dispatch(_actionTypes.CHECKOUT_SUCCESS);
-
-	      // uncomment out to see a rollback when a checkout fails
-	      //setTimeout(() => {
-	      //reactor.dispatch(CHECKOUT_FAILED)
-	      //}, 1000)
-	    });
+	  setEquipmentValue: function setEquipmentValue(value) {
+	    _reactor2['default'].dispatch(_actionTypes.SET_EQUIPMENT_VALUE, { value: value });
 	  },
 
 	  fetchEquipment: function fetchEquipment(equipment) {
@@ -38358,9 +38334,20 @@
 	    });
 	  },
 
-	  fetchOperations: function fetchOperations() {
-	    _commonApiBackend2['default'].getOperations(function (operations) {
-	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_OPERATIONS, { operations: operations });
+	  setJobValue: function setJobValue(fieldName, value) {
+	    _reactor2['default'].dispatch(_actionTypes.SET_JOB_VALUE, { fieldName: fieldName, value: value });
+	  },
+
+	  invalidateMaterialInput: function invalidateMaterialInput() {
+	    _reactor2['default'].dispatch(_actionTypes.INVALID_MATERIAL_INPUT);
+	  },
+
+	  getMaterial: function getMaterial(number, plant, storage_location) {
+	    _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_START);
+	    _commonApiBackend2['default'].getMaterial(number, plant, storage_location, function (material) {
+	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_SUCCESS, { material: material });
+	    }, function () {
+	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_FAILED);
 	    });
 	  },
 
@@ -38370,14 +38357,6 @@
 
 	  changeMaterialQuantity: function changeMaterialQuantity(material_id, quantity) {
 	    _reactor2['default'].dispatch(_actionTypes.CHANGE_MATERIAL_QUANTITY, { material_id: material_id, quantity: quantity });
-	  },
-
-	  setEquipmentValue: function setEquipmentValue(value) {
-	    _reactor2['default'].dispatch(_actionTypes.SET_EQUIPMENT_VALUE, { value: value });
-	  },
-
-	  setJobValue: function setJobValue(fieldName, value) {
-	    _reactor2['default'].dispatch(_actionTypes.SET_JOB_VALUE, { fieldName: fieldName, value: value });
 	  },
 
 	  setOperationValue: function setOperationValue(operationId, fieldName, value) {
@@ -38391,19 +38370,6 @@
 	    }, function () {
 	      _reactor2['default'].dispatch(_actionTypes.CONFIRM_FAILED);
 	    });
-	  },
-
-	  getMaterial: function getMaterial(number) {
-	    _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_START);
-	    _commonApiBackend2['default'].getMaterial(number, 'BE01', '1000', function (material) {
-	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_SUCCESS, { material: material });
-	    }, function () {
-	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_FAILED);
-	    });
-	  },
-
-	  invalidateMaterialInput: function invalidateMaterialInput() {
-	    _reactor2['default'].dispatch(_actionTypes.INVALID_MATERIAL_INPUT);
 	  }
 	};
 	module.exports = exports['default'];
@@ -38462,13 +38428,6 @@
 	      }
 	    }
 	  });
-	};
-
-	Backend.getOperations = function (cb, timeout) {
-	  timeout = timeout || TIMEOUT;
-	  setTimeout(function () {
-	    cb(_operations);
-	  }, timeout);
 	};
 
 	Backend.submitJob = function (job, equipment, operations, materials, cb, cb_error) {

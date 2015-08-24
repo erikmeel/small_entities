@@ -56,13 +56,6 @@ Backend.getEquipment = function (payload, cb, cb_error) {
     })
 };
 
-Backend.getOperations = function (cb, timeout) {
-    timeout = timeout || TIMEOUT;
-    setTimeout(function () {
-        cb(_operations);
-    }, timeout);
-};
-
 Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error) {
   if (!equipment.id) {
     return cb_error()
