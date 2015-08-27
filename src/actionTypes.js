@@ -8,6 +8,7 @@ export default keyMirror({
     SET_JOB_VALUE: null,
     RECEIVE_OPERATIONS: null,
     SET_OPERATION_VALUE: null,
+    SET_MATERIAL_VALUE: null,
     RECEIVE_MATERIAL_START: null,
     RECEIVE_MATERIAL_SUCCESS: null,
     RECEIVE_MATERIAL_FAILED: null,

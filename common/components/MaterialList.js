@@ -9,10 +9,7 @@ var MaterialList = React.createClass({
 
   render: function () {
     return (
-      <div>
-        <h2>{this.props.title}</h2>
-        <div>{this.props.children}</div>
-      </div>
+      <div>{this.props.children}</div>
     );
   }
 });

@@ -12,6 +12,7 @@ import {
   SET_EQUIPMENT_VALUE,
   SET_JOB_VALUE,
   SET_OPERATION_VALUE,
+  SET_MATERIAL_VALUE,
   RECEIVE_MATERIAL_START,
   RECEIVE_MATERIAL_SUCCESS,
   RECEIVE_MATERIAL_FAILED,
@@ -37,13 +38,17 @@ export default {
     reactor.dispatch(SET_JOB_VALUE, { fieldName, value, });
   },
 
+  setMaterialValue(value) {
+    reactor.dispatch(SET_MATERIAL_VALUE, { value });
+  },
+
   invalidateMaterialInput() {
     reactor.dispatch(INVALID_MATERIAL_INPUT)
   },
 
-  getMaterial(number, plant, storage_location) {
+  getMaterial(number) {
     reactor.dispatch(RECEIVE_MATERIAL_START)
-    backend.getMaterial(number, plant, storage_location, material => {
+    backend.getMaterial(number, reactor.evaluateToJS(getters.job).main_workctr, material => {
       reactor.dispatch(RECEIVE_MATERIAL_SUCCESS, {material})
     }, () => {reactor.dispatch(RECEIVE_MATERIAL_FAILED)});
   },

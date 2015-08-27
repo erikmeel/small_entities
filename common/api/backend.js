@@ -86,13 +86,13 @@ Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error
    });
 };
 
-Backend.getMaterial = function (number, plant, storage_location, cb, cb_error) {
-  if (!(plant && storage_location)) {
+Backend.getMaterial = function (number, workcenter, cb, cb_error) {
+  if (!workcenter || workcenter.length != 8) {
     return cb_error()
   }
   var j = {
-    'plant': plant,
-    'storage_location': storage_location
+    'plant': workcenter.substring(0,4),
+    'storage_location': workcenter.substring(4,8)
   }
   request
     .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))

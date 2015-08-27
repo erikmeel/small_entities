@@ -1,20 +1,19 @@
 'use strict';
 
+import { Input, Button } from 'react-bootstrap';
+
 var React = require('react');
 
 var MaterialInput = React.createClass({
   render: function () {
-    var addMaterialEnabled = "disabled";
+    var materialInput = <Input type="text" placeholder="Material Number ..." onChange={this.props.onChangeMaterial} value={this.props.material.id} />
     if (this.props.validMaterial) {
-      addMaterialEnabled = ""
+      var buttonAddMaterial = <Button onClick={this.props.addMaterial}>Add Material</Button>
+      materialInput = <Input type="text" placeholder="Material Number ..." onChange={this.props.onChangeMaterial} value={this.props.material.id} buttonAfter={buttonAddMaterial} />
     }
+
     return (
-        <div className="input-group">
-          <input type="text" className="form-control" placeholder="Material Number ..." onChange={this.props.onChangeMaterial} defaultValue={this.props.material.id} />
-          <span className="input-group-btn">
-            <button className="btn btn-default" type="button" disabled={addMaterialEnabled} onClick={this.props.addMaterial}>Add Material</button>
-          </span>
-        </div>
+      <div>{ materialInput }</div>
     );
   }
 });

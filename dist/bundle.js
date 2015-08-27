@@ -6363,6 +6363,7 @@
 	    SET_JOB_VALUE: null,
 	    RECEIVE_OPERATIONS: null,
 	    SET_OPERATION_VALUE: null,
+	    SET_MATERIAL_VALUE: null,
 	    RECEIVE_MATERIAL_START: null,
 	    RECEIVE_MATERIAL_SUCCESS: null,
 	    RECEIVE_MATERIAL_FAILED: null,
@@ -38338,13 +38339,17 @@
 	    _reactor2['default'].dispatch(_actionTypes.SET_JOB_VALUE, { fieldName: fieldName, value: value });
 	  },
 
+	  setMaterialValue: function setMaterialValue(value) {
+	    _reactor2['default'].dispatch(_actionTypes.SET_MATERIAL_VALUE, { value: value });
+	  },
+
 	  invalidateMaterialInput: function invalidateMaterialInput() {
 	    _reactor2['default'].dispatch(_actionTypes.INVALID_MATERIAL_INPUT);
 	  },
 
-	  getMaterial: function getMaterial(number, plant, storage_location) {
+	  getMaterial: function getMaterial(number) {
 	    _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_START);
-	    _commonApiBackend2['default'].getMaterial(number, plant, storage_location, function (material) {
+	    _commonApiBackend2['default'].getMaterial(number, _reactor2['default'].evaluateToJS(_getters2['default'].job).main_workctr, function (material) {
 	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_SUCCESS, { material: material });
 	    }, function () {
 	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_MATERIAL_FAILED);
@@ -38454,13 +38459,13 @@
 	  });
 	};
 
-	Backend.getMaterial = function (number, plant, storage_location, cb, cb_error) {
-	  if (!(plant && storage_location)) {
+	Backend.getMaterial = function (number, workcenter, cb, cb_error) {
+	  if (!workcenter || workcenter.length != 8) {
 	    return cb_error();
 	  }
 	  var j = {
-	    'plant': plant,
-	    'storage_location': storage_location
+	    'plant': workcenter.substring(0, 4),
+	    'storage_location': workcenter.substring(4, 8)
 	  };
 	  request.get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number)).auth('AIR14977', 'Atlas2015').query({ 'action': 'GET_STOCK' }).query({ 'json': JSON.stringify(j) }).accept('json').end(function (err, res) {
 	    if (!err && res.body) {
@@ -53438,6 +53443,60 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
+	var MaterialListContainer = _react2['default'].createClass({
+	  displayName: 'MaterialListContainer',
+
+	  render: function render() {
+	    return _react2['default'].createElement(
+	      _commonComponentsMaterialList2['default'],
+	      { title: "Materials" },
+	      _react2['default'].createElement(
+	        'div',
+	        { className: "row" },
+	        _react2['default'].createElement(
+	          'div',
+	          { className: "form-group col-xs-3" },
+	          _react2['default'].createElement(
+	            'h4',
+	            null,
+	            'Number'
+	          )
+	        ),
+	        _react2['default'].createElement(
+	          'div',
+	          { className: "form-group col-xs-5" },
+	          _react2['default'].createElement(
+	            'h4',
+	            null,
+	            'Description'
+	          )
+	        ),
+	        _react2['default'].createElement(
+	          'div',
+	          { className: "form-group col-xs-1" },
+	          _react2['default'].createElement(
+	            'h4',
+	            null,
+	            'Stock'
+	          )
+	        ),
+	        _react2['default'].createElement(
+	          'div',
+	          { className: "form-group col-xs-3" },
+	          _react2['default'].createElement(
+	            'h4',
+	            null,
+	            'Used'
+	          )
+	        )
+	      ),
+	      this.props.materials.map(function (material) {
+	        return _react2['default'].createElement(MaterialContainer, { material: material.toJS() });
+	      })
+	    );
+	  }
+	});
+
 	var MaterialContainer = _react2['default'].createClass({
 	  displayName: 'MaterialContainer',
 
@@ -53456,6 +53515,7 @@
 	  mixins: [_reactor2['default'].ReactMixin],
 
 	  changeMaterialInput: function changeMaterialInput(event) {
+	    _actions2['default'].setMaterialValue(event.target.value);
 	    if (event.target.value.length === 10) {
 	      _actions2['default'].getMaterial(event.target.value);
 	    } else {
@@ -53476,16 +53536,19 @@
 	  },
 
 	  render: function render() {
+	    var materialListContainer = _react2['default'].createElement('div', null);
+	    if (this.state.materials && this.state.materials.size > 0) {
+	      materialListContainer = _react2['default'].createElement(MaterialListContainer, { materials: this.state.materials });
+	    }
 	    return _react2['default'].createElement(
 	      'div',
 	      null,
 	      _react2['default'].createElement(
-	        _commonComponentsMaterialList2['default'],
-	        { title: "Materials" },
-	        this.state.materials.map(function (material) {
-	          return _react2['default'].createElement(MaterialContainer, { material: material.toJS() });
-	        })
+	        'h2',
+	        null,
+	        'Materials'
 	      ),
+	      materialListContainer,
 	      _react2['default'].createElement(_commonComponentsMaterialInput2['default'], { key: "material_input", material: this.state.material.toJS(), onChangeMaterial: this.changeMaterialInput, validMaterial: this.state.validMaterial, addMaterial: this.addMaterial })
 	    );
 	  }
@@ -53513,12 +53576,22 @@
 	      { className: "row" },
 	      React.createElement(
 	        'div',
-	        { className: "form-group col-xs-8" },
-	        React.createElement('input', { type: "text", className: "form-control", placeholder: "Material Number", value: this.props.material.name, onChange: this.handleMaterialNumberChange, readOnly: true })
+	        { className: "form-group col-xs-3" },
+	        React.createElement('input', { type: "text", className: "form-control", placeholder: "Material Number", value: this.props.material.id, readOnly: true })
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: "form-group col-xs-4" },
+	        { className: "form-group col-xs-5" },
+	        React.createElement('input', { type: "text", className: "form-control", placeholder: "Material Number", value: this.props.material.name, readOnly: true })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: "form-group col-xs-1" },
+	        React.createElement('input', { type: "text", className: "form-control", placeholder: "Stock", value: this.props.material.stock_quantity, readOnly: true })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: "form-group col-xs-3" },
 	        React.createElement('input', { type: "number", className: "form-control", placeholder: "Quantity", value: this.props.material.quantity, onChange: this.props.handleMaterialQuantityChange.bind(null, this.props.material.id) })
 	      )
 	    );
@@ -53546,16 +53619,7 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(
-	        'h2',
-	        null,
-	        this.props.title
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.children
-	      )
+	      this.props.children
 	    );
 	  }
 	});
@@ -53568,29 +53632,28 @@
 
 	'use strict';
 
+	var _reactBootstrap = __webpack_require__(161);
+
 	var React = __webpack_require__(7);
 
 	var MaterialInput = React.createClass({
 	  displayName: 'MaterialInput',
 
 	  render: function render() {
-	    var addMaterialEnabled = "disabled";
+	    var materialInput = React.createElement(_reactBootstrap.Input, { type: "text", placeholder: "Material Number ...", onChange: this.props.onChangeMaterial, value: this.props.material.id });
 	    if (this.props.validMaterial) {
-	      addMaterialEnabled = "";
+	      var buttonAddMaterial = React.createElement(
+	        _reactBootstrap.Button,
+	        { onClick: this.props.addMaterial },
+	        'Add Material'
+	      );
+	      materialInput = React.createElement(_reactBootstrap.Input, { type: "text", placeholder: "Material Number ...", onChange: this.props.onChangeMaterial, value: this.props.material.id, buttonAfter: buttonAddMaterial });
 	    }
+
 	    return React.createElement(
 	      'div',
-	      { className: "input-group" },
-	      React.createElement('input', { type: "text", className: "form-control", placeholder: "Material Number ...", onChange: this.props.onChangeMaterial, defaultValue: this.props.material.id }),
-	      React.createElement(
-	        'span',
-	        { className: "input-group-btn" },
-	        React.createElement(
-	          'button',
-	          { className: "btn btn-default", type: "button", disabled: addMaterialEnabled, onClick: this.props.addMaterial },
-	          'Add Material'
-	        )
-	      )
+	      null,
+	      materialInput
 	    );
 	  }
 	});
@@ -53679,6 +53742,7 @@
 	  },
 
 	  initialize: function initialize() {
+	    this.on(_actionTypes.SET_MATERIAL_VALUE, setMaterialValue);
 	    this.on(_actionTypes.ADD_MATERIAL_TO_JOB, addMaterialToJob);
 	    this.on(_actionTypes.CHANGE_MATERIAL_QUANTITY, handleChangeMaterialQuantity);
 	    this.on(_actionTypes.RECEIVE_MATERIAL_SUCCESS, receiveMaterial);
@@ -53688,27 +53752,43 @@
 	  }
 	});
 
-	function addMaterialToJob(state, _ref) {
-	  var material = _ref.material;
+	function setMaterialValue(state, _ref) {
+	  var value = _ref.value;
+
+	  return state.setIn(['material', 'id'], value);
+	}
+
+	function addMaterialToJob(state, _ref2) {
+	  var material = _ref2.material;
 
 	  return state.hasIn(['itemQty', material.id]) ? state.updateIn(['itemQty', material.id, 'quantity'], function (quantity) {
 	    return quantity + 1;
-	  }) : state.setIn(['itemQty', material.id], (0, _nuclearJs.toImmutable)(material)).setIn(['itemQty', material.id, 'quantity'], 1);
+	  }).updateIn(['itemQty', material.id, 'stock_quantity'], function (quantity) {
+	    return quantity - 1;
+	  }).updateIn(['material', 'id'], function (i) {
+	    return '';
+	  }).merge({ 'validMaterial': false }) : state.setIn(['itemQty', material.id], (0, _nuclearJs.toImmutable)(material)).setIn(['itemQty', material.id, 'quantity'], 1).updateIn(['itemQty', material.id, 'stock_quantity'], function (quantity) {
+	    return quantity - 1;
+	  }).updateIn(['material', 'id'], function (i) {
+	    return '';
+	  }).merge({ 'validMaterial': false });
 	}
 
-	function handleChangeMaterialQuantity(state, _ref2) {
-	  var material_id = _ref2.material_id;
-	  var quantity = _ref2.quantity;
+	function handleChangeMaterialQuantity(state, _ref3) {
+	  var material_id = _ref3.material_id;
+	  var quantity = _ref3.quantity;
 
 	  if (quantity === 0) {
 	    return state.deleteIn(['itemQty', material_id]);
 	  } else {
-	    return state.setIn(['itemQty', material_id, 'quantity'], quantity);
+	    return state.setIn(['itemQty', material_id, 'quantity'], quantity).updateIn(['itemQty', material_id, 'stock_quantity'], function (quantity) {
+	      return quantity - 1;
+	    });
 	  }
 	}
 
-	function receiveMaterial(state, _ref3) {
-	  var material = _ref3.material;
+	function receiveMaterial(state, _ref4) {
+	  var material = _ref4.material;
 
 	  return state.merge({
 	    'validMaterial': true,
