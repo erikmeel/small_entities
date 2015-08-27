@@ -26769,6 +26769,14 @@
 
 	var _reactBootstrap = __webpack_require__(161);
 
+	var _reactor = __webpack_require__(404);
+
+	var _reactor2 = _interopRequireDefault(_reactor);
+
+	var _getters = __webpack_require__(405);
+
+	var _getters2 = _interopRequireDefault(_getters);
+
 	var _actions = __webpack_require__(306);
 
 	var _actions2 = _interopRequireDefault(_actions);
@@ -26789,8 +26797,37 @@
 
 	var _MaterialsContainer2 = _interopRequireDefault(_MaterialsContainer);
 
+	var ButtonContainer = _react2['default'].createClass({
+	  displayName: 'ButtonContainer',
+
+	  render: function render() {
+	    return _react2['default'].createElement(
+	      _reactBootstrap.ButtonToolbar,
+	      null,
+	      _react2['default'].createElement(
+	        _reactBootstrap.Button,
+	        { onClick: this.props.handleSubmit, bsStyle: "primary" },
+	        'Confirm'
+	      ),
+	      _react2['default'].createElement(
+	        _reactBootstrap.Button,
+	        { onClick: this.props.handleSubmit },
+	        'Reset'
+	      )
+	    );
+	  }
+	});
+
 	exports['default'] = _react2['default'].createClass({
 	  displayName: 'App',
+
+	  mixins: [_reactor2['default'].ReactMixin],
+
+	  getDataBindings: function getDataBindings() {
+	    return {
+	      equipmentValid: _getters2['default'].equipmentValid
+	    };
+	  },
 
 	  handleSubmit: function handleSubmit(event) {
 	    _actions2['default'].submitJob();
@@ -26798,6 +26835,16 @@
 	  },
 
 	  render: function render() {
+	    var jobContainer = _react2['default'].createElement('div', null);
+	    var operationsContainer = _react2['default'].createElement('div', null);
+	    var materialsContainer = _react2['default'].createElement('div', null);
+	    var buttonContainer = _react2['default'].createElement('div', null);
+	    if (this.state.equipmentValid) {
+	      jobContainer = _react2['default'].createElement(_JobContainer2['default'], null);
+	      operationsContainer = _react2['default'].createElement(_OperationsContainer2['default'], null);
+	      materialsContainer = _react2['default'].createElement(_MaterialsContainer2['default'], null);
+	      buttonContainer = _react2['default'].createElement(ButtonContainer, { handleOnSubmit: this.handleSubmit });
+	    }
 	    return _react2['default'].createElement(
 	      'div',
 	      { className: "container" },
@@ -26810,27 +26857,14 @@
 	          'Small Entities - Job Confirmation'
 	        ),
 	        _react2['default'].createElement(_EquipmentContainer2['default'], null),
-	        _react2['default'].createElement(_JobContainer2['default'], null),
-	        _react2['default'].createElement(_OperationsContainer2['default'], null),
-	        _react2['default'].createElement(_MaterialsContainer2['default'], null),
+	        jobContainer,
+	        operationsContainer,
+	        materialsContainer,
 	        _react2['default'].createElement(
 	          'div',
 	          null,
 	          _react2['default'].createElement('br', null),
-	          _react2['default'].createElement(
-	            _reactBootstrap.ButtonToolbar,
-	            null,
-	            _react2['default'].createElement(
-	              _reactBootstrap.Button,
-	              { onClick: this.handleSubmit, bsStyle: "primary" },
-	              'Confirm'
-	            ),
-	            _react2['default'].createElement(
-	              _reactBootstrap.Button,
-	              { onClick: this.handleSubmit },
-	              'Reset'
-	            )
-	          )
+	          buttonContainer
 	        )
 	      )
 	    );
@@ -52335,66 +52369,57 @@
 	      'div',
 	      null,
 	      _react2['default'].createElement(
-	        'div',
-	        { className: "form-group" },
+	        _reactBootstrap.Input,
+	        { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type), hasFeedback: true },
 	        _react2['default'].createElement(
-	          'label',
-	          null,
-	          'Flow'
+	          'option',
+	          { value: "select" },
+	          'Select a Flow'
 	        ),
 	        _react2['default'].createElement(
-	          'select',
-	          { className: "form-control", value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type") },
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "select" },
-	            'Choose an option'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "FP" },
-	            'Fixed Price'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "OH" },
-	            'Overhaul Fixed Price'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "MX" },
-	            'Motor Xchange'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "CX" },
-	            'Converter Xchange'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "UC" },
-	            'Upgrades (Controls)'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "UP" },
-	            'Upgrades (Protection)'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "CH" },
-	            'Service Repair'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "SG" },
-	            'Service Goodwill'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: "GW" },
-	            'Sales Goodwill'
-	          )
+	          'option',
+	          { value: "FP" },
+	          'Fixed Price'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "OH" },
+	          'Overhaul Fixed Price'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "MX" },
+	          'Motor Xchange'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "CX" },
+	          'Converter Xchange'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "UC" },
+	          'Upgrades (Controls)'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "UP" },
+	          'Upgrades (Protection)'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "CH" },
+	          'Service Repair'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "SG" },
+	          'Service Goodwill'
+	        ),
+	        _react2['default'].createElement(
+	          'option',
+	          { value: "GW" },
+	          'Sales Goodwill'
 	        )
 	      ),
 	      fixedPrice,

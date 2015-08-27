@@ -34,21 +34,18 @@ export default React.createClass({
     }
     return (
       <div>
-        <div className="form-group">
-          <label>Flow</label>
-          <select className="form-control" value={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")}>
-            <option value="select">Choose an option</option>
-            <option value="FP">Fixed Price</option>
-            <option value="OH">Overhaul Fixed Price</option>
-            <option value="MX">Motor Xchange</option>
-            <option value="CX">Converter Xchange</option>
-            <option value="UC">Upgrades (Controls)</option>
-            <option value="UP">Upgrades (Protection)</option>
-            <option value="CH">Service Repair</option>
-            <option value="SG">Service Goodwill</option>
-            <option value="GW">Sales Goodwill</option>
-          </select>
-        </div>
+        <Input type='select' label='Flow' placeholder='select' value={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")} bsStyle={validations.validateFlow(job.maint_act_type)} hasFeedback>
+          <option value="select">Select a Flow</option>
+          <option value="FP">Fixed Price</option>
+          <option value="OH">Overhaul Fixed Price</option>
+          <option value="MX">Motor Xchange</option>
+          <option value="CX">Converter Xchange</option>
+          <option value="UC">Upgrades (Controls)</option>
+          <option value="UP">Upgrades (Protection)</option>
+          <option value="CH">Service Repair</option>
+          <option value="SG">Service Goodwill</option>
+          <option value="GW">Sales Goodwill</option>
+        </Input>
         { fixedPrice }
         <Input type="text" label="Execution Date" placeholder="Execution Date" value={job.execution_date} bsStyle={validations.validateExecutionDate(job.execution_date)} hasFeedback onChange={this.updateField.bind(this, "execution_date")} />
         <Input type="text" label="Work Center" placeholder="Work Center" value={job.main_workctr} bsStyle={validations.validateMainWorkcenter(job.main_workctr)} hasFeedback onChange={this.updateField.bind(this, "main_workctr")} />
