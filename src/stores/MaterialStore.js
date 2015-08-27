@@ -30,29 +30,53 @@ function setMaterialValue(state, { value }) {
 }
 
 function addMaterialToJob(state, { material }) {
-  return (state.hasIn(['itemQty', material.id]))
-    ? state.updateIn(['itemQty', material.id, 'quantity'], quantity => quantity + 1).updateIn(['itemQty', material.id, 'stock_quantity'], quantity => quantity - 1).updateIn(['material','id'], i => '').merge({'validMaterial': false})
-    : state.setIn(['itemQty', material.id], toImmutable(material)).setIn(['itemQty', material.id, 'quantity'], 1).updateIn(['itemQty', material.id, 'stock_quantity'], quantity => quantity - 1).updateIn(['material','id'], i => '').merge({'validMaterial': false})
+  var newQty = state.getIn(['itemQty', material.id, 'quantity']) - 1
+  if (state.hasIn(['itemQty', material.id])) {
+    return state
+    .updateIn(['itemQty', material.id, 'quantity'], quantity => quantity + 1)
+    .setIn(['itemQty', material.id, 'remaining_stock_quantity'], material.stock_quantity - newQty)
+    .updateIn(['material','id'], i => '')
+    .merge({'validMaterial': false})
+  } else {
+    return state
+    .setIn(['itemQty', material.id], toImmutable(material))
+    .setIn(['itemQty', material.id, 'quantity'], 1)
+    .setIn(['itemQty', material.id, 'remaining_stock_quantity'], material.stock_quantity - 1)
+    .setIn(['material'], toImmutable({'id': ''}))
+    .merge({'validMaterial': false})
+  }
 }
 
 function handleChangeMaterialQuantity(state, { material_id, quantity }) {
   if (quantity === 0) {
     return state.deleteIn(['itemQty', material_id])
   } else {
-    return state.setIn(['itemQty', material_id, 'quantity'], quantity).updateIn(['itemQty', material_id, 'stock_quantity'], quantity => quantity - 1)
+    return state
+    .setIn(['itemQty', material_id, 'quantity'], quantity)
   }
 }
 
 function receiveMaterial(state, { material }) {
-  return state.merge({
-    'validMaterial': true,
-    'material': material
-  })
+  if (material.stock_quantity) {
+    return state.merge({
+      'validMaterial': true,
+      'availableAtStorageLocation': true,
+      'material': material
+    })
+  } else {
+    return state.merge({
+      'validMaterial': true,
+      'availableAtStorageLocation': false,
+      'material': material
+    })
+  }
+
 }
 
 function resetMaterial(state) {
   return state.merge({
-    'validMaterial': false
+    'validMaterial': false,
+    'availableAtStorageLocation': false
   })
 }
 

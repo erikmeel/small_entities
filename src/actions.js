@@ -2,6 +2,7 @@ import backend from '../common/api/backend'
 import reactor from './reactor'
 import getters from './getters'
 import {
+  DISMISS_FLASH,
   RECEIVE_EQUIPMENT_START,
   RECEIVE_EQUIPMENT_SUCCESS,
   RECEIVE_EQUIPMENT_FAILED,
@@ -22,6 +23,10 @@ import {
 } from './actionTypes'
 
 export default {
+
+  dismissFlash() {
+    reactor.dispatch(DISMISS_FLASH)
+  },
 
   setEquipmentValue(value) {
     reactor.dispatch(SET_EQUIPMENT_VALUE, { value });

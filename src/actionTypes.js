@@ -1,6 +1,7 @@
 import keyMirror from 'react/lib/keyMirror'
 
 export default keyMirror({
+    DISMISS_FLASH: null,
     SET_EQUIPMENT_VALUE: null,
     RECEIVE_EQUIPMENT_START: null,
     RECEIVE_EQUIPMENT_SUCCESS: null,

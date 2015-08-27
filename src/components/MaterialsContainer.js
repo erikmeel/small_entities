@@ -20,10 +20,10 @@ const MaterialListContainer = React.createClass({
           <div className="form-group col-xs-5">
             <h4>Description</h4>
           </div>
-          <div className="form-group col-xs-1">
+          <div className="form-group col-xs-2">
             <h4>Stock</h4>
           </div>
-          <div className="form-group col-xs-3">
+          <div className="form-group col-xs-2">
             <h4>Used</h4>
           </div>
         </div>
@@ -68,7 +68,8 @@ export default React.createClass({
     return {
       materials: getters.materials,
       material: getters.material,
-      validMaterial: getters.validMaterial
+      validMaterial: getters.validMaterial,
+      availableAtStorageLocation: getters.availableAtStorageLocation
     }
   },
 
@@ -81,7 +82,7 @@ export default React.createClass({
       <div>
         <h2>Materials</h2>
         { materialListContainer }
-        <MaterialInput key="material_input" material={this.state.material.toJS()} onChangeMaterial={this.changeMaterialInput} validMaterial={this.state.validMaterial} addMaterial={this.addMaterial} />
+        <MaterialInput key="material_input" material={this.state.material.toJS()} onChangeMaterial={this.changeMaterialInput} validMaterial={this.state.validMaterial} availableAtStorageLocation={this.state.availableAtStorageLocation} addMaterial={this.addMaterial} />
       </div>
     );
   },

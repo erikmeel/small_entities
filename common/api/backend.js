@@ -109,9 +109,11 @@ Backend.getMaterial = function (number, workcenter, cb, cb_error) {
             'id': data[0].id,
             'name': data[0].description,
             'uom': data[0].base_uom,
-            'plant': data[0].plant,
-            'storage_location': data[0].storage_location,
-            'stock_quantity': data[0].stock_quantity
+          }
+          if (data[0].stock_quantity) {
+            result['plant'] = data[0].plant,
+            result['storage_location'] = data[0].storage_location,
+            result['stock_quantity'] = data[0].stock_quantity
           }
           cb(result)
         } else {
