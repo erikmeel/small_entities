@@ -7,7 +7,8 @@ const materials = ['materials', 'itemQty']
 const material = ['materials', 'material']
 const validMaterial = ['materials', 'validMaterial']
 const availableAtStorageLocation = ['materials', 'availableAtStorageLocation']
-const job = ['job']
+const job = ['job', 'job']
+const jobValid = ['job', 'jobValid']
 
 const materialsForSubmit = [
   ['materials', 'itemQty'],
@@ -18,4 +19,4 @@ const materialsForSubmit = [
   }
 ]
 
-export default { flashSuccess, flashMessageVisisble, equipment, equipmentValid, operations, materials, material, validMaterial, availableAtStorageLocation, job, materialsForSubmit }
+export default { flashSuccess, flashMessageVisisble, equipment, equipmentValid, operations, materials, material, validMaterial, availableAtStorageLocation, job, jobValid, materialsForSubmit }

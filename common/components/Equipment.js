@@ -81,7 +81,7 @@ var Equipment = React.createClass({
 
     return (
       <div>
-        <Input type="text" ref="equipmentInput" label="Equipment" placeholder="Equipment" bsStyle={this.validationState()} hasFeedback onChange={this.props.onEquipmentChanged} value={this.props.equipment.serial} />
+        <Input type="text" ref="equipmentInput" label="Equipment" placeholder="Serial Number" bsStyle={this.validationState()} hasFeedback onChange={this.props.onEquipmentChanged} value={this.props.equipment.serial} />
         { equipmentInfo }
       </div>
     );

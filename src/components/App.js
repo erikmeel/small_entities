@@ -16,10 +16,14 @@ const FlashContainer = React.createClass({
   render() {
     if (this.props.flashMessageVisisble) {
       return (
-        <Alert bsStyle='success' onDismiss={this.handleAlertDismiss} dismissAfter={1000}>
-          <h4>Job Sent Successfully</h4>
-          <p>The service job was successfully sent to SAP where it will be processed. Check transaction ZSTC_REPROCESSING for more information.</p>
-          </Alert>
+        <Alert bsStyle='success' onDismiss={this.handleAlertDismiss} dismissAfter={15000}>
+          <p>The service job was successfully sent to SAP where it will be processed.</p>
+          <p>The following transactions can be called in SAP for more information</p>
+          <ul>
+            <li><strong>ZSTC_REPROCESSING</strong> for monitoring the processing.</li>
+            <li><strong>IW59</strong> for a listing of all notifications.</li>
+          </ul>
+        </Alert>
       )
     }
     return <div></div>
@@ -54,6 +58,7 @@ export default React.createClass({
       flashMessage: getters.flashSuccess,
       flashMessageVisisble: getters.flashMessageVisisble,
       equipmentValid: getters.equipmentValid,
+      jobValid: getters.jobValid,
     }
   },
 
@@ -66,7 +71,9 @@ export default React.createClass({
       jobContainer = <JobContainer />;
       operationsContainer = <OperationsContainer />
       materialsContainer = <MaterialsContainer />
-      buttonContainer = <ButtonContainer handleOnSubmit={this.handleSubmit} />;
+      if (this.state.jobValid) {
+        buttonContainer = <ButtonContainer handleOnSubmit={this.handleSubmit} />;
+      }
     }
     return (
       <div className="container">
@@ -80,6 +87,7 @@ export default React.createClass({
           <div>
             <br />
             { buttonContainer }
+            <br />
           </div>
         </form>
       </div>

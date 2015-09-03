@@ -30,11 +30,11 @@ export default React.createClass({
     let job = this.state.job.toJS();
     var fixedPrice = <div></div>;
     if (job.maint_act_type.match(/^(FP|OH|MX|CX|UC|UP)/)) {
-      fixedPrice = <JobFixedPrice job={job} onUpdateField={this.updateField} />
+      fixedPrice = <JobFixedPrice job={job} onUpdateField={this.updateField} bsStyle={validations.vs(validations.validatePriceForFlow(job.fixed_price, job.maint_act_type))} />
     }
     return (
       <div>
-        <Input type='select' label='Flow' placeholder='select' value={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")} bsStyle={validations.validateFlow(job.maint_act_type)} hasFeedback>
+        <Input type='select' label='Flow' placeholder='select' value={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")} bsStyle={validations.vs(validations.validateFlow(job.maint_act_type))} hasFeedback>
           <option value="select">Select a Flow</option>
           <option value="FP">Fixed Price</option>
           <option value="OH">Overhaul Fixed Price</option>
@@ -47,10 +47,10 @@ export default React.createClass({
           <option value="GW">Sales Goodwill</option>
         </Input>
         { fixedPrice }
-        <Input type="text" label="Execution Date" placeholder="Execution Date" value={job.execution_date} bsStyle={validations.validateExecutionDate(job.execution_date)} hasFeedback onChange={this.updateField.bind(this, "execution_date")} />
-        <Input type="text" label="Work Center" placeholder="Work Center" value={job.main_workctr} bsStyle={validations.validateMainWorkcenter(job.main_workctr)} hasFeedback onChange={this.updateField.bind(this, "main_workctr")} />
-        <Input type="text" label="Description" placeholder="Description" value={job.description} bsStyle={validations.validateDescription(job.description)} hasFeedback onChange={this.updateField.bind(this, "description")} />
-        <Input type="textarea" label="Customer Remarks" placeholder="Customer Remarks" value={job.sales_order_text} onChange={this.updateField.bind(this, "sales_order_text")} />
+        <Input type="text" label="Execution Date" placeholder="Execution Date" value={job.execution_date} bsStyle={validations.vs(validations.validateExecutionDate(job.execution_date))} hasFeedback onChange={this.updateField.bind(this, "execution_date")} />
+        <Input type="text" label="Work Center" placeholder="Work Center" value={job.main_workctr} bsStyle={validations.vs(validations.validateMainWorkcenter(job.main_workctr))} hasFeedback onChange={this.updateField.bind(this, "main_workctr")} />
+        <Input type="text" label="Description" placeholder="Description" value={job.description} bsStyle={validations.vs(validations.validateDescription(job.description))} hasFeedback onChange={this.updateField.bind(this, "description")} />
+        <Input type="textarea" label="Customer Remarks" placeholder="Customer Remarks (Visible on Invoice)" value={job.sales_order_text} onChange={this.updateField.bind(this, "sales_order_text")} />
       </div>
     );
   },

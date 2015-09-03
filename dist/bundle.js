@@ -64,23 +64,23 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _storesFlashStore = __webpack_require__(421);
+	var _storesFlashStore = __webpack_require__(416);
 
 	var _storesFlashStore2 = _interopRequireDefault(_storesFlashStore);
 
-	var _storesEquipmentStore = __webpack_require__(416);
+	var _storesEquipmentStore = __webpack_require__(417);
 
 	var _storesEquipmentStore2 = _interopRequireDefault(_storesEquipmentStore);
 
-	var _storesOperationStore = __webpack_require__(417);
+	var _storesOperationStore = __webpack_require__(418);
 
 	var _storesOperationStore2 = _interopRequireDefault(_storesOperationStore);
 
-	var _storesMaterialStore = __webpack_require__(418);
+	var _storesMaterialStore = __webpack_require__(419);
 
 	var _storesMaterialStore2 = _interopRequireDefault(_storesMaterialStore);
 
-	var _storesJobStore = __webpack_require__(419);
+	var _storesJobStore = __webpack_require__(420);
 
 	var _storesJobStore2 = _interopRequireDefault(_storesJobStore);
 
@@ -20522,16 +20522,40 @@
 	    if (this.props.flashMessageVisisble) {
 	      return _react2['default'].createElement(
 	        _reactBootstrap.Alert,
-	        { bsStyle: 'success', onDismiss: this.handleAlertDismiss, dismissAfter: 1000 },
+	        { bsStyle: 'success', onDismiss: this.handleAlertDismiss, dismissAfter: 15000 },
 	        _react2['default'].createElement(
-	          'h4',
+	          'p',
 	          null,
-	          'Job Sent Successfully'
+	          'The service job was successfully sent to SAP where it will be processed.'
 	        ),
 	        _react2['default'].createElement(
 	          'p',
 	          null,
-	          'The service job was successfully sent to SAP where it will be processed. Check transaction ZSTC_REPROCESSING for more information.'
+	          'The following transactions can be called in SAP for more information'
+	        ),
+	        _react2['default'].createElement(
+	          'ul',
+	          null,
+	          _react2['default'].createElement(
+	            'li',
+	            null,
+	            _react2['default'].createElement(
+	              'strong',
+	              null,
+	              'ZSTC_REPROCESSING'
+	            ),
+	            ' for monitoring the processing.'
+	          ),
+	          _react2['default'].createElement(
+	            'li',
+	            null,
+	            _react2['default'].createElement(
+	              'strong',
+	              null,
+	              'IW59'
+	            ),
+	            ' for a listing of all notifications.'
+	          )
 	        )
 	      );
 	    }
@@ -20578,7 +20602,8 @@
 	    return {
 	      flashMessage: _getters2['default'].flashSuccess,
 	      flashMessageVisisble: _getters2['default'].flashMessageVisisble,
-	      equipmentValid: _getters2['default'].equipmentValid
+	      equipmentValid: _getters2['default'].equipmentValid,
+	      jobValid: _getters2['default'].jobValid
 	    };
 	  },
 
@@ -20591,7 +20616,9 @@
 	      jobContainer = _react2['default'].createElement(_JobContainer2['default'], null);
 	      operationsContainer = _react2['default'].createElement(_OperationsContainer2['default'], null);
 	      materialsContainer = _react2['default'].createElement(_MaterialsContainer2['default'], null);
-	      buttonContainer = _react2['default'].createElement(ButtonContainer, { handleOnSubmit: this.handleSubmit });
+	      if (this.state.jobValid) {
+	        buttonContainer = _react2['default'].createElement(ButtonContainer, { handleOnSubmit: this.handleSubmit });
+	      }
 	    }
 	    return _react2['default'].createElement(
 	      'div',
@@ -20613,7 +20640,8 @@
 	          'div',
 	          null,
 	          _react2['default'].createElement('br', null),
-	          buttonContainer
+	          buttonContainer,
+	          _react2['default'].createElement('br', null)
 	        )
 	      )
 	    );
@@ -38192,7 +38220,8 @@
 	var material = ['materials', 'material'];
 	var validMaterial = ['materials', 'validMaterial'];
 	var availableAtStorageLocation = ['materials', 'availableAtStorageLocation'];
-	var job = ['job'];
+	var job = ['job', 'job'];
+	var jobValid = ['job', 'jobValid'];
 
 	var materialsForSubmit = [['materials', 'itemQty'], function (itemQty) {
 	  return itemQty.map(function (material) {
@@ -38200,7 +38229,7 @@
 	  }).toList();
 	}];
 
-	exports['default'] = { flashSuccess: flashSuccess, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, materialsForSubmit: materialsForSubmit };
+	exports['default'] = { flashSuccess: flashSuccess, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit };
 	module.exports = exports['default'];
 
 /***/ },
@@ -51897,7 +51926,7 @@
 		},
 		{
 			"id": 2,
-			"name": "Additional Expenses (EUR)",
+			"name": "Additional Expenses (Local Currency)",
 			"quantity": 0,
 			"key": "expenses_qty"
 		},
@@ -52183,7 +52212,7 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(_reactBootstrap.Input, { type: 'text', ref: 'equipmentInput', label: 'Equipment', placeholder: 'Equipment', bsStyle: this.validationState(), hasFeedback: true, onChange: this.props.onEquipmentChanged, value: this.props.equipment.serial }),
+	      React.createElement(_reactBootstrap.Input, { type: 'text', ref: 'equipmentInput', label: 'Equipment', placeholder: 'Serial Number', bsStyle: this.validationState(), hasFeedback: true, onChange: this.props.onEquipmentChanged, value: this.props.equipment.serial }),
 	      equipmentInfo
 	    );
 	  }
@@ -52252,14 +52281,14 @@
 	    var job = this.state.job.toJS();
 	    var fixedPrice = _react2['default'].createElement('div', null);
 	    if (job.maint_act_type.match(/^(FP|OH|MX|CX|UC|UP)/)) {
-	      fixedPrice = _react2['default'].createElement(_commonComponentsJobFixedPrice2['default'], { job: job, onUpdateField: this.updateField });
+	      fixedPrice = _react2['default'].createElement(_commonComponentsJobFixedPrice2['default'], { job: job, onUpdateField: this.updateField, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validatePriceForFlow(job.fixed_price, job.maint_act_type)) });
 	    }
 	    return _react2['default'].createElement(
 	      'div',
 	      null,
 	      _react2['default'].createElement(
 	        _reactBootstrap.Input,
-	        { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type), hasFeedback: true },
+	        { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type)), hasFeedback: true },
 	        _react2['default'].createElement(
 	          'option',
 	          { value: 'select' },
@@ -52312,10 +52341,10 @@
 	        )
 	      ),
 	      fixedPrice,
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") }),
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].validateDescription(job.description), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Customer Remarks', placeholder: 'Customer Remarks', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
+	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
+	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") }),
+	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
+	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Customer Remarks', placeholder: 'Customer Remarks (Visible on Invoice)', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
 	    );
 	  }
 	});
@@ -52327,22 +52356,15 @@
 
 	'use strict';
 
+	var _reactBootstrap = __webpack_require__(158);
+
 	var React = __webpack_require__(1);
 
 	var JobFixedPrice = React.createClass({
 	  displayName: 'JobFixedPrice',
 
 	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { className: 'form-group' },
-	      React.createElement(
-	        'label',
-	        null,
-	        'Price'
-	      ),
-	      React.createElement('input', { className: 'form-control', type: 'number', step: 'any', min: '1', pattern: '^\\d+(\\.|\\,)\\d{2}$', defaultValue: this.props.job.fixed_price, onChange: this.props.onUpdateField.bind(null, "fixed_price") })
-	    );
+	    return React.createElement(_reactBootstrap.Input, { type: 'number', step: 'any', min: '1', pattern: '^\\d+(\\.|\\,)\\d{2}$', label: 'Fixed Price', placeholder: 'Price', bsStyle: this.props.bsStyle, hasFeedback: true, onChange: this.props.onUpdateField.bind(null, "fixed_price"), value: this.props.job.fixed_price });
 	  }
 	});
 
@@ -52359,30 +52381,59 @@
 	var validator = __webpack_require__(408);
 	var moment = __webpack_require__(306);
 
-	var validationSate = function validationSate(b) {
+	Validator.vs = function (b) {
 	  var result = 'error';
 	  if (b) result = 'success';
 	  return result;
 	};
 
 	Validator.validateFlow = function (flow) {
-	  return validationSate(flow.match(/^(FP|OH|MX|CX|UC|UP|CH|SG|GW)/) !== null);
+	  return flow.match(/^(FP|OH|MX|CX|UC|UP|CH|SG|GW)/) !== null;
 	};
 
 	Validator.validateExecutionDate = function (date) {
-	  return validationSate(date.match(/^\d{2}\.\d{2}\.\d{4}$/) && moment(date, 'DD.MM.YYYY').isValid());
+	  return date.match(/^\d{2}\.\d{2}\.\d{4}$/) && moment(date, 'DD.MM.YYYY').isValid();
 	};
 
 	Validator.validateMainWorkcenter = function (workcenter) {
-	  return validationSate(workcenter && workcenter.match(/^\w{2}\d{2}\w\d{3}$/) !== null);
+	  return workcenter && workcenter.match(/^\w{2}\d{2}\w\d{3}$/) !== null;
 	};
 
 	Validator.validatePlant = function (plant) {
-	  return validationSate(plant && workcenter.match(/^\w{2}\d{2}$/) !== null);
+	  return plant && plant.match(/^\w{2}\d{2}$/) !== null;
 	};
 
 	Validator.validateDescription = function (description) {
-	  return validationSate(!validator.isNull(description));
+	  return !validator.isNull(description);
+	};
+
+	Validator.validatePriceForFlow = function (price, flow) {
+	  if (flow.match(/^(CH|SG|GW)/) !== null) {
+	    return true;
+	  }
+	  return validator.isFloat(price, { min: 1.0 });
+	};
+
+	Validator.validateJob = function (job) {
+	  if (!Validator.validateFlow(job.maint_act_type)) {
+	    return false;
+	  }
+	  if (!Validator.validatePriceForFlow(job.fixed_price, job.maint_act_type)) {
+	    return false;
+	  }
+	  if (!Validator.validateExecutionDate(job.execution_date)) {
+	    return false;
+	  }
+	  if (!Validator.validatePlant(job.plant)) {
+	    return false;
+	  }
+	  if (!Validator.validateMainWorkcenter(job.main_workctr)) {
+	    return false;
+	  }
+	  if (!Validator.validateDescription(job.description)) {
+	    return false;
+	  }
+	  return true;
 	};
 
 /***/ },
@@ -53581,6 +53632,49 @@
 	var _actionTypes = __webpack_require__(402);
 
 	var initialState = (0, _nuclearJs.toImmutable)({
+	  error: '',
+	  success: '',
+	  visible: false
+	});
+
+	exports['default'] = (0, _nuclearJs.Store)({
+	  getInitialState: function getInitialState() {
+	    return initialState;
+	  },
+
+	  initialize: function initialize() {
+	    this.on(_actionTypes.CONFIRM_SUCCESS, flashSuccess);
+	    this.on(_actionTypes.DISMISS_FLASH, dismissFlash);
+	  }
+	});
+
+	function flashSuccess(state) {
+	  return state.merge({
+	    'success': 'The job was successfully send to the server.',
+	    'visisble': true
+	  });
+	}
+
+	function dismissFlash(state) {
+	  return state.setIn(['visisble'], false);
+	}
+	module.exports = exports['default'];
+
+/***/ },
+/* 417 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _nuclearJs = __webpack_require__(302);
+
+	var _actionTypes = __webpack_require__(402);
+
+	var initialState = (0, _nuclearJs.toImmutable)({
 	  equipmentValid: false,
 	  equipment: {
 	    serial: "",
@@ -53628,7 +53722,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 417 */
+/* 418 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53682,7 +53776,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 418 */
+/* 419 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53782,7 +53876,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 419 */
+/* 420 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53801,15 +53895,22 @@
 
 	var _moment2 = _interopRequireDefault(_moment);
 
+	var _commonUtilsSmallEntityValidations = __webpack_require__(407);
+
+	var _commonUtilsSmallEntityValidations2 = _interopRequireDefault(_commonUtilsSmallEntityValidations);
+
 	var initialState = (0, _nuclearJs.toImmutable)({
-	  process: "X1",
-	  maint_act_type: "select",
-	  fixed_price: 0.0,
-	  execution_date: (0, _moment2['default'])().format("DD.MM.YYYY"),
-	  description: (0, _moment2['default'])().format("YYYYMMDD") + " ",
-	  main_workctr: "",
-	  plant: "",
-	  sales_order_text: ""
+	  jobValid: false,
+	  job: {
+	    process: "X1",
+	    maint_act_type: "select",
+	    fixed_price: 0.0,
+	    execution_date: (0, _moment2['default'])().format("DD.MM.YYYY"),
+	    description: (0, _moment2['default'])().format("YYYYMMDD") + " ",
+	    main_workctr: "",
+	    plant: "",
+	    sales_order_text: ""
+	  }
 	});
 	exports['default'] = (0, _nuclearJs.Store)({
 	  getInitialState: function getInitialState() {
@@ -53826,65 +53927,23 @@
 	  var fieldName = _ref.fieldName;
 	  var value = _ref.value;
 
-	  return state.set(fieldName, value);
+	  var s = state;
+	  s = state.setIn(['job', fieldName], value);
+	  return s.setIn(['jobValid'], _commonUtilsSmallEntityValidations2['default'].validateJob(s.getIn(['job']).toJS()));
 	}
 
 	function receiveEquipment(state, _ref2) {
 	  var equipment = _ref2.equipment;
 
 	  var s = state;
-	  s = s.set('plant', equipment.plant);
+	  s = s.setIn(['job', 'plant'], equipment.plant);
 	  if (equipment.main_workctr) {
-	    return s.set('main_workctr', equipment.main_workctr);
+	    return s.setIn(['job', 'main_workctr'], equipment.main_workctr);
 	  }
 	}
 
 	function confirmSuccess(state) {
 	  return initialState;
-	}
-	module.exports = exports['default'];
-
-/***/ },
-/* 420 */,
-/* 421 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _nuclearJs = __webpack_require__(302);
-
-	var _actionTypes = __webpack_require__(402);
-
-	var initialState = (0, _nuclearJs.toImmutable)({
-	  error: '',
-	  success: '',
-	  visible: false
-	});
-
-	exports['default'] = (0, _nuclearJs.Store)({
-	  getInitialState: function getInitialState() {
-	    return initialState;
-	  },
-
-	  initialize: function initialize() {
-	    this.on(_actionTypes.CONFIRM_SUCCESS, flashSuccess);
-	    this.on(_actionTypes.DISMISS_FLASH, dismissFlash);
-	  }
-	});
-
-	function flashSuccess(state) {
-	  return state.merge({
-	    'success': 'The job was successfully send to the server.',
-	    'visisble': true
-	  });
-	}
-
-	function dismissFlash(state) {
-	  return state.setIn(['visisble'], false);
 	}
 	module.exports = exports['default'];
 
