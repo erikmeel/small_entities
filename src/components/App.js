@@ -41,11 +41,12 @@ const ButtonContainer = React.createClass({
   },
 
   render() {
+    var wellStyles = {maxWidth: 400, margin: '0 auto 10px'};
+
     return (
-      <ButtonToolbar>
-        <Button onClick={this.handleSubmit} bsStyle="primary">Confirm</Button>
-        <Button>Reset</Button>
-      </ButtonToolbar>
+      <div className='well' style={wellStyles}>
+        <Button onClick={this.handleSubmit} bsStyle='primary' bsSize='large' block>Submit Job</Button>
+      </div>
     )
   }
 });

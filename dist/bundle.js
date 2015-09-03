@@ -20576,18 +20576,15 @@
 	  },
 
 	  render: function render() {
+	    var wellStyles = { maxWidth: 400, margin: '0 auto 10px' };
+
 	    return _react2['default'].createElement(
-	      _reactBootstrap.ButtonToolbar,
-	      null,
+	      'div',
+	      { className: 'well', style: wellStyles },
 	      _react2['default'].createElement(
 	        _reactBootstrap.Button,
-	        { onClick: this.handleSubmit, bsStyle: 'primary' },
-	        'Confirm'
-	      ),
-	      _react2['default'].createElement(
-	        _reactBootstrap.Button,
-	        null,
-	        'Reset'
+	        { onClick: this.handleSubmit, bsStyle: 'primary', bsSize: 'large', block: true },
+	        'Submit Job'
 	      )
 	    );
 	  }
