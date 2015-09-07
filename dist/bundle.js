@@ -38445,10 +38445,11 @@
 	  j.work_qty = operations.work_qty.quantity;
 	  j.expenses_qty = operations.expenses_qty.quantity;
 	  j.travel_qty = operations.travel_qty.quantity;
+	  j.travel_dist_qty = operations.travel_qty.quantity;
+	  j.allowance_qty = operations.allowance_qty.quantity;
+	  j.env_act_qty = operations.env_act_qty.quantity;
 	  j.t_mat_used = materials;
-	  console.log("Submitting Job to " + sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY));
 	  console.log("Params: " + JSON.stringify(job, null, 4));
-	  console.log("Material params: " + JSON.stringify(materials, null, 4));
 	  request.post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY)).type('form').auth('AIR14977', 'Atlas2015').send({ json: JSON.stringify(j) }).send({ action: 'create' }).end(function (err, res) {
 	    if (!err && res.body) {
 	      cb();
@@ -52096,26 +52097,43 @@
 	    if (this.props.equipment.warranty_expired) {
 	      warrantyEndClassName = "text-danger";
 	    }
-	    var user_status = this.props.equipment.user_status.map(function (status) {
-	      var element = "";
-	      switch (status) {
-	        case 'ZCON':
-	          element = React.createElement(
-	            'span',
-	            { key: status, className: 'label label-info' },
-	            'connected'
-	          );
-	          break;
-	        case 'ZWWC':
-	          element = React.createElement(
-	            'span',
-	            { key: status, className: 'label label-success' },
-	            'contract'
-	          );
-	          break;
-	      }
-	      return element;
-	    });
+	    var user_status = "";
+	    if (this.props.equipment.user_status) {
+	      user_status = this.props.equipment.user_status.map(function (status) {
+	        var element = "";
+	        switch (status) {
+	          case 'ZCON':
+	            element = React.createElement(
+	              'span',
+	              { key: status, className: 'label label-success pull-right user-status-label' },
+	              'connected'
+	            );
+	            break;
+	          case 'ZNOS':
+	            element = React.createElement(
+	              'span',
+	              { key: status, className: 'label label-danger pull-right user-status-label' },
+	              'no service'
+	            );
+	            break;
+	          case 'ZNOC':
+	            element = React.createElement(
+	              'span',
+	              { key: status, className: 'label label-warning pull-right user-status-label' },
+	              'no contract service'
+	            );
+	            break;
+	          case 'ZWWC':
+	            element = React.createElement(
+	              'span',
+	              { key: status, className: 'label label-success pull-right user-status-label' },
+	              'contract'
+	            );
+	            break;
+	        }
+	        return element;
+	      });
+	    }
 	    var contact = "";
 	    if (this.props.equipment.contact) {
 	      contact = React.createElement(

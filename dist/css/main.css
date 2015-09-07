@@ -32,6 +32,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 
 /* Widgets */
 
+.user-status-label {
+  margin-left: 3px;
+}
+
 .age-widget {
   background-color: rgb(30,151,196);
   color: rgb(255,255,255);
@@ -46,27 +50,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 
 .age-title {
   padding-top: 20px;
-}
-
-.status-widgets {
-  margin-bottom: 20px;
-}
-
-.status-widget {
-  min-height: 90px;
-}
-
-.user-status-widget {
-  background-color: #5ee5bd;
-  background-color: #f15149;
-  color: rgb(255,255,255);
-  min-height: 183px;
-}
-
-.user-status-value {
-  font-size: 2em;
-  font-weight: 700;
-  padding-top: 35px;
 }
 
 .running-hours-widget, .warranty-end-widget {

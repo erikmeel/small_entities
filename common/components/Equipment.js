@@ -30,18 +30,27 @@ var EquipmentInfo = React.createClass({
     if (this.props.equipment.warranty_expired) {
       warrantyEndClassName = "text-danger"
     }
-    let user_status = this.props.equipment.user_status.map(function(status) {
-      let element = ""
-      switch(status) {
-        case 'ZCON':
-          element = <span key={status} className="label label-info">connected</span>
-          break;
-        case 'ZWWC':
-          element = <span key={status} className="label label-success">contract</span>
-          break;
-      }
-      return element
-    })
+    let user_status = "";
+    if (this.props.equipment.user_status) {
+      user_status = this.props.equipment.user_status.map(function(status) {
+        let element = ""
+        switch(status) {
+          case 'ZCON':
+            element = <span key={status} className="label label-success pull-right user-status-label">connected</span>
+            break;
+          case 'ZNOS':
+            element = <span key={status} className="label label-danger pull-right user-status-label">no service</span>
+            break;
+          case 'ZNOC':
+            element = <span key={status} className="label label-warning pull-right user-status-label">no contract service</span>
+            break;
+          case 'ZWWC':
+            element = <span key={status} className="label label-success pull-right user-status-label">contract</span>
+            break;
+        }
+        return element
+      })
+    }
     let contact = ""
     if (this.props.equipment.contact) {
       contact = <p className="address contact"><span className="glyphicon glyphicon-user" aria-hidden="true"></span> {this.props.equipment.contact.first_name} {this.props.equipment.contact.name}</p>
