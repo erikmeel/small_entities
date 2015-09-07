@@ -20522,11 +20522,11 @@
 	    if (this.props.flashMessageVisisble) {
 	      return _react2['default'].createElement(
 	        _reactBootstrap.Alert,
-	        { bsStyle: 'success', onDismiss: this.handleAlertDismiss, dismissAfter: 15000 },
+	        { bsStyle: this.props.flashStyle, onDismiss: this.handleAlertDismiss, dismissAfter: 15000 },
 	        _react2['default'].createElement(
 	          'p',
 	          null,
-	          'The service job was successfully sent to SAP where it will be processed.'
+	          this.props.flashMessage
 	        ),
 	        _react2['default'].createElement(
 	          'p',
@@ -20597,7 +20597,8 @@
 
 	  getDataBindings: function getDataBindings() {
 	    return {
-	      flashMessage: _getters2['default'].flashSuccess,
+	      flashMessageSuccess: _getters2['default'].flashSuccess,
+	      flashMessageError: _getters2['default'].flashError,
 	      flashMessageVisisble: _getters2['default'].flashMessageVisisble,
 	      equipmentValid: _getters2['default'].equipmentValid,
 	      jobValid: _getters2['default'].jobValid
@@ -20621,10 +20622,16 @@
 	        buttonContainer = _react2['default'].createElement(ButtonContainer, { handleOnSubmit: this.handleSubmit });
 	      }
 	    }
+	    var flashContainer = _react2['default'].createElement('div', null);
+	    if (this.state.flashMessageSuccess) {
+	      flashContainer = _react2['default'].createElement(FlashContainer, { flashMessage: this.state.flashMessageSuccess, flashMessageVisisble: this.state.flashMessageVisisble, flashStyle: 'success' });
+	    } else if (this.state.flashMessageError) {
+	      flashContainer = _react2['default'].createElement(FlashContainer, { flashMessage: this.state.flashMessageError, flashMessageVisisble: this.state.flashMessageVisisble, flashStyle: 'danger' });
+	    }
 	    return _react2['default'].createElement(
 	      'div',
 	      { className: 'container' },
-	      _react2['default'].createElement(FlashContainer, { flashMessage: this.state.flashMessage, flashMessageVisisble: this.state.flashMessageVisisble }),
+	      flashContainer,
 	      _react2['default'].createElement(
 	        'form',
 	        null,
@@ -38208,6 +38215,7 @@
 	  value: true
 	});
 	var flashSuccess = ['flash', 'success'];
+	var flashError = ['flash', 'error'];
 	var flashMessageVisisble = ['flash', 'visisble'];
 	var equipment = ['equipment', 'equipment'];
 	var equipmentValid = ['equipment', 'equipmentValid'];
@@ -38225,7 +38233,7 @@
 	  }).toList();
 	}];
 
-	exports['default'] = { flashSuccess: flashSuccess, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit };
+	exports['default'] = { flashSuccess: flashSuccess, flashError: flashError, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit };
 	module.exports = exports['default'];
 
 /***/ },
@@ -38452,7 +38460,11 @@
 	  console.log("Params: " + JSON.stringify(job, null, 4));
 	  request.post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY)).type('form').auth('AIR14977', 'Atlas2015').send({ json: JSON.stringify(j) }).send({ action: 'create' }).end(function (err, res) {
 	    if (!err && res.body) {
-	      cb();
+	      if (res.body[1].message.length === 0) {
+	        cb();
+	      } else {
+	        cb_error();
+	      }
 	    } else {
 	      console.log(err);
 	      cb_error();
@@ -51909,7 +51921,7 @@
 		},
 		{
 			"id": 2,
-			"name": "Additional Expenses (Local Currency)",
+			"name": "Expenses (LCU)",
 			"quantity": 0,
 			"key": "expenses_qty"
 		},
@@ -51933,7 +51945,7 @@
 		},
 		{
 			"id": 6,
-			"name": "Environmental Expenses",
+			"name": "Environmental Expenses (LCU)",
 			"quantity": 0,
 			"key": "env_act_qty"
 		}
@@ -53431,13 +53443,17 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'form-group' },
+	      { className: 'col-sm-4' },
 	      React.createElement(
-	        'label',
-	        null,
-	        this.props.operation.name
-	      ),
-	      React.createElement('input', { className: 'form-control', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
+	        'div',
+	        { className: 'form-group form-group-lg' },
+	        React.createElement(
+	          'label',
+	          null,
+	          this.props.operation.name
+	        ),
+	        React.createElement('input', { className: 'form-control', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
+	      )
 	    );
 	  }
 	});
@@ -53470,7 +53486,7 @@
 	      ),
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'row' },
 	        this.props.children
 	      )
 	    );
@@ -53772,6 +53788,7 @@
 
 	  initialize: function initialize() {
 	    this.on(_actionTypes.CONFIRM_SUCCESS, flashSuccess);
+	    this.on(_actionTypes.CONFIRM_FAILED, flashError);
 	    this.on(_actionTypes.DISMISS_FLASH, dismissFlash);
 	  }
 	});
@@ -53779,6 +53796,13 @@
 	function flashSuccess(state) {
 	  return state.merge({
 	    'success': 'The job was successfully send to the server.',
+	    'visisble': true
+	  });
+	}
+
+	function flashError(state) {
+	  return state.merge({
+	    'error': 'There was something wrong while sending to the server.',
 	    'visisble': true
 	  });
 	}

@@ -1,5 +1,5 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { CONFIRM_SUCCESS, DISMISS_FLASH } from '../actionTypes'
+import { CONFIRM_SUCCESS, CONFIRM_FAILED, DISMISS_FLASH } from '../actionTypes'
 
 const initialState = toImmutable({
   error: '',
@@ -14,6 +14,7 @@ export default Store({
 
   initialize() {
     this.on(CONFIRM_SUCCESS, flashSuccess)
+    this.on(CONFIRM_FAILED, flashError)
     this.on(DISMISS_FLASH, dismissFlash)
   }
 })
@@ -21,6 +22,13 @@ export default Store({
 function flashSuccess(state) {
   return state.merge({
     'success': 'The job was successfully send to the server.',
+    'visisble': true
+  })
+}
+
+function flashError(state) {
+  return state.merge({
+    'error': 'There was something wrong while sending to the server.',
     'visisble': true
   })
 }

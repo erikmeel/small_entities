@@ -16,8 +16,8 @@ const FlashContainer = React.createClass({
   render() {
     if (this.props.flashMessageVisisble) {
       return (
-        <Alert bsStyle='success' onDismiss={this.handleAlertDismiss} dismissAfter={15000}>
-          <p>The service job was successfully sent to SAP where it will be processed.</p>
+        <Alert bsStyle={this.props.flashStyle} onDismiss={this.handleAlertDismiss} dismissAfter={15000}>
+          <p>{this.props.flashMessage}</p>
           <p>The following transactions can be called in SAP for more information</p>
           <ul>
             <li><strong>ZSTC_REPROCESSING</strong> for monitoring the processing.</li>
@@ -56,7 +56,8 @@ export default React.createClass({
 
   getDataBindings() {
     return {
-      flashMessage: getters.flashSuccess,
+      flashMessageSuccess: getters.flashSuccess,
+      flashMessageError: getters.flashError,
       flashMessageVisisble: getters.flashMessageVisisble,
       equipmentValid: getters.equipmentValid,
       jobValid: getters.jobValid,
@@ -76,9 +77,15 @@ export default React.createClass({
         buttonContainer = <ButtonContainer handleOnSubmit={this.handleSubmit} />;
       }
     }
+    var flashContainer = <div></div>
+    if (this.state.flashMessageSuccess) {
+      flashContainer = <FlashContainer flashMessage={this.state.flashMessageSuccess} flashMessageVisisble={this.state.flashMessageVisisble} flashStyle='success' />
+    } else if (this.state.flashMessageError) {
+      flashContainer = <FlashContainer flashMessage={this.state.flashMessageError} flashMessageVisisble={this.state.flashMessageVisisble} flashStyle='danger' />
+    }
     return (
       <div className="container">
-        <FlashContainer flashMessage={this.state.flashMessage} flashMessageVisisble={this.state.flashMessageVisisble} />
+        {flashContainer}
         <form >
           <EquipmentContainer />
           { jobContainer }

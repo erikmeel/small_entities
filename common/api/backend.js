@@ -136,7 +136,11 @@ Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error
    .send({action: 'create'})
    .end(function (err, res) {
     if (!err && res.body) {
-      cb();
+      if (res.body[1].message.length === 0) {
+        cb();
+      } else {
+        cb_error();
+      }
     } else {
       console.log(err);
       cb_error();

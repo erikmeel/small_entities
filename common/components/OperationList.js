@@ -11,7 +11,7 @@ var OperationList = React.createClass({
     return (
       <div>
         <h2>{this.props.title}</h2>
-        <div>{this.props.children}</div>
+        <div className="row">{this.props.children}</div>
       </div>
     );
   }
