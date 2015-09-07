@@ -12,7 +12,6 @@ var EQUIPMENT_ENTITY = 'equipment'
 var MATERIAL_ENTITY = 'material'
 var CUSTOMER_ENTITY = 'customer'
 
-var _equipment = require('./equipment.json');
 var _operations = require('./operations.json');
 
 Backend.getEquipment = function (payload, cb, cb_error) {

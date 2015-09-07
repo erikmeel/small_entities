@@ -64,23 +64,23 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _storesFlashStore = __webpack_require__(416);
+	var _storesFlashStore = __webpack_require__(415);
 
 	var _storesFlashStore2 = _interopRequireDefault(_storesFlashStore);
 
-	var _storesEquipmentStore = __webpack_require__(417);
+	var _storesEquipmentStore = __webpack_require__(416);
 
 	var _storesEquipmentStore2 = _interopRequireDefault(_storesEquipmentStore);
 
-	var _storesOperationStore = __webpack_require__(418);
+	var _storesOperationStore = __webpack_require__(417);
 
 	var _storesOperationStore2 = _interopRequireDefault(_storesOperationStore);
 
-	var _storesMaterialStore = __webpack_require__(419);
+	var _storesMaterialStore = __webpack_require__(418);
 
 	var _storesMaterialStore2 = _interopRequireDefault(_storesMaterialStore);
 
-	var _storesJobStore = __webpack_require__(420);
+	var _storesJobStore = __webpack_require__(419);
 
 	var _storesJobStore2 = _interopRequireDefault(_storesJobStore);
 
@@ -20499,19 +20499,19 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _EquipmentContainer = __webpack_require__(403);
+	var _EquipmentContainer = __webpack_require__(402);
 
 	var _EquipmentContainer2 = _interopRequireDefault(_EquipmentContainer);
 
-	var _JobContainer = __webpack_require__(405);
+	var _JobContainer = __webpack_require__(404);
 
 	var _JobContainer2 = _interopRequireDefault(_JobContainer);
 
-	var _OperationsContainer = __webpack_require__(409);
+	var _OperationsContainer = __webpack_require__(408);
 
 	var _OperationsContainer2 = _interopRequireDefault(_OperationsContainer);
 
-	var _MaterialsContainer = __webpack_require__(412);
+	var _MaterialsContainer = __webpack_require__(411);
 
 	var _MaterialsContainer2 = _interopRequireDefault(_MaterialsContainer);
 
@@ -38252,7 +38252,7 @@
 
 	var _getters2 = _interopRequireDefault(_getters);
 
-	var _actionTypes = __webpack_require__(402);
+	var _actionTypes = __webpack_require__(401);
 
 	exports['default'] = {
 
@@ -38349,8 +38349,7 @@
 	var MATERIAL_ENTITY = 'material';
 	var CUSTOMER_ENTITY = 'customer';
 
-	var _equipment = __webpack_require__(400);
-	var _operations = __webpack_require__(401);
+	var _operations = __webpack_require__(400);
 
 	Backend.getEquipment = function (payload, cb, cb_error) {
 	  var j = {
@@ -51902,53 +51901,6 @@
 
 	module.exports = [
 		{
-			"model": [
-				{
-					"id": "14829450",
-					"type": "EQUIPMENT",
-					"material_number": "8102190661",
-					"serial_number": "APF177677",
-					"object_number": "IE000000000014829450",
-					"planning_plant": "DE01",
-					"workcenter": "10000036",
-					"description": "FD510-A-50-400V",
-					"internal_note": "Info an Timo nach Durchführung der Wartungen zwecks Vertragsabrechnung\\\\nTZS 13.11.2014\\\\n",
-					"sales_organization": "DE10",
-					"distribution_channel": "01",
-					"division": "01",
-					"sales_office": "DE51",
-					"sales_group": "C03",
-					"material_description": "FD510-A-50-400V",
-					"system_status": "INST",
-					"user_status": "ZWWC",
-					"sold_to": "0100023267",
-					"ship_to": "1000037811",
-					"installed_at": "1000037811",
-					"sold_to_name": "Kostal Industrie Elektrik GmbH",
-					"ship_to_name": "Kostal Industrie Elektrik GmbH",
-					"installed_at_name": "Kostal Industrie Elektrik GmbH",
-					"start_date": "20121022",
-					"vendor_warranty_end": "20131122",
-					"street": "Lange Eck",
-					"city": "Hagen",
-					"post_code": "58099",
-					"actual_annual_running_hours": "4447",
-					"annual_estimated_running_hours": "4000",
-					"actual_running_hours": "12415"
-				}
-			]
-		},
-		{
-			"message": []
-		}
-	]
-
-/***/ },
-/* 401 */
-/***/ function(module, exports) {
-
-	module.exports = [
-		{
 			"id": 1,
 			"name": "Work (Hours)",
 			"quantity": 1,
@@ -51987,7 +51939,7 @@
 	]
 
 /***/ },
-/* 402 */
+/* 401 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52028,7 +51980,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 403 */
+/* 402 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52043,7 +51995,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _commonComponentsEquipment = __webpack_require__(404);
+	var _commonComponentsEquipment = __webpack_require__(403);
 
 	var _commonComponentsEquipment2 = _interopRequireDefault(_commonComponentsEquipment);
 
@@ -52086,7 +52038,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 404 */
+/* 403 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52379,7 +52331,7 @@
 	module.exports = Equipment;
 
 /***/ },
-/* 405 */
+/* 404 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52396,11 +52348,11 @@
 
 	var _reactBootstrap = __webpack_require__(158);
 
-	var _commonComponentsJobFixedPrice = __webpack_require__(406);
+	var _commonComponentsJobFixedPrice = __webpack_require__(405);
 
 	var _commonComponentsJobFixedPrice2 = _interopRequireDefault(_commonComponentsJobFixedPrice);
 
-	var _commonUtilsSmallEntityValidations = __webpack_require__(407);
+	var _commonUtilsSmallEntityValidations = __webpack_require__(406);
 
 	var _commonUtilsSmallEntityValidations2 = _interopRequireDefault(_commonUtilsSmallEntityValidations);
 
@@ -52509,7 +52461,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 406 */
+/* 405 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52529,14 +52481,14 @@
 	module.exports = JobFixedPrice;
 
 /***/ },
-/* 407 */
+/* 406 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Validator = exports;
 
-	var validator = __webpack_require__(408);
+	var validator = __webpack_require__(407);
 	var moment = __webpack_require__(306);
 
 	Validator.vs = function (b) {
@@ -52595,7 +52547,7 @@
 	};
 
 /***/ },
-/* 408 */
+/* 407 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -53373,7 +53325,7 @@
 
 
 /***/ },
-/* 409 */
+/* 408 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53388,11 +53340,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _commonComponentsOperation = __webpack_require__(410);
+	var _commonComponentsOperation = __webpack_require__(409);
 
 	var _commonComponentsOperation2 = _interopRequireDefault(_commonComponentsOperation);
 
-	var _commonComponentsOperationList = __webpack_require__(411);
+	var _commonComponentsOperationList = __webpack_require__(410);
 
 	var _commonComponentsOperationList2 = _interopRequireDefault(_commonComponentsOperationList);
 
@@ -53444,7 +53396,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 410 */
+/* 409 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53475,7 +53427,7 @@
 	module.exports = Operation;
 
 /***/ },
-/* 411 */
+/* 410 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53510,7 +53462,7 @@
 	module.exports = OperationList;
 
 /***/ },
-/* 412 */
+/* 411 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53525,15 +53477,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _commonComponentsMaterial = __webpack_require__(413);
+	var _commonComponentsMaterial = __webpack_require__(412);
 
 	var _commonComponentsMaterial2 = _interopRequireDefault(_commonComponentsMaterial);
 
-	var _commonComponentsMaterialList = __webpack_require__(414);
+	var _commonComponentsMaterialList = __webpack_require__(413);
 
 	var _commonComponentsMaterialList2 = _interopRequireDefault(_commonComponentsMaterialList);
 
-	var _commonComponentsMaterialInput = __webpack_require__(415);
+	var _commonComponentsMaterialInput = __webpack_require__(414);
 
 	var _commonComponentsMaterialInput2 = _interopRequireDefault(_commonComponentsMaterialInput);
 
@@ -53663,7 +53615,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 413 */
+/* 412 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53708,7 +53660,7 @@
 	module.exports = Material;
 
 /***/ },
-/* 414 */
+/* 413 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53734,7 +53686,7 @@
 	module.exports = MaterialList;
 
 /***/ },
-/* 415 */
+/* 414 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53776,7 +53728,7 @@
 	module.exports = MaterialInput;
 
 /***/ },
-/* 416 */
+/* 415 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53787,7 +53739,7 @@
 
 	var _nuclearJs = __webpack_require__(302);
 
-	var _actionTypes = __webpack_require__(402);
+	var _actionTypes = __webpack_require__(401);
 
 	var initialState = (0, _nuclearJs.toImmutable)({
 	  error: '',
@@ -53819,7 +53771,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 417 */
+/* 416 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53830,7 +53782,7 @@
 
 	var _nuclearJs = __webpack_require__(302);
 
-	var _actionTypes = __webpack_require__(402);
+	var _actionTypes = __webpack_require__(401);
 
 	var initialState = (0, _nuclearJs.toImmutable)({
 	  equipmentValid: false,
@@ -53891,7 +53843,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 418 */
+/* 417 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53902,9 +53854,9 @@
 
 	var _nuclearJs = __webpack_require__(302);
 
-	var _actionTypes = __webpack_require__(402);
+	var _actionTypes = __webpack_require__(401);
 
-	var _operations = __webpack_require__(401);
+	var _operations = __webpack_require__(400);
 
 	var initialState = (0, _nuclearJs.toImmutable)(_operations).toMap().mapKeys(function (k, v) {
 	  return v.get('key');
@@ -53945,7 +53897,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 419 */
+/* 418 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53956,7 +53908,7 @@
 
 	var _nuclearJs = __webpack_require__(302);
 
-	var _actionTypes = __webpack_require__(402);
+	var _actionTypes = __webpack_require__(401);
 
 	var initialState = (0, _nuclearJs.toImmutable)({
 	  'itemQty': {},
@@ -54045,7 +53997,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 420 */
+/* 419 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -54058,13 +54010,13 @@
 
 	var _nuclearJs = __webpack_require__(302);
 
-	var _actionTypes = __webpack_require__(402);
+	var _actionTypes = __webpack_require__(401);
 
 	var _moment = __webpack_require__(306);
 
 	var _moment2 = _interopRequireDefault(_moment);
 
-	var _commonUtilsSmallEntityValidations = __webpack_require__(407);
+	var _commonUtilsSmallEntityValidations = __webpack_require__(406);
 
 	var _commonUtilsSmallEntityValidations2 = _interopRequireDefault(_commonUtilsSmallEntityValidations);
 
