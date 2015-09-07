@@ -6,6 +6,9 @@ import {
   RECEIVE_EQUIPMENT_START,
   RECEIVE_EQUIPMENT_SUCCESS,
   RECEIVE_EQUIPMENT_FAILED,
+  RECEIVE_CUSTOMER_START,
+  RECEIVE_CUSTOMER_SUCCESS,
+  RECEIVE_CUSTOMER_FAILED,
   RECEIVE_OPERATIONS,
   CONFIRM_START,
   CONFIRM_SUCCESS,
@@ -36,7 +39,17 @@ export default {
     reactor.dispatch(RECEIVE_EQUIPMENT_START)
     backend.getEquipment(equipment, equipment => {
       reactor.dispatch(RECEIVE_EQUIPMENT_SUCCESS, {equipment})
+      if (equipment.installed_at) {
+        this.getCustomer(equipment.installed_at)
+      }
     }, () => {reactor.dispatch(RECEIVE_EQUIPMENT_FAILED)});
+  },
+
+  getCustomer(customer) {
+    reactor.dispatch(RECEIVE_CUSTOMER_START)
+    backend.getCustomer(customer, customer => {
+      reactor.dispatch(RECEIVE_CUSTOMER_SUCCESS, {customer})
+    }, () => {reactor.dispatch(RECEIVE_CUSTOMER_FAILED)});
   },
 
   setJobValue(fieldName, value) {

@@ -3,6 +3,23 @@
 var React = require('react');
 import { Input } from 'react-bootstrap'
 
+var PanelInstance = React.createClass({
+  render: function () {
+    <div className="row">
+      <div className="col-md-12">
+        <div className="panel panel-info">
+          <div className="panel-heading">
+            <h3 className="panel-title">{this.props.panelTitle}</h3>
+          </div>
+          <div className="panel-body">
+            <p className="">{this.props.panelBody}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+})
+
 var EquipmentInfo = React.createClass({
   render: function () {
     let runningHoursClassName;
@@ -25,6 +42,14 @@ var EquipmentInfo = React.createClass({
       }
       return element
     })
+    let contact = ""
+    if (this.props.equipment.contact) {
+      contact = <p className="address contact"><span className="glyphicon glyphicon-user" aria-hidden="true"></span> {this.props.equipment.contact.first_name} {this.props.equipment.contact.name}</p>
+    }
+    let internal_note = ""
+    if (this.props.equipment.internal_note) {
+      internal_note = <PanelInstance panelTitle="Equipment Note" panelBody={this.props.equipment.internal_note} />
+    }
 
     return (
       <div>
@@ -50,7 +75,7 @@ var EquipmentInfo = React.createClass({
                 <div className="panel panel-default">
                   <div className="panel-body">
                     <div className="pull-left running-hours-title">Running<br/> Hours</div>
-                    <div className='pull-right running-hours-value'><span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours}</span>/{this.props.equipment.annual_estimated_running_hours}</div>
+                    <div className='pull-right running-hours-value'><span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours || 'N.A.'}</span>/{this.props.equipment.annual_estimated_running_hours}</div>
                   </div>
                 </div>
               </div>
@@ -75,23 +100,12 @@ var EquipmentInfo = React.createClass({
                 <p className="address">{this.props.equipment.installed_at_name}</p>
                 <p className="address">{this.props.equipment.street} {this.props.equipment.house_number}</p>
                 <p className="address">{this.props.equipment.post_code} {this.props.equipment.city}</p>
+                {contact}
               </div>
             </div>
           </div>
         </div>
-
-        <div className="row">
-          <div className="col-md-12">
-            <div className="panel panel-info">
-              <div className="panel-heading">
-                <h3 className="panel-title">Equipment Note</h3>
-              </div>
-              <div className="panel-body">
-                <p className="">{this.props.equipment.internal_note}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {internal_note}
       </div>
     )
   }

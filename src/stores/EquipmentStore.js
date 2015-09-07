@@ -1,5 +1,5 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { SET_EQUIPMENT_VALUE, RECEIVE_EQUIPMENT_SUCCESS, RECEIVE_EQUIPMENT_FAILED, CONFIRM_SUCCESS } from '../actionTypes'
+import { SET_EQUIPMENT_VALUE, RECEIVE_EQUIPMENT_SUCCESS, RECEIVE_EQUIPMENT_FAILED, RECEIVE_CUSTOMER_SUCCESS, CONFIRM_SUCCESS } from '../actionTypes'
 
 const initialState = toImmutable({
   equipmentValid: false,
@@ -18,6 +18,7 @@ export default Store({
     this.on(SET_EQUIPMENT_VALUE, setEquipmentValue)
     this.on(RECEIVE_EQUIPMENT_FAILED, invalidateEquipment)
     this.on(RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment)
+    this.on(RECEIVE_CUSTOMER_SUCCESS, receiveCustomer)
     this.on(CONFIRM_SUCCESS, confirmSuccess)
   }
 })
@@ -31,6 +32,14 @@ function receiveEquipment(state, { equipment }) {
     "equipmentValid": true,
     "equipment": equipment
   })
+}
+
+function receiveCustomer(state, { customer }) {
+  let s = state
+  if (customer.contacts.length > 0) {
+    s = s.setIn(['equipment','contact'], customer.contacts[0])
+  }
+  return s
 }
 
 function invalidateEquipment(state) {
