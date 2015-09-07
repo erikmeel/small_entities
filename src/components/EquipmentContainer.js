@@ -27,9 +27,7 @@ export default React.createClass({
   render: function () {
     let equipment = this.state.equipment.toJS()
     return (
-      <div>
-        <Equipment equipment={equipment} equipmentValid={this.state.equipmentValid} onEquipmentChanged={this.equipmentChange}/>
-      </div>
+      <Equipment equipment={equipment} equipmentValid={this.state.equipmentValid} onEquipmentChanged={this.equipmentChange}/>
     );
   },
 });

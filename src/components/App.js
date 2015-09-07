@@ -67,7 +67,7 @@ export default React.createClass({
     var jobContainer = <div></div>;
     var operationsContainer = <div></div>;
     var materialsContainer = <div></div>;
-    var buttonContainer = <div></div>;
+    var buttonContainer = <div className="text-center">The form is not complete yet</div>;
     if (this.state.equipmentValid) {
       jobContainer = <JobContainer />;
       operationsContainer = <OperationsContainer />
@@ -80,7 +80,6 @@ export default React.createClass({
       <div className="container">
         <FlashContainer flashMessage={this.state.flashMessage} flashMessageVisisble={this.state.flashMessageVisisble} />
         <form >
-          <h2>Small Entities - Job Confirmation</h2>
           <EquipmentContainer />
           { jobContainer }
           { operationsContainer }

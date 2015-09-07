@@ -1,15 +1,105 @@
-.shop-wrap {
-    max-width: 900px;
-    width: 60%;
-    margin: 20px 25px;
+body{
+  font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 300;
+  padding-bottom: 20px;
+  background-color: #f4f6f7;
 }
-.cart {
-    position: fixed;
-    right: 50px;
-    top: 30px;
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
+  font-weight: 300;
 }
-body {
-  background-color: rgb(241, 242, 246);
-  color: #434a54;
-  font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+
+.navbar {
+  background-color: rgb(156, 206, 224);
+  min-height: 100px;
+}
+
+.navbar-default .navbar-text {
+  padding-top: 2px;
+  color: rgb(255, 255, 255);
+}
+
+.row.no-gutter {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.row.no-gutter [class*='col-']:not(:first-child),
+.row.no-gutter [class*='col-']:not(:last-child) {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Widgets */
+
+.age-widget {
+  background-color: rgb(30,151,196);
+  color: rgb(255,255,255);
+  min-height: 163px;
+}
+
+.age-value {
+  font-size: 4em;
+  font-weight: 700;
+  padding-top: 10px;
+}
+
+.age-title {
+  padding-top: 20px;
+}
+
+.status-widgets {
+  margin-bottom: 20px;
+}
+
+.status-widget {
+  min-height: 90px;
+}
+
+.user-status-widget {
+  background-color: #5ee5bd;
+  background-color: #f15149;
+  color: rgb(255,255,255);
+  min-height: 183px;
+}
+
+.user-status-value {
+  font-size: 2em;
+  font-weight: 700;
+  padding-top: 35px;
+}
+
+.running-hours-widget, .warranty-end-widget {
+  background-color: rgb(30,151,196);
+  color: rgb(255,255,255);
+}
+
+.running-hours-value, .warranty-end-value {
+  font-size: 2em;
+}
+
+.running-hours-title, .warranty-end-title {
+  font-size: 1em;
+}
+
+.address {
+  margin-bottom: 0px;
+}
+
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: @screen-sm-min) {
+
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: @screen-md-min) {
+
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: @screen-lg-min) {
+
 }

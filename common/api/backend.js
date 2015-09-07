@@ -45,9 +45,14 @@ Backend.getEquipment = function (payload, cb, cb_error) {
             'actual_annual_running_hours': data[0].actual_annual_running_hours,
             'actual_running_hours': data[0].actual_running_hours,
             'vendor_warranty_end': moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY'),
+            'warranty_expired': moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment(),
+            'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
             'internal_note': data[0].internal_note,
-            'installed_at_name': data[0].installed_at_name
-          }
+            'installed_at_name': data[0].installed_at_name,
+          };
+          if (data[0].user_status) {
+            result['user_status'] = data[0].user_status.split(" ")
+          };
           cb(result)
         } else {
           cb_error()
