@@ -41,13 +41,17 @@ Backend.getEquipment = function (payload, cb, cb_error) {
             'annual_estimated_running_hours': data[0].annual_estimated_running_hours,
             'actual_annual_running_hours': data[0].actual_annual_running_hours,
             'actual_running_hours': data[0].actual_running_hours,
-            'vendor_warranty_end': moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY'),
-            'warranty_expired': moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment(),
             'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
-            'internal_note': data[0].internal_note,
             'installed_at_name': data[0].installed_at_name,
             'installed_at': data[0].installed_at,
           };
+          if (data[0].internal_note) {
+              result['internal_note'] = data[0].internal_note.replace(/\\n/g, "<br />")
+          }
+          if (data[0].vendor_warranty_end) {
+            result['vendor_warranty_end'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY')
+            result['warranty_expired'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment()
+          }
           if (data[0].user_status) {
             result['user_status'] = data[0].user_status.split(" ")
           };

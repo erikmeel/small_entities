@@ -30,6 +30,18 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
   padding-right: 0;
 }
 
+/* Operations */
+
+.form-group .operation-label {
+  font-size: 90%;
+  font-weight: 300;
+}
+
+.form-group .operation-value {
+  height: 92px;
+  font-size: 36px;
+}
+
 /* Widgets */
 
 .user-status-label {

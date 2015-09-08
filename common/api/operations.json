@@ -1,8 +1,8 @@
 [
-  {"id": 1, "name": "Work (Hours)", "quantity": 1.0, "key": "work_qty"},
-  {"id": 2, "name": "Expenses (LCU)", "quantity": 0.0, "key": "expenses_qty"},
-  {"id": 3, "name": "Travel Distance", "quantity": 0.0, "key": "travel_dist_qty"},
-  {"id": 4, "name": "Travel Time (Hours)", "quantity": 0.0, "key": "travel_qty"},
-  {"id": 5, "name": "Allowance", "quantity": 0.0, "key": "allowance_qty"},
-  {"id": 6, "name": "Environmental Expenses (LCU)", "quantity": 0.0, "key": "env_act_qty"}
+  {"id": 1, "name": "Work", "uom": "Hours", "quantity": 1.0, "key": "work_qty"},
+  {"id": 2, "name": "Expenses", "uom": "Local Currency", "quantity": 0.0, "key": "expenses_qty"},
+  {"id": 3, "name": "Travel Distance", "uom": "Km/h or MPH", "quantity": 0.0, "key": "travel_dist_qty"},
+  {"id": 4, "name": "Travel Time", "uom": "Hours", "quantity": 0.0, "key": "travel_qty"},
+  {"id": 5, "name": "Allowance", "uom": "Local Currency", "quantity": 0.0, "key": "allowance_qty"},
+  {"id": 6, "name": "Environment", "uom": "Local Currency", "quantity": 0.0, "key": "env_act_qty"}
 ]

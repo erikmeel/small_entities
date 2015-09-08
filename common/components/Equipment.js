@@ -5,18 +5,20 @@ import { Input } from 'react-bootstrap'
 
 var PanelInstance = React.createClass({
   render: function () {
-    <div className="row">
-      <div className="col-md-12">
-        <div className="panel panel-info">
-          <div className="panel-heading">
-            <h3 className="panel-title">{this.props.panelTitle}</h3>
-          </div>
-          <div className="panel-body">
-            <p className="">{this.props.panelBody}</p>
+    return (
+      <div className="row">
+        <div className="col-md-12">
+          <div className="panel panel-info">
+            <div className="panel-heading">
+              <h3 className="panel-title">{this.props.panelTitle}</h3>
+            </div>
+            <div className="panel-body">
+              <p className="" dangerouslySetInnerHTML={{__html: this.props.panelBody}}></p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    )
   }
 })
 

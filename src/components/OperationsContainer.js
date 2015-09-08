@@ -31,7 +31,7 @@ export default React.createClass({
 
   render: function () {
     return (
-      <OperationList title="Operations">
+      <OperationList title="Labour Costs">
         {this.state.operations.map(operation => {
           return <OperationContainer key={operation.get('key')} operation={operation.toJS()} />;
         }).toList()}

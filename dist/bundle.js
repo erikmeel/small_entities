@@ -38381,13 +38381,17 @@
 	          'annual_estimated_running_hours': data[0].annual_estimated_running_hours,
 	          'actual_annual_running_hours': data[0].actual_annual_running_hours,
 	          'actual_running_hours': data[0].actual_running_hours,
-	          'vendor_warranty_end': moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY'),
-	          'warranty_expired': moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment(),
 	          'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
-	          'internal_note': data[0].internal_note,
 	          'installed_at_name': data[0].installed_at_name,
 	          'installed_at': data[0].installed_at
 	        };
+	        if (data[0].internal_note) {
+	          result['internal_note'] = data[0].internal_note.replace(/\\n/g, "<br />");
+	        }
+	        if (data[0].vendor_warranty_end) {
+	          result['vendor_warranty_end'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY');
+	          result['warranty_expired'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment();
+	        }
 	        if (data[0].user_status) {
 	          result['user_status'] = data[0].user_status.split(" ");
 	        };
@@ -51915,37 +51919,43 @@
 	module.exports = [
 		{
 			"id": 1,
-			"name": "Work (Hours)",
+			"name": "Work",
+			"uom": "Hours",
 			"quantity": 1,
 			"key": "work_qty"
 		},
 		{
 			"id": 2,
-			"name": "Expenses (LCU)",
+			"name": "Expenses",
+			"uom": "Local Currency",
 			"quantity": 0,
 			"key": "expenses_qty"
 		},
 		{
 			"id": 3,
 			"name": "Travel Distance",
+			"uom": "Km/h or MPH",
 			"quantity": 0,
 			"key": "travel_dist_qty"
 		},
 		{
 			"id": 4,
-			"name": "Travel Time (Hours)",
+			"name": "Travel Time",
+			"uom": "Hours",
 			"quantity": 0,
 			"key": "travel_qty"
 		},
 		{
 			"id": 5,
 			"name": "Allowance",
+			"uom": "Local Currency",
 			"quantity": 0,
 			"key": "allowance_qty"
 		},
 		{
 			"id": 6,
-			"name": "Environmental Expenses (LCU)",
+			"name": "Environment",
+			"uom": "Local Currency",
 			"quantity": 0,
 			"key": "env_act_qty"
 		}
@@ -52064,7 +52074,7 @@
 	  displayName: 'PanelInstance',
 
 	  render: function render() {
-	    React.createElement(
+	    return React.createElement(
 	      'div',
 	      { className: 'row' },
 	      React.createElement(
@@ -52085,11 +52095,7 @@
 	          React.createElement(
 	            'div',
 	            { className: 'panel-body' },
-	            React.createElement(
-	              'p',
-	              { className: '' },
-	              this.props.panelBody
-	            )
+	            React.createElement('p', { className: '', dangerouslySetInnerHTML: { __html: this.props.panelBody } })
 	          )
 	        )
 	      )
@@ -53416,7 +53422,7 @@
 	  render: function render() {
 	    return _react2['default'].createElement(
 	      _commonComponentsOperationList2['default'],
-	      { title: 'Operations' },
+	      { title: 'Labour Costs' },
 	      this.state.operations.map(function (operation) {
 	        return _react2['default'].createElement(OperationContainer, { key: operation.get('key'), operation: operation.toJS() });
 	      }).toList()
@@ -53443,16 +53449,22 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'col-sm-4' },
+	      { className: 'col-sm-2' },
 	      React.createElement(
 	        'div',
 	        { className: 'form-group form-group-lg' },
 	        React.createElement(
 	          'label',
-	          null,
-	          this.props.operation.name
+	          { className: 'operation-label' },
+	          React.createElement(
+	            'strong',
+	            null,
+	            this.props.operation.name
+	          ),
+	          React.createElement('br', null),
+	          this.props.operation.uom
 	        ),
-	        React.createElement('input', { className: 'form-control', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
+	        React.createElement('input', { className: 'form-control operation-value', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
 	      )
 	    );
 	  }
