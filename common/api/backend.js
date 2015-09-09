@@ -31,7 +31,7 @@ Backend.getEquipment = function (payload, cb, cb_error) {
           result = {
             'id': data[0].id,
             'name': data[0].description,
-            'serial': data[0].serial_number,
+            'serial': data[0].serial_number.replace(/^0*/,''),
             'plant': data[0].planning_plant,
             'main_workctr': data[0].workcenter,
             'street': data[0].street,

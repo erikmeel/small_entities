@@ -36,7 +36,7 @@ function receiveEquipment(state, { equipment }) {
 
 function receiveCustomer(state, { customer }) {
   let s = state
-  if (customer.contacts.length > 0) {
+  if (customer.contacts && customer.contacts.length > 0) {
     s = s.setIn(['equipment','contact'], customer.contacts[0])
   }
   return s

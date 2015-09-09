@@ -38,8 +38,9 @@ function receiveEquipment(state, { equipment }) {
   let s = state
   s = s.setIn(['job', 'plant'], equipment.plant)
   if (equipment.main_workctr) {
-    return s.setIn(['job', 'main_workctr'], equipment.main_workctr)
+    s = s.setIn(['job', 'main_workctr'], equipment.main_workctr)
   }
+  return s
 }
 
 function confirmSuccess(state) {

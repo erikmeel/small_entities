@@ -38371,7 +38371,7 @@
 	        result = {
 	          'id': data[0].id,
 	          'name': data[0].description,
-	          'serial': data[0].serial_number,
+	          'serial': data[0].serial_number.replace(/^0*/, ''),
 	          'plant': data[0].planning_plant,
 	          'main_workctr': data[0].workcenter,
 	          'street': data[0].street,
@@ -53879,7 +53879,7 @@
 	  var customer = _ref3.customer;
 
 	  var s = state;
-	  if (customer.contacts.length > 0) {
+	  if (customer.contacts && customer.contacts.length > 0) {
 	    s = s.setIn(['equipment', 'contact'], customer.contacts[0]);
 	  }
 	  return s;
@@ -54113,8 +54113,9 @@
 	  var s = state;
 	  s = s.setIn(['job', 'plant'], equipment.plant);
 	  if (equipment.main_workctr) {
-	    return s.setIn(['job', 'main_workctr'], equipment.main_workctr);
+	    s = s.setIn(['job', 'main_workctr'], equipment.main_workctr);
 	  }
+	  return s;
 	}
 
 	function confirmSuccess(state) {
