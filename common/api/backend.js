@@ -14,7 +14,7 @@ var CUSTOMER_ENTITY = 'customer'
 
 var _operations = require('./operations.json');
 
-Backend.getEquipment = function (payload, cb, cb_error) {
+Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) {
   var j = {
     'serial_number': payload
   }

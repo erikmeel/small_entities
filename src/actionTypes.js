@@ -22,4 +22,5 @@ export default keyMirror({
     CONFIRM_START: null,
     CONFIRM_SUCCESS: null,
     CONFIRM_FAILED: null,
+    RESET_TO_INITIAL: null,
 })

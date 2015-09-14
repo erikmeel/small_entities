@@ -52,7 +52,7 @@ export default React.createClass({
 
   changeMaterialInput(event) {
     actions.setMaterialValue(event.target.value)
-    if (event.target.value.length === 10) {
+    if (event.target.value.length >= 6) {
       actions.getMaterial(event.target.value)
     } else {
       if (this.state.validMaterial)

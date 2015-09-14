@@ -1,5 +1,5 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { RECEIVE_OPERATIONS, SET_OPERATION_VALUE, CONFIRM_SUCCESS } from '../actionTypes'
+import { RECEIVE_OPERATIONS, SET_OPERATION_VALUE, CONFIRM_SUCCESS, RESET_TO_INITIAL } from '../actionTypes'
 
 var _operations = require('../../common/api/operations.json')
 
@@ -14,6 +14,7 @@ export default Store({
     this.on(RECEIVE_OPERATIONS, receiveOperations)
     this.on(SET_OPERATION_VALUE, updateOperation)
     this.on(CONFIRM_SUCCESS, confirmSuccess)
+    this.on(RESET_TO_INITIAL, resetToIntial)
   }
 })
 
@@ -29,5 +30,9 @@ function updateOperation(state, {operationId, fieldName, value}) {
 }
 
 function confirmSuccess(state) {
+  return initialState
+}
+
+function resetToIntial(state) {
   return initialState
 }

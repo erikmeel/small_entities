@@ -22,6 +22,9 @@ export default React.createClass({
     if (event.target.value.length > 3) {
       actions.fetchEquipment(event.target.value)
     }
+    if (event.target.value.length === 0) {
+      actions.resetToIntial()
+    }
   },
 
   render: function () {

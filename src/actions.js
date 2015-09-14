@@ -23,7 +23,10 @@ import {
   ADD_MATERIAL_TO_JOB,
   CHANGE_MATERIAL_QUANTITY,
   INVALID_MATERIAL_INPUT,
+  RESET_TO_INITIAL,
 } from './actionTypes'
+
+import _ from 'underscore'
 
 export default {
 
@@ -36,13 +39,20 @@ export default {
   },
 
   fetchEquipment(equipment) {
-    reactor.dispatch(RECEIVE_EQUIPMENT_START)
-    backend.getEquipment(equipment, equipment => {
-      reactor.dispatch(RECEIVE_EQUIPMENT_SUCCESS, {equipment})
-      if (equipment.installed_at) {
-        this.getCustomer(equipment.installed_at)
-      }
-    }, () => {reactor.dispatch(RECEIVE_EQUIPMENT_FAILED)});
+    const lastEquipmentRequestId = _.uniqueId('equipment_')
+    reactor.dispatch(RECEIVE_EQUIPMENT_START, {lastEquipmentRequestId})
+    backend.getEquipment(equipment, lastEquipmentRequestId,
+      equipment => {
+        if (lastEquipmentRequestId != reactor.evaluate(getters.lastEquipmentRequestId)) { return }
+        reactor.dispatch(RECEIVE_EQUIPMENT_SUCCESS, {equipment})
+        if (equipment.installed_at) {
+          this.getCustomer(equipment.installed_at)
+        }
+      },
+      () => {
+        if (lastEquipmentRequestId != reactor.evaluate(getters.lastEquipmentRequestId)) { return }
+        reactor.dispatch(RECEIVE_EQUIPMENT_FAILED)
+      });
   },
 
   getCustomer(customer) {
@@ -92,5 +102,9 @@ export default {
     () => {
       reactor.dispatch(CONFIRM_FAILED)
     })
+  },
+
+  resetToIntial() {
+    reactor.dispatch(RESET_TO_INITIAL)
   }
 }

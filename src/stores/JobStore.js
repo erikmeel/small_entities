@@ -1,5 +1,5 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { RECEIVE_EQUIPMENT_SUCCESS, SET_JOB_VALUE, SET_OPERATION_VALUE, CONFIRM_SUCCESS } from '../actionTypes'
+import { RECEIVE_EQUIPMENT_SUCCESS, SET_JOB_VALUE, SET_OPERATION_VALUE, CONFIRM_SUCCESS, RESET_TO_INITIAL } from '../actionTypes'
 import moment from 'moment'
 import validations from '../../common/utils/SmallEntityValidations'
 
@@ -25,6 +25,7 @@ export default Store({
     this.on(SET_JOB_VALUE, updateJob),
     this.on(RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment)
     this.on(CONFIRM_SUCCESS, confirmSuccess)
+    this.on(RESET_TO_INITIAL, resetToIntial)
   }
 })
 
@@ -44,5 +45,9 @@ function receiveEquipment(state, { equipment }) {
 }
 
 function confirmSuccess(state) {
+  return initialState
+}
+
+function resetToIntial(state) {
   return initialState
 }
