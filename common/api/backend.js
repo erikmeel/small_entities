@@ -44,6 +44,9 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
             'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
             'installed_at_name': data[0].installed_at_name,
             'installed_at': data[0].installed_at,
+            'invoice_to': data[0].invoice_to,
+            'ship_to': data[0].ship_to,
+            'bill_to': data[0].bill_to,
           };
           if (data[0].internal_note) {
               result['internal_note'] = data[0].internal_note.replace(/\\n/g, "<br />")
@@ -100,8 +103,15 @@ Backend.getMaterial = function (number, workcenter, cb, cb_error) {
 };
 
 Backend.getCustomer = function (payload, cb, cb_error) {
+  var j = {
+    'read_equipments': 'FALSE',
+    'read_contacts': 'TRUE',
+    'ids': [payload]
+  }
   request
-    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY, payload))
+    .get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
+    .query({'action': 'GET_ALL_IN_RANGE'})
+    .query({'json': JSON.stringify(j)})
     .accept('json')
     .end(function (err, res) {
       if (!err && res.body) {

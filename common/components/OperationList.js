@@ -9,8 +9,7 @@ var OperationList = React.createClass({
 
   render: function () {
     return (
-      <div>
-        <h2>{this.props.title}</h2>
+      <div className="operations">
         <div className="row">{this.props.children}</div>
       </div>
     );

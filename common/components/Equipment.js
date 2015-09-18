@@ -6,16 +6,29 @@ import { Input } from 'react-bootstrap'
 var PanelInstance = React.createClass({
   render: function () {
     return (
-      <div className="row">
-        <div className="col-md-12">
-          <div className="panel panel-info">
-            <div className="panel-heading">
-              <h3 className="panel-title">{this.props.panelTitle}</h3>
-            </div>
-            <div className="panel-body">
-              <p className="" dangerouslySetInnerHTML={{__html: this.props.panelBody}}></p>
-            </div>
+      <div className="col-md-12">
+        <div className="panel panel-info">
+          <div className="pull-right panel-title-inner">Equipment Notes</div>
+          <div className="panel-body">
+            <p className="" dangerouslySetInnerHTML={{__html: this.props.panelBody}}></p>
           </div>
+        </div>
+      </div>
+    )
+  }
+})
+
+var PartnerPanelInstance = React.createClass({
+  render: function () {
+    return (
+      <div className="panel panel-info">
+        <div className="panel-heading">
+          <h4 className="panel-title">{this.props.title}</h4>
+        </div>
+        <div className="panel-body">
+          <p className="address">{this.props.partner.name}</p>
+          <p className="address">{this.props.partner.street} {this.props.partner.house_number}</p>
+          <p className="address">{this.props.partner.post_code} {this.props.partner.city}</p>
         </div>
       </div>
     )
@@ -27,6 +40,10 @@ var EquipmentInfo = React.createClass({
     let runningHoursClassName;
     if (parseInt(this.props.equipment.actual_annual_running_hours) > parseInt(this.props.equipment.annual_estimated_running_hours)) {
       runningHoursClassName = "text-danger"
+    }
+    let runningHoursTotal = <div></div>;
+    if (this.props.equipment.actual_running_hours) {
+      runningHoursTotal = <div className="pull-right running-hours-total">Total Running Hours: {this.props.equipment.actual_running_hours}</div>
     }
     let warrantyEndClassName;
     if (this.props.equipment.warranty_expired) {
@@ -67,12 +84,11 @@ var EquipmentInfo = React.createClass({
         <div className="row equipment-details">
           <div className="col-md-12">
             <div className="form-group">
-              <p className="form-control-static">{this.props.equipment.name} {user_status}</p>
+              <p className="form-control-static equipment-name">{this.props.equipment.name} {user_status}</p>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-3">
+          <div className="clearfix" />
+          <div className="col-sm-5 col-lg-2">
             <div className="panel panel-default age-widget">
               <div className="panel-body">
                 <div className="text-center age-value">{this.props.equipment.age}Y</div>
@@ -80,13 +96,17 @@ var EquipmentInfo = React.createClass({
               </div>
             </div>
           </div>
-          <div className="col-sm-5">
+          <div className="col-sm-7 col-lg-4">
             <div className="row">
               <div className="col-sm-12">
                 <div className="panel panel-default">
                   <div className="panel-body">
-                    <div className="pull-left running-hours-title">Running<br/> Hours</div>
-                    <div className='pull-right running-hours-value'><span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours || 'N.A.'}</span>/{this.props.equipment.annual_estimated_running_hours}</div>
+                    <div className="pull-left running-hours-title">Running<br/> Hours Yearly</div>
+                    <div className='pull-right running-hours-value'>
+                      <span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours || 'N.A.'}</span>/{this.props.equipment.annual_estimated_running_hours}
+                      <br />
+                      { runningHoursTotal }
+                    </div>
                   </div>
                 </div>
               </div>
@@ -102,7 +122,7 @@ var EquipmentInfo = React.createClass({
               </div>
             </div>
           </div>
-          <div className="col-sm-4">
+          <div className="col-sm-6 col-lg-3">
             <div className="panel panel-info">
               <div className="panel-heading">
                 <h4 className="panel-title">Installed At</h4>
@@ -115,8 +135,12 @@ var EquipmentInfo = React.createClass({
               </div>
             </div>
           </div>
+          <div className="col-sm-6 col-lg-3">
+            <PartnerPanelInstance title="Bill To" partner={this.props.equipment.bill_to || {}} />
+          </div>
+          <div className="clearfix" />
+          {internal_note}
         </div>
-        {internal_note}
       </div>
     )
   }

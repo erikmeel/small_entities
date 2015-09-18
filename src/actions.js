@@ -46,7 +46,10 @@ export default {
         if (lastEquipmentRequestId != reactor.evaluate(getters.lastEquipmentRequestId)) { return }
         reactor.dispatch(RECEIVE_EQUIPMENT_SUCCESS, {equipment})
         if (equipment.installed_at) {
-          this.getCustomer(equipment.installed_at)
+          this.getCustomer(equipment.installed_at, "installed_at")
+        }
+        if (equipment.bill_to) {
+          this.getCustomer(equipment.bill_to, "bill_to")
         }
       },
       () => {
@@ -55,11 +58,14 @@ export default {
       });
   },
 
-  getCustomer(customer) {
+  getCustomer(customer, customerType) {
     reactor.dispatch(RECEIVE_CUSTOMER_START)
-    backend.getCustomer(customer, customer => {
-      reactor.dispatch(RECEIVE_CUSTOMER_SUCCESS, {customer})
-    }, () => {reactor.dispatch(RECEIVE_CUSTOMER_FAILED)});
+    backend.getCustomer(customer,
+      customer => {
+        reactor.dispatch(RECEIVE_CUSTOMER_SUCCESS, {customer, customerType})
+      },
+      () => {reactor.dispatch(RECEIVE_CUSTOMER_FAILED)
+    });
   },
 
   setJobValue(fieldName, value) {

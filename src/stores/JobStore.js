@@ -7,7 +7,7 @@ const initialState = toImmutable({
   jobValid: false,
   job: {
     process: "X1",
-    maint_act_type: "select",
+    maint_act_type: "CH",
     fixed_price: 0.0,
     execution_date: moment().format("DD.MM.YYYY"),
     description: moment().format("YYYYMMDD") + " ",

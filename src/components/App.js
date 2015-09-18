@@ -84,12 +84,12 @@ export default React.createClass({
       flashContainer = <FlashContainer flashMessage={this.state.flashMessageError} flashMessageVisisble={this.state.flashMessageVisisble} flashStyle='danger' />
     }
     return (
-      <div className="container">
+      <div className="container-fluid">
         {flashContainer}
         <form >
           <EquipmentContainer />
-          { jobContainer }
           { operationsContainer }
+          { jobContainer }
           { materialsContainer }
           <div>
             <br />

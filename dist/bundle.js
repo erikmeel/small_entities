@@ -20630,14 +20630,14 @@
 	    }
 	    return _react2['default'].createElement(
 	      'div',
-	      { className: 'container' },
+	      { className: 'container-fluid' },
 	      flashContainer,
 	      _react2['default'].createElement(
 	        'form',
 	        null,
 	        _react2['default'].createElement(_EquipmentContainer2['default'], null),
-	        jobContainer,
 	        operationsContainer,
+	        jobContainer,
 	        materialsContainer,
 	        _react2['default'].createElement(
 	          'div',
@@ -38288,7 +38288,10 @@
 	      }
 	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_EQUIPMENT_SUCCESS, { equipment: equipment });
 	      if (equipment.installed_at) {
-	        _this.getCustomer(equipment.installed_at);
+	        _this.getCustomer(equipment.installed_at, "installed_at");
+	      }
+	      if (equipment.bill_to) {
+	        _this.getCustomer(equipment.bill_to, "bill_to");
 	      }
 	    }, function () {
 	      if (lastEquipmentRequestId != _reactor2['default'].evaluate(_getters2['default'].lastEquipmentRequestId)) {
@@ -38298,10 +38301,10 @@
 	    });
 	  },
 
-	  getCustomer: function getCustomer(customer) {
+	  getCustomer: function getCustomer(customer, customerType) {
 	    _reactor2['default'].dispatch(_actionTypes.RECEIVE_CUSTOMER_START);
 	    _commonApiBackend2['default'].getCustomer(customer, function (customer) {
-	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_CUSTOMER_SUCCESS, { customer: customer });
+	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_CUSTOMER_SUCCESS, { customer: customer, customerType: customerType });
 	    }, function () {
 	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_CUSTOMER_FAILED);
 	    });
@@ -38399,7 +38402,10 @@
 	          'actual_running_hours': data[0].actual_running_hours,
 	          'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
 	          'installed_at_name': data[0].installed_at_name,
-	          'installed_at': data[0].installed_at
+	          'installed_at': data[0].installed_at,
+	          'invoice_to': data[0].invoice_to,
+	          'ship_to': data[0].ship_to,
+	          'bill_to': data[0].bill_to
 	        };
 	        if (data[0].internal_note) {
 	          result['internal_note'] = data[0].internal_note.replace(/\\n/g, "<br />");
@@ -38449,7 +38455,12 @@
 	};
 
 	Backend.getCustomer = function (payload, cb, cb_error) {
-	  request.get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY, payload)).accept('json').end(function (err, res) {
+	  var j = {
+	    'read_equipments': 'FALSE',
+	    'read_contacts': 'TRUE',
+	    'ids': [payload]
+	  };
+	  request.get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY)).query({ 'action': 'GET_ALL_IN_RANGE' }).query({ 'json': JSON.stringify(j) }).accept('json').end(function (err, res) {
 	    if (!err && res.body) {
 	      var data = res.body[0].model;
 	      var result;
@@ -51937,7 +51948,7 @@
 			"id": 1,
 			"name": "Work",
 			"uom": "Hours",
-			"quantity": 1,
+			"quantity": 2,
 			"key": "work_qty"
 		},
 		{
@@ -51951,14 +51962,14 @@
 			"id": 3,
 			"name": "Travel Distance",
 			"uom": "Local Dist. Unit",
-			"quantity": 0,
+			"quantity": 50,
 			"key": "travel_dist_qty"
 		},
 		{
 			"id": 4,
 			"name": "Travel Time",
 			"uom": "Hours",
-			"quantity": 0,
+			"quantity": 1,
 			"key": "travel_qty"
 		},
 		{
@@ -53650,27 +53661,62 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'row' },
+	      { className: 'col-md-12' },
 	      React.createElement(
 	        'div',
-	        { className: 'col-md-12' },
+	        { className: 'panel panel-info' },
 	        React.createElement(
 	          'div',
-	          { className: 'panel panel-info' },
-	          React.createElement(
-	            'div',
-	            { className: 'panel-heading' },
-	            React.createElement(
-	              'h3',
-	              { className: 'panel-title' },
-	              this.props.panelTitle
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'panel-body' },
-	            React.createElement('p', { className: '', dangerouslySetInnerHTML: { __html: this.props.panelBody } })
-	          )
+	          { className: 'pull-right panel-title-inner' },
+	          'Equipment Notes'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'panel-body' },
+	          React.createElement('p', { className: '', dangerouslySetInnerHTML: { __html: this.props.panelBody } })
+	        )
+	      )
+	    );
+	  }
+	});
+
+	var PartnerPanelInstance = React.createClass({
+	  displayName: 'PartnerPanelInstance',
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'panel panel-info' },
+	      React.createElement(
+	        'div',
+	        { className: 'panel-heading' },
+	        React.createElement(
+	          'h4',
+	          { className: 'panel-title' },
+	          this.props.title
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'panel-body' },
+	        React.createElement(
+	          'p',
+	          { className: 'address' },
+	          this.props.partner.name
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'address' },
+	          this.props.partner.street,
+	          ' ',
+	          this.props.partner.house_number
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'address' },
+	          this.props.partner.post_code,
+	          ' ',
+	          this.props.partner.city
 	        )
 	      )
 	    );
@@ -53684,6 +53730,15 @@
 	    var runningHoursClassName = undefined;
 	    if (parseInt(this.props.equipment.actual_annual_running_hours) > parseInt(this.props.equipment.annual_estimated_running_hours)) {
 	      runningHoursClassName = "text-danger";
+	    }
+	    var runningHoursTotal = React.createElement('div', null);
+	    if (this.props.equipment.actual_running_hours) {
+	      runningHoursTotal = React.createElement(
+	        'div',
+	        { className: 'pull-right running-hours-total' },
+	        'Total Running Hours: ',
+	        this.props.equipment.actual_running_hours
+	      );
 	    }
 	    var warrantyEndClassName = undefined;
 	    if (this.props.equipment.warranty_expired) {
@@ -53757,20 +53812,17 @@
 	            { className: 'form-group' },
 	            React.createElement(
 	              'p',
-	              { className: 'form-control-static' },
+	              { className: 'form-control-static equipment-name' },
 	              this.props.equipment.name,
 	              ' ',
 	              user_status
 	            )
 	          )
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'row' },
+	        ),
+	        React.createElement('div', { className: 'clearfix' }),
 	        React.createElement(
 	          'div',
-	          { className: 'col-sm-3' },
+	          { className: 'col-sm-5 col-lg-2' },
 	          React.createElement(
 	            'div',
 	            { className: 'panel panel-default age-widget' },
@@ -53793,7 +53845,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-sm-5' },
+	          { className: 'col-sm-7 col-lg-4' },
 	          React.createElement(
 	            'div',
 	            { className: 'row' },
@@ -53811,7 +53863,7 @@
 	                    { className: 'pull-left running-hours-title' },
 	                    'Running',
 	                    React.createElement('br', null),
-	                    ' Hours'
+	                    ' Hours Yearly'
 	                  ),
 	                  React.createElement(
 	                    'div',
@@ -53822,7 +53874,9 @@
 	                      this.props.equipment.actual_annual_running_hours || 'N.A.'
 	                    ),
 	                    '/',
-	                    this.props.equipment.annual_estimated_running_hours
+	                    this.props.equipment.annual_estimated_running_hours,
+	                    React.createElement('br', null),
+	                    runningHoursTotal
 	                  )
 	                )
 	              )
@@ -53863,7 +53917,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-sm-4' },
+	          { className: 'col-sm-6 col-lg-3' },
 	          React.createElement(
 	            'div',
 	            { className: 'panel panel-info' },
@@ -53901,9 +53955,15 @@
 	              contact
 	            )
 	          )
-	        )
-	      ),
-	      internal_note
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'col-sm-6 col-lg-3' },
+	          React.createElement(PartnerPanelInstance, { title: 'Bill To', partner: this.props.equipment.bill_to || {} })
+	        ),
+	        React.createElement('div', { className: 'clearfix' }),
+	        internal_note
+	      )
 	    );
 	  }
 	});
@@ -54005,66 +54065,78 @@
 	    }
 	    return _react2['default'].createElement(
 	      'div',
-	      null,
+	      { className: 'row' },
 	      _react2['default'].createElement(
-	        _reactBootstrap.Input,
-	        { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type)), hasFeedback: true },
+	        'div',
+	        { className: 'col-sm-6 col-lg-4' },
 	        _react2['default'].createElement(
-	          'option',
-	          { value: 'select' },
-	          'Select a Flow'
+	          _reactBootstrap.Input,
+	          { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type)), hasFeedback: true },
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'select' },
+	            'Select a Flow'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'FP' },
+	            'Fixed Price'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'OH' },
+	            'Overhaul Fixed Price'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'MX' },
+	            'Motor Xchange'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'CX' },
+	            'Converter Xchange'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'UC' },
+	            'Upgrades (Controls)'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'UP' },
+	            'Upgrades (Protection)'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'CH' },
+	            'Service Repair'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'SG' },
+	            'Service Goodwill'
+	          ),
+	          _react2['default'].createElement(
+	            'option',
+	            { value: 'GW' },
+	            'Sales Goodwill'
+	          )
 	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'FP' },
-	          'Fixed Price'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'OH' },
-	          'Overhaul Fixed Price'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'MX' },
-	          'Motor Xchange'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'CX' },
-	          'Converter Xchange'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'UC' },
-	          'Upgrades (Controls)'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'UP' },
-	          'Upgrades (Protection)'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'CH' },
-	          'Service Repair'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'SG' },
-	          'Service Goodwill'
-	        ),
-	        _react2['default'].createElement(
-	          'option',
-	          { value: 'GW' },
-	          'Sales Goodwill'
-	        )
+	        fixedPrice
 	      ),
-	      fixedPrice,
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") }),
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
-	      _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Remarks Customer (Visible on Invoice)', placeholder: 'Remarks Customer', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
+	      _react2['default'].createElement(
+	        'div',
+	        { className: 'col-sm-6 col-lg-4' },
+	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
+	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") })
+	      ),
+	      _react2['default'].createElement(
+	        'div',
+	        { className: 'col-sm-12 col-lg-4' },
+	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
+	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Remarks Customer (Visible on Invoice)', placeholder: 'Remarks Customer', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
+	      )
 	    );
 	  }
 	});
@@ -55035,7 +55107,8 @@
 	            null,
 	            this.props.operation.name
 	          ),
-	          React.createElement('br', null),
+	          ' ',
+	          React.createElement('br', { className: 'hidden-lg' }),
 	          this.props.operation.uom
 	        ),
 	        React.createElement('input', { className: 'form-control operation-value', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
@@ -55064,12 +55137,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      null,
-	      React.createElement(
-	        'h2',
-	        null,
-	        this.props.title
-	      ),
+	      { className: 'operations' },
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
@@ -55459,10 +55527,14 @@
 
 	function receiveCustomer(state, _ref4) {
 	  var customer = _ref4.customer;
+	  var customerType = _ref4.customerType;
 
 	  var s = state;
-	  if (customer.contacts && customer.contacts.length > 0) {
+	  if (customerType === 'installed_at' && customer.contacts && customer.contacts.length > 0) {
 	    s = s.setIn(['equipment', 'contact'], customer.contacts[0]);
+	  }
+	  if (customerType === 'bill_to') {
+	    s = s.setIn(['equipment', 'bill_to'], customer);
 	  }
 	  return s;
 	}
@@ -55670,7 +55742,7 @@
 	  jobValid: false,
 	  job: {
 	    process: "X1",
-	    maint_act_type: "select",
+	    maint_act_type: "CH",
 	    fixed_price: 0.0,
 	    execution_date: (0, _moment2['default'])().format("DD.MM.YYYY"),
 	    description: (0, _moment2['default'])().format("YYYYMMDD") + " ",

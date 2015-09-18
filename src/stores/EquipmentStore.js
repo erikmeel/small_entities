@@ -40,10 +40,13 @@ function receiveEquipment(state, { equipment }) {
   })
 }
 
-function receiveCustomer(state, { customer }) {
+function receiveCustomer(state, { customer, customerType }) {
   let s = state
-  if (customer.contacts && customer.contacts.length > 0) {
+  if (customerType === 'installed_at' && customer.contacts && customer.contacts.length > 0) {
     s = s.setIn(['equipment','contact'], customer.contacts[0])
+  }
+  if (customerType === 'bill_to') {
+    s = s.setIn(['equipment','bill_to'], customer)
   }
   return s
 }
