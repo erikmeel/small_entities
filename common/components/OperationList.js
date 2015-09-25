@@ -10,7 +10,13 @@ var OperationList = React.createClass({
   render: function () {
     return (
       <div className="operations">
-        <div className="row">{this.props.children}</div>
+        <div className="row">
+          <div className="col-lg-8 col-lg-offset-2">
+            <div className="row">
+              {this.props.children}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

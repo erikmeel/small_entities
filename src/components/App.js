@@ -86,7 +86,7 @@ export default React.createClass({
     return (
       <div className="container-fluid">
         {flashContainer}
-        <form >
+        <form className="form">
           <EquipmentContainer />
           { operationsContainer }
           { jobContainer }

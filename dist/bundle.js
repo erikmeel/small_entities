@@ -20634,7 +20634,7 @@
 	      flashContainer,
 	      _react2['default'].createElement(
 	        'form',
-	        null,
+	        { className: 'form' },
 	        _react2['default'].createElement(_EquipmentContainer2['default'], null),
 	        operationsContainer,
 	        jobContainer,
@@ -54065,77 +54065,73 @@
 	    }
 	    return _react2['default'].createElement(
 	      'div',
-	      { className: 'row' },
+	      { className: 'row job-details' },
 	      _react2['default'].createElement(
 	        'div',
-	        { className: 'col-sm-6 col-lg-4' },
+	        { className: 'col-lg-8 col-lg-offset-2' },
 	        _react2['default'].createElement(
-	          _reactBootstrap.Input,
-	          { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type)), hasFeedback: true },
+	          'div',
+	          { className: 'form-inline' },
 	          _react2['default'].createElement(
-	            'option',
-	            { value: 'select' },
-	            'Select a Flow'
+	            _reactBootstrap.Input,
+	            { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type)), hasFeedback: true },
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'select' },
+	              'Select a Flow'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'FP' },
+	              'Fixed Price'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'OH' },
+	              'Overhaul Fixed Price'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'MX' },
+	              'Motor Xchange'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'CX' },
+	              'Converter Xchange'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'UC' },
+	              'Upgrades (Controls)'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'UP' },
+	              'Upgrades (Protection)'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'CH' },
+	              'Service Repair'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'SG' },
+	              'Service Goodwill'
+	            ),
+	            _react2['default'].createElement(
+	              'option',
+	              { value: 'GW' },
+	              'Sales Goodwill'
+	            )
 	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'FP' },
-	            'Fixed Price'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'OH' },
-	            'Overhaul Fixed Price'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'MX' },
-	            'Motor Xchange'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'CX' },
-	            'Converter Xchange'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'UC' },
-	            'Upgrades (Controls)'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'UP' },
-	            'Upgrades (Protection)'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'CH' },
-	            'Service Repair'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'SG' },
-	            'Service Goodwill'
-	          ),
-	          _react2['default'].createElement(
-	            'option',
-	            { value: 'GW' },
-	            'Sales Goodwill'
-	          )
-	        ),
-	        fixedPrice
-	      ),
-	      _react2['default'].createElement(
-	        'div',
-	        { className: 'col-sm-6 col-lg-4' },
-	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
-	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") })
-	      ),
-	      _react2['default'].createElement(
-	        'div',
-	        { className: 'col-sm-12 col-lg-4' },
-	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
-	        _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Remarks Customer (Visible on Invoice)', placeholder: 'Remarks Customer', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
+	          fixedPrice,
+	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
+	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") }),
+	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
+	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Remarks Customer (Visible on Invoice)', placeholder: 'Remarks Customer', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
+	        )
 	      )
 	    );
 	  }
@@ -55108,7 +55104,7 @@
 	            this.props.operation.name
 	          ),
 	          ' ',
-	          React.createElement('br', { className: 'hidden-lg' }),
+	          React.createElement('br', null),
 	          this.props.operation.uom
 	        ),
 	        React.createElement('input', { className: 'form-control operation-value', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
@@ -55141,7 +55137,15 @@
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
-	        this.props.children
+	        React.createElement(
+	          'div',
+	          { className: 'col-lg-8 col-lg-offset-2' },
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            this.props.children
+	          )
+	        )
 	      )
 	    );
 	  }
@@ -55289,14 +55293,17 @@
 	    }
 	    return _react2['default'].createElement(
 	      'div',
-	      null,
+	      { className: 'material-details' },
 	      _react2['default'].createElement(
-	        'h2',
-	        null,
-	        'Materials'
-	      ),
-	      materialListContainer,
-	      _react2['default'].createElement(_commonComponentsMaterialInput2['default'], { key: 'material_input', material: this.state.material.toJS(), onChangeMaterial: this.changeMaterialInput, validMaterial: this.state.validMaterial, availableAtStorageLocation: this.state.availableAtStorageLocation, addMaterial: this.addMaterial })
+	        'div',
+	        { className: 'row' },
+	        _react2['default'].createElement(
+	          'div',
+	          { className: 'col-md-8 col-md-offset-2' },
+	          materialListContainer,
+	          _react2['default'].createElement(_commonComponentsMaterialInput2['default'], { key: 'material_input', material: this.state.material.toJS(), onChangeMaterial: this.changeMaterialInput, validMaterial: this.state.validMaterial, availableAtStorageLocation: this.state.availableAtStorageLocation, addMaterial: this.addMaterial })
+	        )
+	      )
 	    );
 	  }
 	});

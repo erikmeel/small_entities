@@ -11,12 +11,16 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 
 .navbar {
   background-color: rgb(156, 206, 224);
-  min-height: 100px;
+  min-height: 50px;
 }
 
 .navbar-default .navbar-text {
   padding-top: 2px;
   color: rgb(255, 255, 255);
+}
+
+.navbar img {
+  height: 30px;
 }
 
 .row.no-gutter {
@@ -30,8 +34,31 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
   padding-right: 0;
 }
 
+/* form handling */
+
 .form-group .form-control {
   border-radius: 0;
+}
+
+.form-inline .form-group {
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.form-inline .form-group label {
+  width: 30%;
+}
+
+.form-inline .form-group input {
+  width: 70%;
+}
+
+.form-inline .form-group select {
+  width: 70%;
+}
+
+.form-inline .form-group textarea {
+  width: 70%;
 }
 
 /* Operations */
@@ -117,6 +144,21 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 
 .operations {
   margin-top: 5px;
+}
+
+/* Job Details */
+
+.job-details {
+  background-color: rgba(250, 250, 250, 1);
+  border-top: 1px solid rgba(200, 200, 200, 0.85);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.85);
+  padding-top: 10px;
+}
+
+/* Material Details */
+
+.material-details {
+  padding-top: 10px;
 }
 
 /* Extra small devices (phones, less than 768px) */
