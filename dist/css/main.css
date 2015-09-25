@@ -79,7 +79,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 .equipment-details {
   background-color: rgb(255, 255, 255);
   border-top: 1px solid rgba(200, 200, 200, 0.85);
-  border-bottom: 1px solid rgba(200, 240, 200, 0.85);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.85);
 }
 
 .equipment-details .equipment-name {
@@ -143,7 +143,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 /* Operations */
 
 .operations {
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 /* Job Details */
@@ -158,7 +158,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
 /* Material Details */
 
 .material-details {
+  background-color: rgba(250, 250, 250, 1);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.85);
   padding-top: 10px;
+}
+
+.material-details h4 {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 /* Extra small devices (phones, less than 768px) */

@@ -79,12 +79,10 @@ export default React.createClass({
       materialListContainer = <MaterialListContainer materials={this.state.materials} />
     }
     return (
-      <div className="material-details">
-        <div className="row">
-          <div className="col-md-8 col-md-offset-2">
-            { materialListContainer }
-            <MaterialInput key="material_input" material={this.state.material.toJS()} onChangeMaterial={this.changeMaterialInput} validMaterial={this.state.validMaterial} availableAtStorageLocation={this.state.availableAtStorageLocation} addMaterial={this.addMaterial} />
-          </div>
+      <div className="row material-details">
+        <div className="col-lg-8 col-lg-offset-2">
+          { materialListContainer }
+          <MaterialInput key="material_input" material={this.state.material.toJS()} onChangeMaterial={this.changeMaterialInput} validMaterial={this.state.validMaterial} availableAtStorageLocation={this.state.availableAtStorageLocation} addMaterial={this.addMaterial} />
         </div>
       </div>
     );

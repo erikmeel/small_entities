@@ -55293,16 +55293,12 @@
 	    }
 	    return _react2['default'].createElement(
 	      'div',
-	      { className: 'material-details' },
+	      { className: 'row material-details' },
 	      _react2['default'].createElement(
 	        'div',
-	        { className: 'row' },
-	        _react2['default'].createElement(
-	          'div',
-	          { className: 'col-md-8 col-md-offset-2' },
-	          materialListContainer,
-	          _react2['default'].createElement(_commonComponentsMaterialInput2['default'], { key: 'material_input', material: this.state.material.toJS(), onChangeMaterial: this.changeMaterialInput, validMaterial: this.state.validMaterial, availableAtStorageLocation: this.state.availableAtStorageLocation, addMaterial: this.addMaterial })
-	        )
+	        { className: 'col-lg-8 col-lg-offset-2' },
+	        materialListContainer,
+	        _react2['default'].createElement(_commonComponentsMaterialInput2['default'], { key: 'material_input', material: this.state.material.toJS(), onChangeMaterial: this.changeMaterialInput, validMaterial: this.state.validMaterial, availableAtStorageLocation: this.state.availableAtStorageLocation, addMaterial: this.addMaterial })
 	      )
 	    );
 	  }
@@ -55402,14 +55398,14 @@
 	        help = this.props.material.name + " is not available for the technician.";
 	      }
 	    }
-	    var materialInput = React.createElement(_reactBootstrap.Input, { type: 'text', placeholder: 'Material Number ...', help: help, onChange: this.props.onChangeMaterial, value: this.props.material.id });
+	    var materialInput = React.createElement(_reactBootstrap.Input, { type: 'text', placeholder: 'Input material number to add to the job', help: help, onChange: this.props.onChangeMaterial, value: this.props.material.id });
 	    if (this.props.validMaterial && this.props.material.storage_location) {
 	      var buttonAddMaterial = React.createElement(
 	        _reactBootstrap.Button,
 	        { onClick: this.props.addMaterial },
 	        'Add Material'
 	      );
-	      materialInput = React.createElement(_reactBootstrap.Input, { type: 'text', placeholder: 'Material Number ...', help: help, onChange: this.props.onChangeMaterial, value: this.props.material.id, buttonAfter: buttonAddMaterial });
+	      materialInput = React.createElement(_reactBootstrap.Input, { type: 'text', placeholder: 'Input material number to add to the job', help: help, onChange: this.props.onChangeMaterial, value: this.props.material.id, buttonAfter: buttonAddMaterial });
 	    }
 
 	    return React.createElement(
@@ -55787,6 +55783,7 @@
 	  if (equipment.main_workctr) {
 	    s = s.setIn(['job', 'main_workctr'], equipment.main_workctr);
 	  }
+	  s = s.setIn(['jobValid'], _commonUtilsSmallEntityValidations2['default'].validateJob(s.getIn(['job']).toJS()));
 	  return s;
 	}
 

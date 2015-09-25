@@ -41,6 +41,7 @@ function receiveEquipment(state, { equipment }) {
   if (equipment.main_workctr) {
     s = s.setIn(['job', 'main_workctr'], equipment.main_workctr)
   }
+  s = s.setIn(['jobValid'], validations.validateJob(s.getIn(['job']).toJS()))
   return s
 }
 

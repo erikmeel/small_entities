@@ -14,10 +14,10 @@ var MaterialInput = React.createClass({
         help = this.props.material.name + " is not available for the technician."
       }
     }
-    var materialInput = <Input type="text" placeholder="Material Number ..." help={help} onChange={this.props.onChangeMaterial} value={this.props.material.id} />
+    var materialInput = <Input type="text" placeholder="Input material number to add to the job" help={help} onChange={this.props.onChangeMaterial} value={this.props.material.id} />
     if (this.props.validMaterial && this.props.material.storage_location) {
       var buttonAddMaterial = <Button onClick={this.props.addMaterial}>Add Material</Button>
-      materialInput = <Input type="text" placeholder="Material Number ..." help={help} onChange={this.props.onChangeMaterial} value={this.props.material.id} buttonAfter={buttonAddMaterial} />
+      materialInput = <Input type="text" placeholder="Input material number to add to the job" help={help} onChange={this.props.onChangeMaterial} value={this.props.material.id} buttonAfter={buttonAddMaterial} />
     }
 
     return (
