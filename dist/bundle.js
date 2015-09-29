@@ -54059,9 +54059,33 @@
 
 	  render: function render() {
 	    var job = this.state.job.toJS();
+	    var processCreateClassName = "marked end";
+	    var processPlanClassName = "unmarked";
+	    var processConfirmClassName = "unmarked";
+	    var processInvoiceClassName = "unmarked";
+	    if (job.process === 'X3') {
+	      processCreateClassName = "marked";
+	      processPlanClassName = "marked end";
+	      processConfirmClassName = "unmarked";
+	      processInvoiceClassName = "unmarked";
+	    } else if (job.process === 'X4') {
+	      processCreateClassName = "marked";
+	      processPlanClassName = "marked";
+	      processConfirmClassName = "marked end";
+	      processInvoiceClassName = "unmarked";
+	    } else if (job.process === 'X1') {
+	      processCreateClassName = "marked";
+	      processPlanClassName = "marked";
+	      processConfirmClassName = "marked";
+	      processInvoiceClassName = "marked end";
+	    }
 	    var fixedPrice = _react2['default'].createElement('div', null);
 	    if (job.maint_act_type.match(/^(FP|OH|MX|CX|UC|UP)/)) {
 	      fixedPrice = _react2['default'].createElement(_commonComponentsJobFixedPrice2['default'], { job: job, onUpdateField: this.updateField, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validatePriceForFlow(job.fixed_price, job.maint_act_type)) });
+	    }
+	    var remarksCustomer = _react2['default'].createElement('div', null);
+	    if (job.process.match(/^(X1|X4)/)) {
+	      remarksCustomer = _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Remarks Customer (Visible on Invoice)', placeholder: 'Remarks Customer', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") });
 	    }
 	    return _react2['default'].createElement(
 	      'div',
@@ -54072,6 +54096,50 @@
 	        _react2['default'].createElement(
 	          'div',
 	          { className: 'form-inline' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'process-select' },
+	            _react2['default'].createElement(
+	              'label',
+	              { className: processCreateClassName },
+	              _react2['default'].createElement('input', { type: 'radio', name: 'process', value: 'X2', checked: job.process === 'X2', onChange: this.updateField.bind(this, "process") }),
+	              _react2['default'].createElement(
+	                'span',
+	                { className: 'process-label' },
+	                'Create'
+	              )
+	            ),
+	            _react2['default'].createElement(
+	              'label',
+	              { className: processPlanClassName },
+	              _react2['default'].createElement('input', { type: 'radio', name: 'process', value: 'X3', checked: job.process === 'X3', onChange: this.updateField.bind(this, "process") }),
+	              _react2['default'].createElement(
+	                'span',
+	                null,
+	                'Plan'
+	              )
+	            ),
+	            _react2['default'].createElement(
+	              'label',
+	              { className: processConfirmClassName },
+	              _react2['default'].createElement('input', { type: 'radio', name: 'process', value: 'X4', checked: job.process === 'X4', onChange: this.updateField.bind(this, "process") }),
+	              _react2['default'].createElement(
+	                'span',
+	                null,
+	                'Confirm'
+	              )
+	            ),
+	            _react2['default'].createElement(
+	              'label',
+	              { className: processInvoiceClassName },
+	              _react2['default'].createElement('input', { type: 'radio', name: 'process', value: 'X1', checked: job.process === 'X1', onChange: this.updateField.bind(this, "process") }),
+	              _react2['default'].createElement(
+	                'span',
+	                null,
+	                'Invoice'
+	              )
+	            )
+	          ),
 	          _react2['default'].createElement(
 	            _reactBootstrap.Input,
 	            { type: 'select', label: 'Flow', placeholder: 'select', value: job.maint_act_type, onChange: this.updateField.bind(this, "maint_act_type"), bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateFlow(job.maint_act_type)), hasFeedback: true },
@@ -54130,7 +54198,7 @@
 	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
 	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") }),
 	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
-	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'textarea', label: 'Remarks Customer (Visible on Invoice)', placeholder: 'Remarks Customer', value: job.sales_order_text, onChange: this.updateField.bind(this, "sales_order_text") })
+	          remarksCustomer
 	        )
 	      )
 	    );
@@ -54175,6 +54243,10 @@
 	  return result;
 	};
 
+	Validator.validateProcess = function (process) {
+	  return process.match(/^(X1|X2|X3|X4)/) !== null;
+	};
+
 	Validator.validateFlow = function (flow) {
 	  return flow.match(/^(FP|OH|MX|CX|UC|UP|CH|SG|GW)/) !== null;
 	};
@@ -54203,6 +54275,9 @@
 	};
 
 	Validator.validateJob = function (job) {
+	  if (!Validator.validateProcess(job.process)) {
+	    return false;
+	  }
 	  if (!Validator.validateFlow(job.maint_act_type)) {
 	    return false;
 	  }
@@ -55744,7 +55819,7 @@
 	var initialState = (0, _nuclearJs.toImmutable)({
 	  jobValid: false,
 	  job: {
-	    process: "X1",
+	    process: "X4",
 	    maint_act_type: "CH",
 	    fixed_price: 0.0,
 	    execution_date: (0, _moment2['default'])().format("DD.MM.YYYY"),

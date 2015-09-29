@@ -12,6 +12,10 @@ Validator.vs = function (b) {
   return result
 }
 
+Validator.validateProcess = function (process) {
+  return process.match(/^(X1|X2|X3|X4)/) !== null
+}
+
 Validator.validateFlow = function (flow) {
   return flow.match(/^(FP|OH|MX|CX|UC|UP|CH|SG|GW)/) !== null
 };
@@ -40,6 +44,7 @@ Validator.validatePriceForFlow = function (price, flow) {
 };
 
 Validator.validateJob = function (job) {
+  if (!Validator.validateProcess(job.process)) { return false; }
   if (!Validator.validateFlow(job.maint_act_type)) { return false; }
   if (!Validator.validatePriceForFlow(job.fixed_price, job.maint_act_type)) { return false ;}
   if (!Validator.validateExecutionDate(job.execution_date)) { return false; }

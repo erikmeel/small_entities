@@ -6,7 +6,7 @@ import validations from '../../common/utils/SmallEntityValidations'
 const initialState = toImmutable({
   jobValid: false,
   job: {
-    process: "X1",
+    process: "X4",
     maint_act_type: "CH",
     fixed_price: 0.0,
     execution_date: moment().format("DD.MM.YYYY"),
