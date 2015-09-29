@@ -54107,7 +54107,9 @@
 	                'span',
 	                { className: 'process-label' },
 	                'Create'
-	              )
+	              ),
+	              ' ',
+	              _react2['default'].createElement('span', { className: 'glyphicon glyphicon-triangle-top process-marker' })
 	            ),
 	            _react2['default'].createElement(
 	              'label',
@@ -54117,7 +54119,9 @@
 	                'span',
 	                null,
 	                'Plan'
-	              )
+	              ),
+	              ' ',
+	              _react2['default'].createElement('span', { className: 'glyphicon glyphicon-triangle-top process-marker' })
 	            ),
 	            _react2['default'].createElement(
 	              'label',
@@ -54127,7 +54131,9 @@
 	                'span',
 	                null,
 	                'Confirm'
-	              )
+	              ),
+	              ' ',
+	              _react2['default'].createElement('span', { className: 'glyphicon glyphicon-triangle-top process-marker' })
 	            ),
 	            _react2['default'].createElement(
 	              'label',
@@ -54137,7 +54143,9 @@
 	                'span',
 	                null,
 	                'Invoice'
-	              )
+	              ),
+	              ' ',
+	              _react2['default'].createElement('span', { className: 'glyphicon glyphicon-triangle-top process-marker' })
 	            )
 	          ),
 	          _react2['default'].createElement(

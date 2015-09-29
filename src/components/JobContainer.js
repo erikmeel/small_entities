@@ -61,10 +61,10 @@ export default React.createClass({
         <div className="col-lg-8 col-lg-offset-2">
           <div className="form-inline">
             <div className='process-select'>
-              <label className={processCreateClassName}><input type='radio' name='process' value='X2' checked={job.process === 'X2'} onChange={this.updateField.bind(this, "process")}></input><span className="process-label">Create</span></label>
-              <label className={processPlanClassName}><input type='radio' name='process' value='X3' checked={job.process === 'X3'} onChange={this.updateField.bind(this, "process")}></input><span>Plan</span></label>
-              <label className={processConfirmClassName}><input type='radio' name='process' value='X4' checked={job.process === 'X4'} onChange={this.updateField.bind(this, "process")}></input><span>Confirm</span></label>
-              <label className={processInvoiceClassName}><input type='radio' name='process' value='X1' checked={job.process === 'X1'} onChange={this.updateField.bind(this, "process")}></input><span>Invoice</span></label>
+              <label className={processCreateClassName}><input type='radio' name='process' value='X2' checked={job.process === 'X2'} onChange={this.updateField.bind(this, "process")}></input><span className="process-label">Create</span> <span className="glyphicon glyphicon-triangle-top process-marker"></span></label>
+              <label className={processPlanClassName}><input type='radio' name='process' value='X3' checked={job.process === 'X3'} onChange={this.updateField.bind(this, "process")}></input><span>Plan</span> <span className="glyphicon glyphicon-triangle-top process-marker"></span></label>
+              <label className={processConfirmClassName}><input type='radio' name='process' value='X4' checked={job.process === 'X4'} onChange={this.updateField.bind(this, "process")}></input><span>Confirm</span> <span className="glyphicon glyphicon-triangle-top process-marker"></span></label>
+              <label className={processInvoiceClassName}><input type='radio' name='process' value='X1' checked={job.process === 'X1'} onChange={this.updateField.bind(this, "process")}></input><span>Invoice</span> <span className="glyphicon glyphicon-triangle-top process-marker"></span></label>
             </div>
             <Input type='select' label='Flow' placeholder='select' value={job.maint_act_type} onChange={this.updateField.bind(this, "maint_act_type")} bsStyle={validations.vs(validations.validateFlow(job.maint_act_type))} hasFeedback>
               <option value="select">Select a Flow</option>

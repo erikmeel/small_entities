@@ -183,8 +183,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6{
   display: none;
 }
 
-.job-details .process-select label span{
+.job-details .process-select label span {
   text-align: center;
+}
+
+.job-details .process-select label span.process-marker {
+  display: block;
 }
 
 /* Material Details */
