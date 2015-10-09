@@ -38,7 +38,7 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
             'house_number': data[0].house_number,
             'post_code': data[0].post_code,
             'city': data[0].city,
-            'annual_estimated_running_hours': data[0].annual_estimated_running_hours,
+            'estimated_annual_running_hours': data[0].estimated_annual_running_hours,
             'actual_annual_running_hours': data[0].actual_annual_running_hours,
             'actual_running_hours': data[0].actual_running_hours,
             'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),

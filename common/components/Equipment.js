@@ -38,7 +38,7 @@ var PartnerPanelInstance = React.createClass({
 var EquipmentInfo = React.createClass({
   render: function () {
     let runningHoursClassName;
-    if (parseInt(this.props.equipment.actual_annual_running_hours) > parseInt(this.props.equipment.annual_estimated_running_hours)) {
+    if (parseInt(this.props.equipment.actual_annual_running_hours) > parseInt(this.props.equipment.estimated_annual_running_hours)) {
       runningHoursClassName = "text-danger"
     }
     let runningHoursTotal = <div></div>;
@@ -103,7 +103,7 @@ var EquipmentInfo = React.createClass({
                   <div className="panel-body">
                     <div className="pull-left running-hours-title">Running<br/> Hours Yearly</div>
                     <div className='pull-right running-hours-value'>
-                      <span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours || 'N.A.'}</span>/{this.props.equipment.annual_estimated_running_hours}
+                      <span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours || 'N.A.'}</span>/{this.props.equipment.estimated_annual_running_hours}
                       <br />
                       { runningHoursTotal }
                     </div>
