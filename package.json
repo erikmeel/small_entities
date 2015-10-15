@@ -1,9 +1,8 @@
 {
   "main": "js/app.js",
   "scripts": {
-    "start": "../node_modules/watchify/bin/cmd.js js/app.js -o build/bundle.js -v -d",
-    "build": "browserify js/app.js > build/bundle.js",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
+    "watch": "webpack -w",
+    "dev": "webpack-dev-server --devtool eval-source-map --progress --colors --hot --content-base dist",
     "deploy": "set NODE_ENV=production && webpack -p --config webpack.production.config.js"
   },
   "browserify": {
