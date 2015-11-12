@@ -38227,6 +38227,7 @@
 	var availableAtStorageLocation = ['materials', 'availableAtStorageLocation'];
 	var job = ['job', 'job'];
 	var jobValid = ['job', 'jobValid'];
+	var jobWorkcenterDisabled = ['job', 'jobWorkcenterDisabled'];
 
 	var materialsForSubmit = [['materials', 'itemQty'], function (itemQty) {
 	  return itemQty.map(function (material) {
@@ -38234,7 +38235,7 @@
 	  }).toList();
 	}];
 
-	exports['default'] = { flashSuccess: flashSuccess, flashError: flashError, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, lastEquipmentRequestId: lastEquipmentRequestId, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit };
+	exports['default'] = { flashSuccess: flashSuccess, flashError: flashError, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, lastEquipmentRequestId: lastEquipmentRequestId, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit, jobWorkcenterDisabled: jobWorkcenterDisabled };
 	module.exports = exports['default'];
 
 /***/ },
@@ -38333,10 +38334,16 @@
 
 	  addMaterialToJob: function addMaterialToJob(material) {
 	    _reactor2['default'].dispatch(_actionTypes.ADD_MATERIAL_TO_JOB, { material: material });
+	    if (!_reactor2['default'].evaluateToJS(_getters2['default'].jobWorkcenterDisabled)) {
+	      _reactor2['default'].dispatch(_actionTypes.WORKCENTER_INPUT_DISABLE);
+	    }
 	  },
 
 	  changeMaterialQuantity: function changeMaterialQuantity(material_id, quantity) {
 	    _reactor2['default'].dispatch(_actionTypes.CHANGE_MATERIAL_QUANTITY, { material_id: material_id, quantity: quantity });
+	    if (_reactor2['default'].evaluateToJS(_getters2['default'].materialsForSubmit).length === 0) {
+	      _reactor2['default'].dispatch(_actionTypes.WORKCENTER_INPUT_ENABLE);
+	    }
 	  },
 
 	  setOperationValue: function setOperationValue(operationId, fieldName, value) {
@@ -52026,7 +52033,9 @@
 	    CONFIRM_START: null,
 	    CONFIRM_SUCCESS: null,
 	    CONFIRM_FAILED: null,
-	    RESET_TO_INITIAL: null
+	    RESET_TO_INITIAL: null,
+	    WORKCENTER_INPUT_ENABLE: null,
+	    WORKCENTER_INPUT_DISABLE: null
 	});
 	module.exports = exports['default'];
 
@@ -54049,7 +54058,8 @@
 
 	  getDataBindings: function getDataBindings() {
 	    return {
-	      job: _getters2['default'].job
+	      job: _getters2['default'].job,
+	      workcenterDisabled: _getters2['default'].jobWorkcenterDisabled
 	    };
 	  },
 
@@ -54204,7 +54214,7 @@
 	          ),
 	          fixedPrice,
 	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Execution Date', placeholder: 'Execution Date', value: job.execution_date, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateExecutionDate(job.execution_date)), hasFeedback: true, onChange: this.updateField.bind(this, "execution_date") }),
-	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr") }),
+	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Work Center', placeholder: 'Work Center', value: job.main_workctr, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateMainWorkcenter(job.main_workctr)), hasFeedback: true, onChange: this.updateField.bind(this, "main_workctr"), disabled: this.state.workcenterDisabled }),
 	          _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Description', placeholder: 'Description', value: job.description, bsStyle: _commonUtilsSmallEntityValidations2['default'].vs(_commonUtilsSmallEntityValidations2['default'].validateDescription(job.description)), hasFeedback: true, onChange: this.updateField.bind(this, "description") }),
 	          remarksCustomer
 	        )
@@ -55826,6 +55836,7 @@
 
 	var initialState = (0, _nuclearJs.toImmutable)({
 	  jobValid: false,
+	  jobWorkcenterDisabled: false,
 	  job: {
 	    process: "X4",
 	    maint_act_type: "CH",
@@ -55846,6 +55857,8 @@
 	    this.on(_actionTypes.SET_JOB_VALUE, updateJob), this.on(_actionTypes.RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment);
 	    this.on(_actionTypes.CONFIRM_SUCCESS, confirmSuccess);
 	    this.on(_actionTypes.RESET_TO_INITIAL, resetToIntial);
+	    this.on(_actionTypes.WORKCENTER_INPUT_DISABLE, workcenterDisable);
+	    this.on(_actionTypes.WORKCENTER_INPUT_ENABLE, workcenterEnable);
 	  }
 	});
 
@@ -55876,6 +55889,14 @@
 
 	function resetToIntial(state) {
 	  return initialState;
+	}
+
+	function workcenterDisable(state) {
+	  return state.setIn(['jobWorkcenterDisabled'], true);
+	}
+
+	function workcenterEnable(state) {
+	  return state.setIn(['jobWorkcenterDisabled'], false);
 	}
 	module.exports = exports['default'];
 

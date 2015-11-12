@@ -1,10 +1,11 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { RECEIVE_EQUIPMENT_SUCCESS, SET_JOB_VALUE, SET_OPERATION_VALUE, CONFIRM_SUCCESS, RESET_TO_INITIAL } from '../actionTypes'
+import { RECEIVE_EQUIPMENT_SUCCESS, SET_JOB_VALUE, SET_OPERATION_VALUE, CONFIRM_SUCCESS, RESET_TO_INITIAL, WORKCENTER_INPUT_DISABLE, WORKCENTER_INPUT_ENABLE } from '../actionTypes'
 import moment from 'moment'
 import validations from '../../common/utils/SmallEntityValidations'
 
 const initialState = toImmutable({
   jobValid: false,
+  jobWorkcenterDisabled: false,
   job: {
     process: "X4",
     maint_act_type: "CH",
@@ -26,6 +27,8 @@ export default Store({
     this.on(RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment)
     this.on(CONFIRM_SUCCESS, confirmSuccess)
     this.on(RESET_TO_INITIAL, resetToIntial)
+    this.on(WORKCENTER_INPUT_DISABLE, workcenterDisable)
+    this.on(WORKCENTER_INPUT_ENABLE, workcenterEnable)
   }
 })
 
@@ -51,4 +54,12 @@ function confirmSuccess(state) {
 
 function resetToIntial(state) {
   return initialState
+}
+
+function workcenterDisable(state) {
+  return state.setIn(['jobWorkcenterDisabled'], true)
+}
+
+function workcenterEnable(state) {
+  return state.setIn(['jobWorkcenterDisabled'], false)
 }

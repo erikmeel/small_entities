@@ -19,6 +19,7 @@ export default React.createClass({
   getDataBindings() {
     return {
       job: getters.job,
+      workcenterDisabled: getters.jobWorkcenterDisabled
     }
   },
 
@@ -80,7 +81,7 @@ export default React.createClass({
             </Input>
             { fixedPrice }
             <Input type="text" label="Execution Date" placeholder="Execution Date" value={job.execution_date} bsStyle={validations.vs(validations.validateExecutionDate(job.execution_date))} hasFeedback onChange={this.updateField.bind(this, "execution_date")} />
-            <Input type="text" label="Work Center" placeholder="Work Center" value={job.main_workctr} bsStyle={validations.vs(validations.validateMainWorkcenter(job.main_workctr))} hasFeedback onChange={this.updateField.bind(this, "main_workctr")} />
+            <Input type="text" label="Work Center" placeholder="Work Center" value={job.main_workctr} bsStyle={validations.vs(validations.validateMainWorkcenter(job.main_workctr))} hasFeedback onChange={this.updateField.bind(this, "main_workctr")} disabled={this.state.workcenterDisabled} />
             <Input type="text" label="Description" placeholder="Description" value={job.description} bsStyle={validations.vs(validations.validateDescription(job.description))} hasFeedback onChange={this.updateField.bind(this, "description")} />
             { remarksCustomer }
           </div>

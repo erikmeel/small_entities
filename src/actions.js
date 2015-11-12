@@ -15,6 +15,8 @@ import {
   CONFIRM_FAILED,
   SET_EQUIPMENT_VALUE,
   SET_JOB_VALUE,
+  WORKCENTER_INPUT_ENABLE,
+  WORKCENTER_INPUT_DISABLE,
   SET_OPERATION_VALUE,
   SET_MATERIAL_VALUE,
   RECEIVE_MATERIAL_START,
@@ -89,10 +91,16 @@ export default {
 
   addMaterialToJob(material) {
     reactor.dispatch(ADD_MATERIAL_TO_JOB, { material })
+    if (!reactor.evaluateToJS(getters.jobWorkcenterDisabled)) {
+      reactor.dispatch(WORKCENTER_INPUT_DISABLE)
+    }
   },
 
   changeMaterialQuantity(material_id, quantity) {
     reactor.dispatch(CHANGE_MATERIAL_QUANTITY, { material_id, quantity })
+    if (reactor.evaluateToJS(getters.materialsForSubmit).length === 0) {
+      reactor.dispatch(WORKCENTER_INPUT_ENABLE)
+    }
   },
 
   setOperationValue(operationId, fieldName, value) {

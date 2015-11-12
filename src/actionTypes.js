@@ -23,4 +23,6 @@ export default keyMirror({
     CONFIRM_SUCCESS: null,
     CONFIRM_FAILED: null,
     RESET_TO_INITIAL: null,
+    WORKCENTER_INPUT_ENABLE: null,
+    WORKCENTER_INPUT_DISABLE: null,
 })
