@@ -38230,7 +38230,7 @@
 
 	var materialsForSubmit = [['materials', 'itemQty'], function (itemQty) {
 	  return itemQty.map(function (material) {
-	    return material.set('material', material.get('id'));
+	    return material['delete']('name').set('material', material.get('id'));
 	  }).toList();
 	}];
 
