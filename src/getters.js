@@ -16,7 +16,7 @@ const materialsForSubmit = [
   ['materials', 'itemQty'],
   (itemQty) => {
     return itemQty.map((material) => {
-      return material.set('material', material.get('id'))
+      return material.delete('name').set('material', material.get('id'))
     }).toList()
   }
 ]
