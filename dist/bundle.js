@@ -64,23 +64,23 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _storesFlashStore = __webpack_require__(416);
+	var _storesFlashStore = __webpack_require__(417);
 
 	var _storesFlashStore2 = _interopRequireDefault(_storesFlashStore);
 
-	var _storesEquipmentStore = __webpack_require__(417);
+	var _storesEquipmentStore = __webpack_require__(418);
 
 	var _storesEquipmentStore2 = _interopRequireDefault(_storesEquipmentStore);
 
-	var _storesOperationStore = __webpack_require__(418);
+	var _storesOperationStore = __webpack_require__(419);
 
 	var _storesOperationStore2 = _interopRequireDefault(_storesOperationStore);
 
-	var _storesMaterialStore = __webpack_require__(419);
+	var _storesMaterialStore = __webpack_require__(420);
 
 	var _storesMaterialStore2 = _interopRequireDefault(_storesMaterialStore);
 
-	var _storesJobStore = __webpack_require__(420);
+	var _storesJobStore = __webpack_require__(421);
 
 	var _storesJobStore2 = _interopRequireDefault(_storesJobStore);
 
@@ -20503,15 +20503,15 @@
 
 	var _EquipmentContainer2 = _interopRequireDefault(_EquipmentContainer);
 
-	var _JobContainer = __webpack_require__(405);
+	var _JobContainer = __webpack_require__(406);
 
 	var _JobContainer2 = _interopRequireDefault(_JobContainer);
 
-	var _OperationsContainer = __webpack_require__(409);
+	var _OperationsContainer = __webpack_require__(410);
 
 	var _OperationsContainer2 = _interopRequireDefault(_OperationsContainer);
 
-	var _MaterialsContainer = __webpack_require__(412);
+	var _MaterialsContainer = __webpack_require__(413);
 
 	var _MaterialsContainer2 = _interopRequireDefault(_MaterialsContainer);
 
@@ -38220,6 +38220,8 @@
 	var equipment = ['equipment', 'equipment'];
 	var equipmentValid = ['equipment', 'equipmentValid'];
 	var lastEquipmentRequestId = ['equipment', 'lastEquipmentRequestId'];
+	var needToChooseEquipment = ['equipment', 'needToChooseEquipment'];
+	var possibleEquipments = ['equipment', 'possibleEquipments'];
 	var operations = ['operations'];
 	var materials = ['materials', 'itemQty'];
 	var material = ['materials', 'material'];
@@ -38235,7 +38237,7 @@
 	  }).toList();
 	}];
 
-	exports['default'] = { flashSuccess: flashSuccess, flashError: flashError, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, lastEquipmentRequestId: lastEquipmentRequestId, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit, jobWorkcenterDisabled: jobWorkcenterDisabled };
+	exports['default'] = { flashSuccess: flashSuccess, flashError: flashError, flashMessageVisisble: flashMessageVisisble, equipment: equipment, equipmentValid: equipmentValid, lastEquipmentRequestId: lastEquipmentRequestId, needToChooseEquipment: needToChooseEquipment, possibleEquipments: possibleEquipments, operations: operations, materials: materials, material: material, validMaterial: validMaterial, availableAtStorageLocation: availableAtStorageLocation, job: job, jobValid: jobValid, materialsForSubmit: materialsForSubmit, jobWorkcenterDisabled: jobWorkcenterDisabled };
 	module.exports = exports['default'];
 
 /***/ },
@@ -38283,16 +38285,21 @@
 
 	    var lastEquipmentRequestId = _underscore2['default'].uniqueId('equipment_');
 	    _reactor2['default'].dispatch(_actionTypes.RECEIVE_EQUIPMENT_START, { lastEquipmentRequestId: lastEquipmentRequestId });
-	    _commonApiBackend2['default'].getEquipment(equipment, lastEquipmentRequestId, function (equipment) {
+	    _commonApiBackend2['default'].getEquipment(equipment, lastEquipmentRequestId, function (equipments) {
 	      if (lastEquipmentRequestId != _reactor2['default'].evaluate(_getters2['default'].lastEquipmentRequestId)) {
 	        return;
 	      }
-	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_EQUIPMENT_SUCCESS, { equipment: equipment });
-	      if (equipment.installed_at) {
-	        _this.getCustomer(equipment.installed_at, "installed_at");
-	      }
-	      if (equipment.bill_to) {
-	        _this.getCustomer(equipment.bill_to, "bill_to");
+	      if (equipments.length === 1) {
+	        var _equipment = equipments[0];
+	        _reactor2['default'].dispatch(_actionTypes.RECEIVE_EQUIPMENT_SUCCESS, { equipment: _equipment });
+	        if (_equipment.installed_at) {
+	          _this.getCustomer(_equipment.installed_at, "installed_at");
+	        }
+	        if (_equipment.bill_to) {
+	          _this.getCustomer(_equipment.bill_to, "bill_to");
+	        }
+	      } else {
+	        _reactor2['default'].dispatch(_actionTypes.CHOOSE_EQUIPMENT, { equipments: equipments });
 	      }
 	    }, function () {
 	      if (lastEquipmentRequestId != _reactor2['default'].evaluate(_getters2['default'].lastEquipmentRequestId)) {
@@ -38300,6 +38307,16 @@
 	      }
 	      _reactor2['default'].dispatch(_actionTypes.RECEIVE_EQUIPMENT_FAILED);
 	    });
+	  },
+
+	  selectEquipment: function selectEquipment(equipment) {
+	    _reactor2['default'].dispatch(_actionTypes.EQUIPMENT_CHOSEN, { equipment: equipment });
+	    if (equipment.installed_at) {
+	      this.getCustomer(equipment.installed_at, "installed_at");
+	    }
+	    if (equipment.bill_to) {
+	      this.getCustomer(equipment.bill_to, "bill_to");
+	    }
 	  },
 
 	  getCustomer: function getCustomer(customer, customerType) {
@@ -38392,38 +38409,41 @@
 	  request.get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY)).query({ json: JSON.stringify(j) }).query({ action: 'get_by_serial' }).accept('json').end(function (err, res) {
 	    if (!err && res.body) {
 	      var data = res.body[0].model;
-	      var result;
+	      var result = [];
 	      if (data.length > 0) {
-	        result = {
-	          'id': data[0].id,
-	          'name': data[0].description,
-	          'serial': data[0].serial_number.replace(/^0*/, ''),
-	          'plant': data[0].planning_plant,
-	          'main_workctr': data[0].workcenter,
-	          'street': data[0].street,
-	          'house_number': data[0].house_number,
-	          'post_code': data[0].post_code,
-	          'city': data[0].city,
-	          'estimated_annual_running_hours': data[0].estimated_annual_running_hours,
-	          'actual_annual_running_hours': data[0].actual_annual_running_hours,
-	          'actual_running_hours': data[0].actual_running_hours,
-	          'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
-	          'installed_at_name': data[0].installed_at_name,
-	          'installed_at': data[0].installed_at,
-	          'invoice_to': data[0].invoice_to,
-	          'ship_to': data[0].ship_to,
-	          'bill_to': data[0].bill_to
-	        };
-	        if (data[0].internal_note) {
-	          result['internal_note'] = data[0].internal_note.replace(/\\n/g, "<br />");
+	        for (var i = 0; i < data.length; i++) {
+	          var equipment = {
+	            'id': data[i].id,
+	            'name': data[i].description,
+	            'serial': data[i].serial_number.replace(/^0*/, ''),
+	            'plant': data[i].planning_plant,
+	            'main_workctr': data[i].workcenter,
+	            'street': data[i].street,
+	            'house_number': data[i].house_number,
+	            'post_code': data[i].post_code,
+	            'city': data[i].city,
+	            'estimated_annual_running_hours': data[i].estimated_annual_running_hours,
+	            'actual_annual_running_hours': data[i].actual_annual_running_hours,
+	            'actual_running_hours': data[i].actual_running_hours,
+	            'age': moment().diff(moment(data[i].start_date, 'YYYYMMDD'), 'years'),
+	            'installed_at_name': data[i].installed_at_name,
+	            'installed_at': data[i].installed_at,
+	            'invoice_to': data[i].invoice_to,
+	            'ship_to': data[i].ship_to,
+	            'bill_to': data[i].bill_to
+	          };
+	          if (data[i].internal_note) {
+	            equipment['internal_note'] = data[i].internal_note.replace(/\\n/g, "<br />");
+	          }
+	          if (data[i].vendor_warranty_end) {
+	            equipment['vendor_warranty_end'] = moment(data[i].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY');
+	            equipment['warranty_expired'] = moment(data[i].vendor_warranty_end, 'YYYYMMDD') < moment();
+	          }
+	          if (data[i].user_status) {
+	            equipment['user_status'] = data[i].user_status.split(" ");
+	          }
+	          result.push(equipment);
 	        }
-	        if (data[0].vendor_warranty_end) {
-	          result['vendor_warranty_end'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY');
-	          result['warranty_expired'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment();
-	        }
-	        if (data[0].user_status) {
-	          result['user_status'] = data[0].user_status.split(" ");
-	        };
 	        cb(result);
 	      } else {
 	        cb_error();
@@ -52017,6 +52037,8 @@
 	    RECEIVE_EQUIPMENT_START: null,
 	    RECEIVE_EQUIPMENT_SUCCESS: null,
 	    RECEIVE_EQUIPMENT_FAILED: null,
+	    CHOOSE_EQUIPMENT: null,
+	    EQUIPMENT_CHOSEN: null,
 	    RECEIVE_CUSTOMER_START: null,
 	    RECEIVE_CUSTOMER_SUCCESS: null,
 	    RECEIVE_CUSTOMER_FAILED: null,
@@ -53613,6 +53635,10 @@
 
 	var _commonComponentsEquipment2 = _interopRequireDefault(_commonComponentsEquipment);
 
+	var _commonComponentsEquipmentList = __webpack_require__(405);
+
+	var _commonComponentsEquipmentList2 = _interopRequireDefault(_commonComponentsEquipmentList);
+
 	var _reactor = __webpack_require__(301);
 
 	var _reactor2 = _interopRequireDefault(_reactor);
@@ -53633,7 +53659,9 @@
 	  getDataBindings: function getDataBindings() {
 	    return {
 	      equipment: _getters2['default'].equipment,
-	      equipmentValid: _getters2['default'].equipmentValid
+	      equipmentValid: _getters2['default'].equipmentValid,
+	      needToChooseEquipment: _getters2['default'].needToChooseEquipment,
+	      possibleEquipments: _getters2['default'].possibleEquipments
 	    };
 	  },
 
@@ -53647,9 +53675,29 @@
 	    }
 	  },
 
+	  selectEquipment: function selectEquipment(equipmentId) {
+	    var equipments = this.state.possibleEquipments.toJS();
+	    var equipment = undefined;
+	    for (var i = 0; i < equipments.length; i++) {
+	      if (equipments[i].id === equipmentId) {
+	        equipment = equipments[i];
+	      }
+	    }
+	    _actions2['default'].selectEquipment(equipment);
+	  },
+
 	  render: function render() {
 	    var equipment = this.state.equipment.toJS();
-	    return _react2['default'].createElement(_commonComponentsEquipment2['default'], { equipment: equipment, equipmentValid: this.state.equipmentValid, onEquipmentChanged: this.equipmentChange });
+	    var equipmentList = _react2['default'].createElement('div', null);
+	    if (this.state.needToChooseEquipment) {
+	      equipmentList = _react2['default'].createElement(_commonComponentsEquipmentList2['default'], { equipments: this.state.possibleEquipments, onEquipmentSelected: this.selectEquipment });
+	    }
+	    return _react2['default'].createElement(
+	      'div',
+	      null,
+	      _react2['default'].createElement(_commonComponentsEquipment2['default'], { equipment: equipment, equipmentValid: this.state.equipmentValid, onEquipmentChanged: this.equipmentChange }),
+	      equipmentList
+	    );
 	  }
 	});
 	module.exports = exports['default'];
@@ -54015,6 +54063,69 @@
 
 	'use strict';
 
+	var _reactBootstrap = __webpack_require__(158);
+
+	var React = __webpack_require__(1);
+
+	var EquipmentContainer = React.createClass({
+	  displayName: 'EquipmentContainer',
+
+	  render: function render() {
+	    return React.createElement(
+	      _reactBootstrap.ListGroupItem,
+	      { href: '#', onClick: this.props.onEquipmentSelected.bind(null, this.props.equipment.id) },
+	      React.createElement(
+	        'strong',
+	        null,
+	        this.props.equipment.name
+	      ),
+	      ' installed at ',
+	      React.createElement(
+	        'strong',
+	        null,
+	        this.props.equipment.installed_at_name
+	      ),
+	      ' in ',
+	      React.createElement(
+	        'strong',
+	        null,
+	        this.props.equipment.city
+	      ),
+	      ' (id: ',
+	      this.props.equipment.id,
+	      ')'
+	    );
+	  }
+	});
+
+	var EquipmentList = React.createClass({
+	  displayName: 'EquipmentList',
+
+	  propTypes: {
+	    onEquipmentSelected: React.PropTypes.func.isRequired
+	  },
+
+	  render: function render() {
+	    var _this = this;
+
+	    return React.createElement(
+	      _reactBootstrap.ListGroup,
+	      null,
+	      this.props.equipments.map(function (equipment) {
+	        return React.createElement(EquipmentContainer, { key: equipment.get('id'), equipment: equipment.toJS(), onEquipmentSelected: _this.props.onEquipmentSelected });
+	      }).toList()
+	    );
+	  }
+	});
+
+	module.exports = EquipmentList;
+
+/***/ },
+/* 406 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
@@ -54027,11 +54138,11 @@
 
 	var _reactBootstrap = __webpack_require__(158);
 
-	var _commonComponentsJobFixedPrice = __webpack_require__(406);
+	var _commonComponentsJobFixedPrice = __webpack_require__(407);
 
 	var _commonComponentsJobFixedPrice2 = _interopRequireDefault(_commonComponentsJobFixedPrice);
 
-	var _commonUtilsSmallEntityValidations = __webpack_require__(407);
+	var _commonUtilsSmallEntityValidations = __webpack_require__(408);
 
 	var _commonUtilsSmallEntityValidations2 = _interopRequireDefault(_commonUtilsSmallEntityValidations);
 
@@ -54225,7 +54336,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 406 */
+/* 407 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -54245,14 +54356,14 @@
 	module.exports = JobFixedPrice;
 
 /***/ },
-/* 407 */
+/* 408 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Validator = exports;
 
-	var validator = __webpack_require__(408);
+	var validator = __webpack_require__(409);
 	var moment = __webpack_require__(306);
 
 	Validator.vs = function (b) {
@@ -54318,7 +54429,7 @@
 	};
 
 /***/ },
-/* 408 */
+/* 409 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -55096,7 +55207,7 @@
 
 
 /***/ },
-/* 409 */
+/* 410 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55111,11 +55222,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _commonComponentsOperation = __webpack_require__(410);
+	var _commonComponentsOperation = __webpack_require__(411);
 
 	var _commonComponentsOperation2 = _interopRequireDefault(_commonComponentsOperation);
 
-	var _commonComponentsOperationList = __webpack_require__(411);
+	var _commonComponentsOperationList = __webpack_require__(412);
 
 	var _commonComponentsOperationList2 = _interopRequireDefault(_commonComponentsOperationList);
 
@@ -55167,7 +55278,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 410 */
+/* 411 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55209,7 +55320,7 @@
 	module.exports = Operation;
 
 /***/ },
-/* 411 */
+/* 412 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55247,7 +55358,7 @@
 	module.exports = OperationList;
 
 /***/ },
-/* 412 */
+/* 413 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55262,15 +55373,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _commonComponentsMaterial = __webpack_require__(413);
+	var _commonComponentsMaterial = __webpack_require__(414);
 
 	var _commonComponentsMaterial2 = _interopRequireDefault(_commonComponentsMaterial);
 
-	var _commonComponentsMaterialList = __webpack_require__(414);
+	var _commonComponentsMaterialList = __webpack_require__(415);
 
 	var _commonComponentsMaterialList2 = _interopRequireDefault(_commonComponentsMaterialList);
 
-	var _commonComponentsMaterialInput = __webpack_require__(415);
+	var _commonComponentsMaterialInput = __webpack_require__(416);
 
 	var _commonComponentsMaterialInput2 = _interopRequireDefault(_commonComponentsMaterialInput);
 
@@ -55399,7 +55510,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 413 */
+/* 414 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55444,7 +55555,7 @@
 	module.exports = Material;
 
 /***/ },
-/* 414 */
+/* 415 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55470,7 +55581,7 @@
 	module.exports = MaterialList;
 
 /***/ },
-/* 415 */
+/* 416 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55512,7 +55623,7 @@
 	module.exports = MaterialInput;
 
 /***/ },
-/* 416 */
+/* 417 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55563,7 +55674,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 417 */
+/* 418 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55579,6 +55690,8 @@
 	var initialState = (0, _nuclearJs.toImmutable)({
 	  lastEquipmentRequestId: '',
 	  equipmentValid: false,
+	  needToChooseEquipment: false,
+	  possibleEquipments: [],
 	  equipment: {
 	    serial: "",
 	    name: ""
@@ -55595,6 +55708,8 @@
 	    this.on(_actionTypes.RECEIVE_EQUIPMENT_START, startReceiveEquipment);
 	    this.on(_actionTypes.RECEIVE_EQUIPMENT_FAILED, invalidateEquipment);
 	    this.on(_actionTypes.RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment);
+	    this.on(_actionTypes.CHOOSE_EQUIPMENT, chooseEquipment);
+	    this.on(_actionTypes.EQUIPMENT_CHOSEN, receiveEquipment);
 	    this.on(_actionTypes.RECEIVE_CUSTOMER_SUCCESS, receiveCustomer);
 	    this.on(_actionTypes.CONFIRM_SUCCESS, confirmSuccess);
 	  }
@@ -55603,7 +55718,7 @@
 	function setEquipmentValue(state, _ref) {
 	  var value = _ref.value;
 
-	  return state.setIn(['equipment', 'serial'], value);
+	  return initialState.setIn(['equipment', 'serial'], value);
 	}
 
 	function startReceiveEquipment(state, _ref2) {
@@ -55617,13 +55732,25 @@
 
 	  return state.merge({
 	    "equipmentValid": true,
+	    "needToChooseEquipment": false,
+	    "possibleEquipments": [],
 	    "equipment": equipment
 	  });
 	}
 
-	function receiveCustomer(state, _ref4) {
-	  var customer = _ref4.customer;
-	  var customerType = _ref4.customerType;
+	function chooseEquipment(state, _ref4) {
+	  var equipments = _ref4.equipments;
+
+	  return state.merge({
+	    "equipmentValid": false,
+	    "needToChooseEquipment": true,
+	    "possibleEquipments": equipments
+	  });
+	}
+
+	function receiveCustomer(state, _ref5) {
+	  var customer = _ref5.customer;
+	  var customerType = _ref5.customerType;
 
 	  var s = state;
 	  if (customerType === 'installed_at' && customer.contacts && customer.contacts.length > 0) {
@@ -55647,7 +55774,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 418 */
+/* 419 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55706,7 +55833,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 419 */
+/* 420 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55811,7 +55938,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 420 */
+/* 421 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55830,7 +55957,7 @@
 
 	var _moment2 = _interopRequireDefault(_moment);
 
-	var _commonUtilsSmallEntityValidations = __webpack_require__(407);
+	var _commonUtilsSmallEntityValidations = __webpack_require__(408);
 
 	var _commonUtilsSmallEntityValidations2 = _interopRequireDefault(_commonUtilsSmallEntityValidations);
 

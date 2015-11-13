@@ -4,6 +4,8 @@ const flashMessageVisisble = ['flash','visisble']
 const equipment = ['equipment','equipment']
 const equipmentValid = ['equipment','equipmentValid']
 const lastEquipmentRequestId = ['equipment', 'lastEquipmentRequestId']
+const needToChooseEquipment = ['equipment', 'needToChooseEquipment']
+const possibleEquipments = ['equipment', 'possibleEquipments']
 const operations = ['operations']
 const materials = ['materials', 'itemQty']
 const material = ['materials', 'material']
@@ -22,4 +24,4 @@ const materialsForSubmit = [
   }
 ]
 
-export default { flashSuccess, flashError, flashMessageVisisble, equipment, equipmentValid, lastEquipmentRequestId, operations, materials, material, validMaterial, availableAtStorageLocation, job, jobValid, materialsForSubmit, jobWorkcenterDisabled }
+export default { flashSuccess, flashError, flashMessageVisisble, equipment, equipmentValid, lastEquipmentRequestId, needToChooseEquipment, possibleEquipments, operations, materials, material, validMaterial, availableAtStorageLocation, job, jobValid, materialsForSubmit, jobWorkcenterDisabled }

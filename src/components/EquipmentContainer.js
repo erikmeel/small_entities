@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Equipment from '../../common/components/Equipment'
+import EquipmentList from '../../common/components/EquipmentList'
 
 import reactor from '../reactor'
 import getters from '../getters'
@@ -13,7 +14,9 @@ export default React.createClass({
   getDataBindings() {
     return {
       equipment: getters.equipment,
-      equipmentValid: getters.equipmentValid
+      equipmentValid: getters.equipmentValid,
+      needToChooseEquipment: getters.needToChooseEquipment,
+      possibleEquipments: getters.possibleEquipments
     }
   },
 
@@ -27,10 +30,28 @@ export default React.createClass({
     }
   },
 
+  selectEquipment(equipmentId) {
+    let equipments = this.state.possibleEquipments.toJS()
+    let equipment
+    for (var i = 0; i < equipments.length; i++) {
+      if (equipments[i].id === equipmentId) {
+        equipment = equipments[i]
+      }
+    }
+    actions.selectEquipment(equipment)
+  },
+
   render: function () {
     let equipment = this.state.equipment.toJS()
+    let equipmentList = <div></div>
+    if (this.state.needToChooseEquipment) {
+      equipmentList = <EquipmentList equipments={this.state.possibleEquipments} onEquipmentSelected={this.selectEquipment} />
+    }
     return (
-      <Equipment equipment={equipment} equipmentValid={this.state.equipmentValid} onEquipmentChanged={this.equipmentChange}/>
+      <div>
+        <Equipment equipment={equipment} equipmentValid={this.state.equipmentValid} onEquipmentChanged={this.equipmentChange} />
+        {equipmentList}
+      </div>
     );
   },
 });

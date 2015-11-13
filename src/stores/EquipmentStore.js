@@ -1,9 +1,11 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { SET_EQUIPMENT_VALUE, RECEIVE_EQUIPMENT_START, RECEIVE_EQUIPMENT_SUCCESS, RECEIVE_EQUIPMENT_FAILED, RECEIVE_CUSTOMER_SUCCESS, CONFIRM_SUCCESS } from '../actionTypes'
+import { SET_EQUIPMENT_VALUE, RECEIVE_EQUIPMENT_START, RECEIVE_EQUIPMENT_SUCCESS, RECEIVE_EQUIPMENT_FAILED, CHOOSE_EQUIPMENT, EQUIPMENT_CHOSEN, RECEIVE_CUSTOMER_SUCCESS, CONFIRM_SUCCESS } from '../actionTypes'
 
 const initialState = toImmutable({
   lastEquipmentRequestId: '',
   equipmentValid: false,
+  needToChooseEquipment: false,
+  possibleEquipments: [],
   equipment: {
     serial: "",
     name: "",
@@ -20,13 +22,15 @@ export default Store({
     this.on(RECEIVE_EQUIPMENT_START, startReceiveEquipment)
     this.on(RECEIVE_EQUIPMENT_FAILED, invalidateEquipment)
     this.on(RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment)
+    this.on(CHOOSE_EQUIPMENT, chooseEquipment)
+    this.on(EQUIPMENT_CHOSEN, receiveEquipment)
     this.on(RECEIVE_CUSTOMER_SUCCESS, receiveCustomer)
     this.on(CONFIRM_SUCCESS, confirmSuccess)
   }
 })
 
 function setEquipmentValue(state, { value }) {
-  return state.setIn(['equipment','serial'], value)
+  return initialState.setIn(['equipment','serial'], value)
 }
 
 function startReceiveEquipment(state, { lastEquipmentRequestId }) {
@@ -36,7 +40,17 @@ function startReceiveEquipment(state, { lastEquipmentRequestId }) {
 function receiveEquipment(state, { equipment }) {
   return state.merge({
     "equipmentValid": true,
+    "needToChooseEquipment": false,
+    "possibleEquipments": [],
     "equipment": equipment
+  })
+}
+
+function chooseEquipment(state, {equipments}) {
+  return state.merge({
+    "equipmentValid": false,
+    "needToChooseEquipment": true,
+    "possibleEquipments": equipments
   })
 }
 

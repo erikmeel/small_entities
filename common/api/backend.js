@@ -26,38 +26,41 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
     .end(function (err, res) {
       if (!err && res.body) {
         var data = res.body[0].model;
-        var result
+        var result = []
         if (data.length > 0) {
-          result = {
-            'id': data[0].id,
-            'name': data[0].description,
-            'serial': data[0].serial_number.replace(/^0*/,''),
-            'plant': data[0].planning_plant,
-            'main_workctr': data[0].workcenter,
-            'street': data[0].street,
-            'house_number': data[0].house_number,
-            'post_code': data[0].post_code,
-            'city': data[0].city,
-            'estimated_annual_running_hours': data[0].estimated_annual_running_hours,
-            'actual_annual_running_hours': data[0].actual_annual_running_hours,
-            'actual_running_hours': data[0].actual_running_hours,
-            'age': moment().diff(moment(data[0].start_date, 'YYYYMMDD'), 'years'),
-            'installed_at_name': data[0].installed_at_name,
-            'installed_at': data[0].installed_at,
-            'invoice_to': data[0].invoice_to,
-            'ship_to': data[0].ship_to,
-            'bill_to': data[0].bill_to,
-          };
-          if (data[0].internal_note) {
-              result['internal_note'] = data[0].internal_note.replace(/\\n/g, "<br />")
+          for (var i = 0; i < data.length; i++) {
+            var equipment = {
+              'id': data[i].id,
+              'name': data[i].description,
+              'serial': data[i].serial_number.replace(/^0*/,''),
+              'plant': data[i].planning_plant,
+              'main_workctr': data[i].workcenter,
+              'street': data[i].street,
+              'house_number': data[i].house_number,
+              'post_code': data[i].post_code,
+              'city': data[i].city,
+              'estimated_annual_running_hours': data[i].estimated_annual_running_hours,
+              'actual_annual_running_hours': data[i].actual_annual_running_hours,
+              'actual_running_hours': data[i].actual_running_hours,
+              'age': moment().diff(moment(data[i].start_date, 'YYYYMMDD'), 'years'),
+              'installed_at_name': data[i].installed_at_name,
+              'installed_at': data[i].installed_at,
+              'invoice_to': data[i].invoice_to,
+              'ship_to': data[i].ship_to,
+              'bill_to': data[i].bill_to,
+            };
+            if (data[i].internal_note) {
+                equipment['internal_note'] = data[i].internal_note.replace(/\\n/g, "<br />")
+            }
+            if (data[i].vendor_warranty_end) {
+              equipment['vendor_warranty_end'] = moment(data[i].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY')
+              equipment['warranty_expired'] = moment(data[i].vendor_warranty_end, 'YYYYMMDD') < moment()
+            }
+            if (data[i].user_status) {
+              equipment['user_status'] = data[i].user_status.split(" ")
+            }
+            result.push(equipment)
           }
-          if (data[0].vendor_warranty_end) {
-            result['vendor_warranty_end'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD').format('DD.MM.YYYY')
-            result['warranty_expired'] = moment(data[0].vendor_warranty_end, 'YYYYMMDD') < moment()
-          }
-          if (data[0].user_status) {
-            result['user_status'] = data[0].user_status.split(" ")
-          };
           cb(result)
         } else {
           cb_error()

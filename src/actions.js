@@ -6,6 +6,8 @@ import {
   RECEIVE_EQUIPMENT_START,
   RECEIVE_EQUIPMENT_SUCCESS,
   RECEIVE_EQUIPMENT_FAILED,
+  CHOOSE_EQUIPMENT,
+  EQUIPMENT_CHOSEN,
   RECEIVE_CUSTOMER_START,
   RECEIVE_CUSTOMER_SUCCESS,
   RECEIVE_CUSTOMER_FAILED,
@@ -44,20 +46,35 @@ export default {
     const lastEquipmentRequestId = _.uniqueId('equipment_')
     reactor.dispatch(RECEIVE_EQUIPMENT_START, {lastEquipmentRequestId})
     backend.getEquipment(equipment, lastEquipmentRequestId,
-      equipment => {
+      equipments => {
         if (lastEquipmentRequestId != reactor.evaluate(getters.lastEquipmentRequestId)) { return }
-        reactor.dispatch(RECEIVE_EQUIPMENT_SUCCESS, {equipment})
-        if (equipment.installed_at) {
-          this.getCustomer(equipment.installed_at, "installed_at")
-        }
-        if (equipment.bill_to) {
-          this.getCustomer(equipment.bill_to, "bill_to")
+        if (equipments.length === 1) {
+          let equipment = equipments[0]
+          reactor.dispatch(RECEIVE_EQUIPMENT_SUCCESS, {equipment})
+          if (equipment.installed_at) {
+            this.getCustomer(equipment.installed_at, "installed_at")
+          }
+          if (equipment.bill_to) {
+            this.getCustomer(equipment.bill_to, "bill_to")
+          }
+        } else {
+          reactor.dispatch(CHOOSE_EQUIPMENT, {equipments})
         }
       },
       () => {
         if (lastEquipmentRequestId != reactor.evaluate(getters.lastEquipmentRequestId)) { return }
         reactor.dispatch(RECEIVE_EQUIPMENT_FAILED)
       });
+  },
+
+  selectEquipment(equipment) {
+    reactor.dispatch(EQUIPMENT_CHOSEN, {equipment})
+    if (equipment.installed_at) {
+      this.getCustomer(equipment.installed_at, "installed_at")
+    }
+    if (equipment.bill_to) {
+      this.getCustomer(equipment.bill_to, "bill_to")
+    }
   },
 
   getCustomer(customer, customerType) {
