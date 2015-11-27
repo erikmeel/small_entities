@@ -55982,6 +55982,7 @@
 
 	  initialize: function initialize() {
 	    this.on(_actionTypes.SET_JOB_VALUE, updateJob), this.on(_actionTypes.RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment);
+	    this.on(_actionTypes.EQUIPMENT_CHOSEN, receiveEquipment);
 	    this.on(_actionTypes.CONFIRM_SUCCESS, confirmSuccess);
 	    this.on(_actionTypes.RESET_TO_INITIAL, resetToIntial);
 	    this.on(_actionTypes.WORKCENTER_INPUT_DISABLE, workcenterDisable);
