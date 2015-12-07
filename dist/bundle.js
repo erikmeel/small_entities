@@ -38511,7 +38511,7 @@
 	  j.work_qty = operations.work_qty.quantity;
 	  j.expenses_qty = operations.expenses_qty.quantity;
 	  j.travel_qty = operations.travel_qty.quantity;
-	  j.travel_dist_qty = operations.travel_qty.quantity;
+	  j.travel_dist_qty = operations.travel_dist_qty.quantity;
 	  j.allowance_qty = operations.allowance_qty.quantity;
 	  j.env_act_qty = operations.env_act_qty.quantity;
 	  j.t_mat_used = materials;
@@ -55311,7 +55311,12 @@
 	          React.createElement('br', null),
 	          this.props.operation.uom
 	        ),
-	        React.createElement('input', { className: 'form-control operation-value', type: 'number', step: '0.01', min: this.props.operation.key === "work_qty" ? "0.25" : "0", value: this.props.operation.quantity, onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
+	        React.createElement('input', { className: 'form-control operation-value',
+	          type: 'number',
+	          step: this.props.operation.key === "travel_dist_qty" ? "1" : "0.01",
+	          min: this.props.operation.key === "work_qty" ? "0.25" : "0",
+	          value: this.props.operation.quantity,
+	          onChange: this.props.onInputChanged.bind(null, this.props.operation.key, "quantity") })
 	      )
 	    );
 	  }
