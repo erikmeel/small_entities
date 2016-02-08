@@ -15,6 +15,7 @@ const initialState = toImmutable({
     main_workctr: "",
     plant: "",
     sales_order_text: "",
+    purchase_order: "",
   }
 })
 export default Store({
