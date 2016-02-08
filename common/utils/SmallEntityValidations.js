@@ -13,11 +13,16 @@ Validator.vs = function (b) {
 }
 
 Validator.validateProcess = function (process) {
+  //X1	= Up to Invoicing (chargeable orders only)
+  //X2  = Only create order
+  //X3  = Stop after plan of order
+  //X4  = Stop after confirmation
+  //X4  = TECO of unchargeable order	
   return process.match(/^(X1|X2|X3|X4)/) !== null
 }
 
 Validator.validateFlow = function (flow) {
-  return flow.match(/^(FP|OH|MX|CX|UC|UP|CH|SG|GW)/) !== null
+  return flow.match(/^(FP|CH|SG|GW|IC|IS|PG|GL|SW|WG)/) !== null
 };
 
 Validator.validateExecutionDate = function (date) {
@@ -25,8 +30,16 @@ Validator.validateExecutionDate = function (date) {
 };
 
 Validator.validateMainWorkcenter = function (workcenter) {
-  return workcenter && workcenter.match(/^\w{2}\d{2}\w\d{3}$/) !== null
+  return workcenter && (workcenter.match(/^\w{2}\d{2}\w\d{3}$/) || workcenter.match(/^\w{2}\d{2}\w{2}\d{2}$/) ) !== null
 };
+
+Validator.validateDisableInvoice = function (flow) {
+	var result = '';
+	if (flow.match(/^(EC|PG|GL|SW|WG)/) !== null) {
+		result = 'disabled';
+	}
+	return result;
+}
 
 Validator.validatePlant = function (plant) {
   return plant && plant.match(/^\w{2}\d{2}$/) !== null
@@ -36,8 +49,12 @@ Validator.validateDescription = function (description) {
   return !validator.isNull(description)
 };
 
+Validator.validatePurchaseOrder = function (purchase_order) {
+	return !validator.isNull(purchase_order)
+};
+
 Validator.validatePriceForFlow = function (price, flow) {
-  if (flow.match(/^(CH|SG|GW)/) !== null) {
+  if (flow.match(/^(CH|IC|IS|SG|GW|PG|GL|SW|WG)/) !== null) {
     return true
   }
   return validator.isFloat(price, { min: 1.0})
