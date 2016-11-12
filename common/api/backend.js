@@ -11,10 +11,12 @@ var SME_ENTITY = 'sme'
 var EQUIPMENT_ENTITY = 'equipment'
 var MATERIAL_ENTITY = 'material'
 var CUSTOMER_ENTITY = 'customer'
+var READING_ENTITY = 'measpoint'
 
 var _operations = require('./operations.json');
 
 Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) {
+  payload = payload.toUpperCase();
   var j = {
     'serial_number': payload
   }
@@ -42,12 +44,15 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
               'estimated_annual_running_hours': data[i].estimated_annual_running_hours,
               'actual_annual_running_hours': data[i].actual_annual_running_hours,
               'actual_running_hours': data[i].actual_running_hours,
+              'measurement_point': data[i].measurement_point,
               'age': moment().diff(moment(data[i].start_date, 'YYYYMMDD'), 'years'),
               'installed_at_name': data[i].installed_at_name,
               'installed_at': data[i].installed_at,
               'invoice_to': data[i].invoice_to,
               'ship_to': data[i].ship_to,
               'bill_to': data[i].bill_to,
+              'contracts': data[i].contracts,
+              'readings': data[i].readings,
             };
             if (data[i].internal_note) {
                 equipment['internal_note'] = data[i].internal_note.replace(/\\n/g, "<br />")
@@ -61,6 +66,7 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
             }
             result.push(equipment)
           }
+          //console.log(JSON.stringify(result));
           cb(result)
         } else {
           cb_error()
@@ -99,6 +105,7 @@ Backend.getMaterial = function (number, workcenter, cb, cb_error) {
             result['stock_quantity'] = data[0].stock_quantity
           }
           cb(result)
+          //console.log(JSON.stringify(result));
         } else {
           cb_error()
         }
@@ -131,6 +138,30 @@ Backend.getCustomer = function (payload, cb, cb_error) {
     })
 };
 
+Backend.getSalesEmployee = function (sales_employee, plant, cb, cb_error) {
+	var j = {
+	  'sales_employee': [sales_employee],
+	  'plant': [plant]
+	}
+	request
+		.get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
+		.query({'action': 'GET_PERSON_IN_RANGE'})
+		.query({'json': JSON.stringify(j)})
+		.accept('json')
+		.end(function (err, res) {
+      if (!err && res.body) {
+        var data = res.body[0].model;
+        var result
+        if (data.length > 0) {
+          result = data[0];
+          cb(result)
+        } else {
+          cb_error()
+        }
+      }
+    })
+};
+
 Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error) {
   if (!equipment.id) {
     return cb_error()
@@ -145,23 +176,60 @@ Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error
   j.allowance_qty = operations.allowance_qty.quantity
   j.env_act_qty = operations.env_act_qty.quantity
   j.t_mat_used = materials
-  console.log("Params: " + JSON.stringify(job, null, 4))
+  
+  //console.log("Params: " + JSON.stringify(job, null, 4))
+  //console.log(JSON.stringify(j));
   request
    .post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY))
    .type('form')
-   .auth('AIR14977','Atlas2015')
    .send({json: JSON.stringify(j)})
    .send({action: 'create'})
    .end(function (err, res) {
     if (!err && res.body) {
       if (res.body[1].message.length === 0) {
+    	//console.log(JSON.stringify(res));  
         cb();
       } else {
-        cb_error();
+          cb_error(res.body[1].message[0].message);
       }
     } else {
-      console.log(err);
+      console.log(err); 
       cb_error();
     }
    });
+};
+
+Backend.submitReading = function(point, equipment, readDate, readTime, readBy, readVal, readText, cb, cb_error) {
+	if (!equipment) {
+	    return cb_error("Invalid equipment");
+	}
+	readDate = readDate.replace(/-/g,"");
+	var j = {
+		'point': point,
+		'idate': readDate,
+		'itime': readTime,
+		'readr': readBy,
+		'readg': readVal,
+		'mdtxt': readText
+	}; 
+	request
+		.post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, READING_ENTITY))
+		.type('form')
+		.send({json: JSON.stringify(j)})
+		.send({action: 'create'})
+		.end(function (err, res) {
+			if (!err && res.body) {
+				if (res.body[1].message.length === 0) {
+					if(res.body[0].model[0].readings.length>0) 
+						cb(res.body[0].model[0].readings);
+					else
+						cb();
+				} else {
+					cb_error(res.body[1].message[0].message);
+				}
+			} else {
+				console.log(err); 
+				cb_error();
+			}
+		});
 };

@@ -8,6 +8,9 @@ import {
   RECEIVE_EQUIPMENT_FAILED,
   CHOOSE_EQUIPMENT,
   EQUIPMENT_CHOSEN,
+  SET_READINGS_VALUE,
+  READING_SUCCESS,
+  READING_FAILED,
   RECEIVE_CUSTOMER_START,
   RECEIVE_CUSTOMER_SUCCESS,
   RECEIVE_CUSTOMER_FAILED,
@@ -28,6 +31,7 @@ import {
   CHANGE_MATERIAL_QUANTITY,
   INVALID_MATERIAL_INPUT,
   RESET_TO_INITIAL,
+  CHECK_SALES_PERSON,
 } from './actionTypes'
 
 import _ from 'underscore'
@@ -86,9 +90,21 @@ export default {
       () => {reactor.dispatch(RECEIVE_CUSTOMER_FAILED)
     });
   },
-
+  
   setJobValue(fieldName, value) {
     reactor.dispatch(SET_JOB_VALUE, { fieldName, value, });
+  },
+  
+  setReadingsValue(point, equipment, readDate, readTime, readBy, readVal, readText) {
+	reactor.dispatch(SET_READINGS_VALUE, {readDate, readTime, readBy, readVal, readText});
+	backend.submitReading(point, equipment, readDate, readTime, readBy, readVal, readText,
+		    (readings) => {
+		      reactor.dispatch(READING_SUCCESS, {readings})
+		    },
+		    (errMessage) => {
+		      reactor.dispatch(READING_FAILED, {errMessage})
+		    })
+
   },
 
   setMaterialValue(value) {
@@ -123,16 +139,22 @@ export default {
   setOperationValue(operationId, fieldName, value) {
     reactor.dispatch(SET_OPERATION_VALUE, { operationId, fieldName, value, });
   },
+  
+  checkSalesPerson(sales_person, plant) {
+	  reactor.dispatch(CHECK_SALES_PERSON, {sales_person, plant});
+  },
 
   submitJob() {
+	let errMessage = ""
     reactor.dispatch(CONFIRM_START)
     backend.submitJob(reactor.evaluateToJS(getters.job), reactor.evaluateToJS(getters.equipment), reactor.evaluateToJS(getters.operations), reactor.evaluateToJS(getters.materialsForSubmit),
     () => {
       reactor.dispatch(CONFIRM_SUCCESS)
     },
-    () => {
-      reactor.dispatch(CONFIRM_FAILED)
+    (errMessage) => {
+      reactor.dispatch(CONFIRM_FAILED, {errMessage})
     })
+    
   },
 
   resetToIntial() {

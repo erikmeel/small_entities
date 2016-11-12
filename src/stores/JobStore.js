@@ -1,5 +1,5 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { RECEIVE_EQUIPMENT_SUCCESS, EQUIPMENT_CHOSEN, SET_JOB_VALUE, SET_OPERATION_VALUE, CONFIRM_SUCCESS, RESET_TO_INITIAL, WORKCENTER_INPUT_DISABLE, WORKCENTER_INPUT_ENABLE } from '../actionTypes'
+import { RECEIVE_EQUIPMENT_SUCCESS, EQUIPMENT_CHOSEN, SET_JOB_VALUE, SET_OPERATION_VALUE, CONFIRM_SUCCESS, CONFIRM_FAILED, RESET_TO_INITIAL, WORKCENTER_INPUT_DISABLE, WORKCENTER_INPUT_ENABLE } from '../actionTypes'
 import moment from 'moment'
 import validations from '../../common/utils/SmallEntityValidations'
 
@@ -16,6 +16,10 @@ const initialState = toImmutable({
     plant: "",
     sales_order_text: "",
     purchase_order: "",
+    sales_person: "",
+    actual_running_hours: "",
+    contract: "",
+    contract_item: "",
   }
 })
 export default Store({
@@ -24,6 +28,7 @@ export default Store({
   },
 
   initialize() {
+	let errMessage = ""  
     this.on(SET_JOB_VALUE, updateJob),
     this.on(RECEIVE_EQUIPMENT_SUCCESS, receiveEquipment)
     this.on(EQUIPMENT_CHOSEN, receiveEquipment)
@@ -31,8 +36,10 @@ export default Store({
     this.on(RESET_TO_INITIAL, resetToIntial)
     this.on(WORKCENTER_INPUT_DISABLE, workcenterDisable)
     this.on(WORKCENTER_INPUT_ENABLE, workcenterEnable)
+    this.on(CONFIRM_FAILED, confirmFailed, {errMessage})
   }
 })
+
 
 function updateJob(state, { fieldName, value }) {
   let s = state
@@ -43,6 +50,7 @@ function updateJob(state, { fieldName, value }) {
 function receiveEquipment(state, { equipment }) {
   let s = state
   s = s.setIn(['job', 'plant'], equipment.plant)
+  s = s.setIn(['job', 'actual_running_hours'], equipment.actual_running_hours)
   if (equipment.main_workctr) {
     s = s.setIn(['job', 'main_workctr'], equipment.main_workctr)
   }
@@ -52,6 +60,10 @@ function receiveEquipment(state, { equipment }) {
 
 function confirmSuccess(state) {
   return initialState
+}
+
+function confirmFailed(state, {errMessage}) {
+	return state.setIn(['jobConfirmFailedMsg'], errMessage)
 }
 
 function resetToIntial(state) {

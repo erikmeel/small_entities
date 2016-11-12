@@ -13,8 +13,9 @@ export default Store({
   },
 
   initialize() {
+    let errMessage = ""
     this.on(CONFIRM_SUCCESS, flashSuccess)
-    this.on(CONFIRM_FAILED, flashError)
+    this.on(CONFIRM_FAILED, flashError, {errMessage})
     this.on(DISMISS_FLASH, dismissFlash)
   }
 })
@@ -26,9 +27,9 @@ function flashSuccess(state) {
   })
 }
 
-function flashError(state) {
+function flashError(state, {errMessage}) {
   return state.merge({
-    'error': 'There was something wrong while sending to the server.',
+    'error': 'There was something wrong while sending to the server. ' + errMessage,
     'visisble': true
   })
 }

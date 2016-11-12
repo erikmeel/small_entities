@@ -22,8 +22,15 @@ Validator.validateProcess = function (process) {
 }
 
 Validator.validateFlow = function (flow) {
-  return flow.match(/^(FP|CH|SG|GW|IC|IS|PG|GL|SW|WG)/) !== null
+  return flow.match(/^(FP|CH|SG|GW|IC|IS|PG|GL|SW|WG|CU)/) !== null
 };
+
+Validator.validateContractItem = function (flow, contract_item) {
+	if(flow.match(/^(CU)/)!== null)
+		return contract_item != "" && contract_item != "select";
+	else 
+		return true;
+}
 
 Validator.validateExecutionDate = function (date) {
   return date.match(/^\d{2}\.\d{2}\.\d{4}$/) && moment(date, 'DD.MM.YYYY').isValid()
@@ -53,12 +60,28 @@ Validator.validatePurchaseOrder = function (purchase_order) {
 	return !validator.isNull(purchase_order)
 };
 
+Validator.validateSalesPerson = function (sales_person) {
+	var iSP = parseInt(sales_person);
+	return iSP > 0;
+}
+
 Validator.validatePriceForFlow = function (price, flow) {
-  if (flow.match(/^(CH|IC|IS|SG|GW|PG|GL|SW|WG)/) !== null) {
+  if (flow.match(/^(CH|IC|IS|SG|GW|PG|GL|SW|WG|CU)/) !== null) {
     return true
   }
   return validator.isFloat(price, { min: 1.0})
 };
+
+Validator.validateRunningHours = function (prev_Reading, new_Reading) {
+	if (new_Reading > prev_Reading) {
+		//alert("Reading ok");
+		return true;
+	}
+	else {
+		//alert("Reading too low");
+		return false;
+	}
+}
 
 Validator.validateJob = function (job) {
   if (!Validator.validateProcess(job.process)) { return false; }
@@ -68,5 +91,10 @@ Validator.validateJob = function (job) {
   if (!Validator.validatePlant(job.plant)) { return false; }
   if (!Validator.validateMainWorkcenter(job.main_workctr)) { return false; }
   if (!Validator.validateDescription(job.description)) { return false; }
+  if (job.maint_act_type.match(/^(CU)/)!== null)
+	  if(!Validator.validateContractItem(job.maint_act_type, job.contract_item)) {return false; }
+  if (job.maint_act_type.match(/^(FP|OH|MX|CX|UC|UP|CH)/)) {
+	  if(!Validator.validateSalesPerson(job.sales_person)) { return false; }
+  }
   return true
 }

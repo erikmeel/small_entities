@@ -11,6 +11,7 @@ import EquipmentContainer from './EquipmentContainer'
 import JobContainer from './JobContainer'
 import OperationsContainer from './OperationsContainer'
 import MaterialsContainer from './MaterialsContainer'
+import NPOrderContainer from './NPOrderContainer'
 
 const FlashContainer = React.createClass({
   render() {
@@ -83,6 +84,7 @@ export default React.createClass({
     } else if (this.state.flashMessageError) {
       flashContainer = <FlashContainer flashMessage={this.state.flashMessageError} flashMessageVisisble={this.state.flashMessageVisisble} flashStyle='danger' />
     }
+    
     return (
       <div className="container-fluid">
         {flashContainer}

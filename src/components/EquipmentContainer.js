@@ -10,6 +10,12 @@ import actions from '../actions'
 
 export default React.createClass({
   mixins: [reactor.ReactMixin],
+  
+  getInitialState: function() {
+	    return {
+	    	
+	    }
+	  },
 
   getDataBindings() {
     return {
@@ -32,6 +38,9 @@ export default React.createClass({
 
   selectEquipment(equipmentId) {
     let equipments = this.state.possibleEquipments.toJS()
+    let readings = []
+    if(this.state.readings)
+    	readings = this.state.readings.toJS()
     let equipment
     for (var i = 0; i < equipments.length; i++) {
       if (equipments[i].id === equipmentId) {
@@ -39,6 +48,10 @@ export default React.createClass({
       }
     }
     actions.selectEquipment(equipment)
+  },
+  
+  measurementDocSave(point, equipment, readDate, readTime, readBy, readVal, readText) {
+	  actions.setReadingsValue(point, equipment, readDate, readTime, readBy, readVal, readText);
   },
 
   render: function () {
@@ -49,7 +62,7 @@ export default React.createClass({
     }
     return (
       <div>
-        <Equipment equipment={equipment} equipmentValid={this.state.equipmentValid} onEquipmentChanged={this.equipmentChange} />
+        <Equipment equipment={equipment} equipmentValid={this.state.equipmentValid} onEquipmentChanged={this.equipmentChange} onMeasurementDocSave={this.measurementDocSave} />
         {equipmentList}
       </div>
     );

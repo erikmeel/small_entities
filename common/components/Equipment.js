@@ -1,7 +1,9 @@
 'use strict';
 
 var React = require('react');
-import { Input } from 'react-bootstrap'
+
+import { Button, Input, Modal } from 'react-bootstrap'
+import ReadingInstance from './Reading'
 
 var PanelInstance = React.createClass({
   render: function () {
@@ -36,7 +38,18 @@ var PartnerPanelInstance = React.createClass({
 })
 
 var EquipmentInfo = React.createClass({
+	getInitialState() {
+	return { 
+		new_readDate: "",
+		new_readBy: "",
+		new_readVal: "",
+		new_readText: ""
+	};
+  },
+
   render: function () {
+    let readingModal = <ReadingInstance equipment={this.props.equipment} onMeasurementDocSave={this.props.onMeasurementDocSave} />
+  
     let runningHoursClassName;
     if (parseInt(this.props.equipment.actual_annual_running_hours) > parseInt(this.props.equipment.estimated_annual_running_hours)) {
       runningHoursClassName = "text-danger"
@@ -103,7 +116,7 @@ var EquipmentInfo = React.createClass({
                   <div className="panel-body">
                     <div className="pull-left running-hours-title">Running<br/> Hours Yearly</div>
                     <div className='pull-right running-hours-value'>
-                      <span className={runningHoursClassName}>{this.props.equipment.actual_annual_running_hours || 'N.A.'}</span>/{this.props.equipment.estimated_annual_running_hours}
+                      <span className={runningHoursClassName}>{readingModal}</span>
                       <br />
                       { runningHoursTotal }
                     </div>
@@ -149,7 +162,17 @@ var EquipmentInfo = React.createClass({
 var Equipment = React.createClass({
   propTypes: {
     equipmentValid: React.PropTypes.bool,
-    onEquipmentChanged: React.PropTypes.func.isRequired
+    onEquipmentChanged: React.PropTypes.func.isRequired,
+    onMeasurementDocSave: React.PropTypes.func.isRequired,
+  },
+  
+  getInitialState() {
+	return { 
+		new_readDate: "",
+		new_readBy: "",
+		new_readVal: "",
+		new_readText: ""
+	};
   },
 
   validationState() {
@@ -162,7 +185,7 @@ var Equipment = React.createClass({
   render: function () {
     var equipmentInfo = <div></div>;
     if (this.props.equipmentValid) {
-      equipmentInfo = <EquipmentInfo equipment={this.props.equipment} />
+      equipmentInfo = <EquipmentInfo equipment={this.props.equipment} onMeasurementDocSave={this.props.onMeasurementDocSave} />
     }
 
     return (

@@ -9,6 +9,7 @@ import FlashStore from './stores/FlashStore'
 import EquipmentStore from './stores/EquipmentStore'
 import OperationStore from './stores/OperationStore'
 import MaterialStore from './stores/MaterialStore'
+import ReadingStore from './stores/ReadingStore'
 import JobStore from './stores/JobStore'
 
 reactor.registerStores({
@@ -16,6 +17,7 @@ reactor.registerStores({
   equipment: EquipmentStore,
   operations: OperationStore,
   materials: MaterialStore,
+  readings: ReadingStore,
   job: JobStore,
 })
 
