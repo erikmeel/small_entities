@@ -11,7 +11,6 @@ import EquipmentContainer from './EquipmentContainer'
 import JobContainer from './JobContainer'
 import OperationsContainer from './OperationsContainer'
 import MaterialsContainer from './MaterialsContainer'
-import NPOrderContainer from './NPOrderContainer'
 
 const FlashContainer = React.createClass({
   render() {
