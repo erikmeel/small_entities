@@ -19,7 +19,7 @@ const initialState = toImmutable({
     sales_person: "",
     actual_running_hours: "",
     contract: "",
-    contract_item: "",
+    contract_item: ""
   }
 })
 export default Store({

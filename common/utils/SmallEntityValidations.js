@@ -72,6 +72,16 @@ Validator.validatePriceForFlow = function (price, flow) {
   return validator.isFloat(price, { min: 1.0})
 };
 
+Validator.validateSubConVendor = function (vendor) {
+	  var iVendor = parseInt(vendor, 0);
+	  return iVendor > 0;
+	};
+
+Validator.validateSubConValue = function (value) {
+	  var fValue = parseFloat(value);
+	  return fValue > 0;
+	};
+
 Validator.validateRunningHours = function (prev_Reading, new_Reading) {
 	if (new_Reading > prev_Reading) {
 		//alert("Reading ok");

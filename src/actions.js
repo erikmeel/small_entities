@@ -27,7 +27,12 @@ import {
   RECEIVE_MATERIAL_START,
   RECEIVE_MATERIAL_SUCCESS,
   RECEIVE_MATERIAL_FAILED,
+  SET_SUBCON_MATERIAL_VALUE,
+  RECEIVE_SUBCON_MATERIAL_START,
+  RECEIVE_SUBCON_MATERIAL_SUCCESS,
+  RECEIVE_SUBCON_MATERIAL_FAILED,
   ADD_MATERIAL_TO_JOB,
+  ADD_SUBCON_MATERIAL_TO_JOB,
   CHANGE_MATERIAL_QUANTITY,
   INVALID_MATERIAL_INPUT,
   RESET_TO_INITIAL,
@@ -110,6 +115,10 @@ export default {
   setMaterialValue(value) {
     reactor.dispatch(SET_MATERIAL_VALUE, { value });
   },
+  
+  setSubConMaterialValue(value) {
+	reactor.dispatch(SET_SUBCON_MATERIAL_VALUE, { value });  
+  },
 
   invalidateMaterialInput() {
     reactor.dispatch(INVALID_MATERIAL_INPUT)
@@ -121,6 +130,13 @@ export default {
       reactor.dispatch(RECEIVE_MATERIAL_SUCCESS, {material})
     }, () => {reactor.dispatch(RECEIVE_MATERIAL_FAILED)});
   },
+  
+  getSubConMaterial(number,plant) {
+	  reactor.dispatch(RECEIVE_SUBCON_MATERIAL_START)
+	  backend.getSubConMaterial(number, plant, subconmaterial => {
+		  reactor.dispatch(RECEIVE_SUBCON_MATERIAL_SUCCESS, {subconmaterial})
+	  }, () => {reactor.dispatch(RECEIVE_SUBCON_MATERIAL_FAILED)});
+  },
 
   addMaterialToJob(material) {
     reactor.dispatch(ADD_MATERIAL_TO_JOB, { material })
@@ -128,6 +144,11 @@ export default {
       reactor.dispatch(WORKCENTER_INPUT_DISABLE)
     }
   },
+  
+  addSubContractingToJob(subconmaterial) {
+	    reactor.dispatch(ADD_SUBCON_MATERIAL_TO_JOB, { subconmaterial })
+  },
+	  
 
   changeMaterialQuantity(material_id, quantity) {
     reactor.dispatch(CHANGE_MATERIAL_QUANTITY, { material_id, quantity })

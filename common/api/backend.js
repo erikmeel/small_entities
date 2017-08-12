@@ -21,7 +21,7 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
     'serial_number': payload
   }
   request
-    .get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY))
+    .get(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY))
     .query({json: JSON.stringify(j)})
     .query({action: 'get_by_serial'})
     .accept('json')
@@ -84,7 +84,7 @@ Backend.getMaterial = function (number, workcenter, cb, cb_error) {
     'storage_location': workcenter.substring(4,8)
   }
   request
-    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
+    .get(sprintf('%s/%s/%s?sap-client=510&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
     .query({'action': 'GET_STOCK'})
     .query({'json': JSON.stringify(j)})
     .accept('json')
@@ -113,6 +113,39 @@ Backend.getMaterial = function (number, workcenter, cb, cb_error) {
     })
 };
 
+Backend.getSubConMaterial = function (number, plant, cb, cb_error) {
+	var j = {
+		'matnr': number,	
+		'werks': plant,
+		'lgort': '1001',
+		'flief': 0,
+		'preis': 0
+	}
+	
+	request
+    .get(sprintf('%s/%s/%s?sap-client=510&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
+    .query({'action': 'GET_SUBCON'})
+    .query({'json': JSON.stringify(j)})
+    .accept('json')
+    .end(function (err, res) {
+      if (!err && res.body) {
+        var data = res.body[0].model;
+        var result
+        if (data.length > 0) {
+          result = {
+            'subcon_materials': data[0].subcon_materials
+          }
+          cb(result)
+          //console.log(JSON.stringify(result));
+        } else {
+          cb_error()
+        }
+      }
+    })
+	
+	
+};
+
 Backend.getCustomer = function (payload, cb, cb_error) {
   var j = {
     'read_equipments': 'FALSE',
@@ -120,7 +153,7 @@ Backend.getCustomer = function (payload, cb, cb_error) {
     'ids': [payload]
   }
   request
-    .get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
+    .get(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
     .query({'action': 'GET_ALL_IN_RANGE'})
     .query({'json': JSON.stringify(j)})
     .accept('json')
@@ -144,7 +177,7 @@ Backend.getSalesEmployee = function (sales_employee, plant, cb, cb_error) {
 	  'plant': [plant]
 	}
 	request
-		.get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
+		.get(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
 		.query({'action': 'GET_PERSON_IN_RANGE'})
 		.query({'json': JSON.stringify(j)})
 		.accept('json')
@@ -180,7 +213,7 @@ Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error
   //console.log("Params: " + JSON.stringify(job, null, 4))
   //console.log(JSON.stringify(j));
   request
-   .post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY))
+   .post(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, SME_ENTITY))
    .type('form')
    .send({json: JSON.stringify(j)})
    .send({action: 'create'})
@@ -213,7 +246,7 @@ Backend.submitReading = function(point, equipment, readDate, readTime, readBy, r
 		'mdtxt': readText
 	}; 
 	request
-		.post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, READING_ENTITY))
+		.post(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, READING_ENTITY))
 		.type('form')
 		.send({json: JSON.stringify(j)})
 		.send({action: 'create'})

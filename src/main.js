@@ -17,6 +17,7 @@ reactor.registerStores({
   equipment: EquipmentStore,
   operations: OperationStore,
   materials: MaterialStore,
+  subconmaterials: MaterialStore,
   readings: ReadingStore,
   job: JobStore,
 })
