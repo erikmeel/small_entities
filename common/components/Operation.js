@@ -8,8 +8,13 @@ var Operation = React.createClass({
   },
 
   render: function () {
+	  var classSize = "col-sm-2";
+	  //if(this.props.operation.key === "work_qty" || this.props.operation.key === "work_prep") {
+		//  classSize = "col-sm-1";
+	  //}
+		  
     return (
-      <div className="col-sm-2">
+      <div className={classSize}>
         <div className="form-group form-group-lg">
           <label className="operation-label"><strong>{this.props.operation.name}</strong> <br />{this.props.operation.uom}</label>
           <input className="form-control operation-value"

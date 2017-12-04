@@ -23,6 +23,7 @@ const jobReadBy = ['job', 'readBy']
 const jobReadDate = ['job', 'readDate']
 const jobReadVal = ['job', 'readVal']
 const jobReadText = ['job', 'readText']
+const useCentralWarehouse = ['equipment','useCentralWarehouse']
 
 const materialsForSubmit = [
   ['materials', 'itemQty'],
@@ -33,4 +34,4 @@ const materialsForSubmit = [
   }
 ]
 
-export default { flashSuccess, flashError, flashMessageVisisble, equipment, equipmentValid, lastEquipmentRequestId, needToChooseEquipment, possibleEquipments, operations, materials, subconmaterials, material, subconmaterial, validMaterial, validSubConMaterial, addedSubConMaterials, availableAtStorageLocation, job, jobValid, materialsForSubmit, jobWorkcenterDisabled, jobReadBy, jobReadDate, jobReadVal, jobReadText }
+export default { flashSuccess, flashError, flashMessageVisisble, equipment, equipmentValid, lastEquipmentRequestId, needToChooseEquipment, possibleEquipments, operations, materials, subconmaterials, material, subconmaterial, validMaterial, validSubConMaterial, addedSubConMaterials, availableAtStorageLocation, job, jobValid, materialsForSubmit, jobWorkcenterDisabled, jobReadBy, jobReadDate, jobReadVal, jobReadText, useCentralWarehouse }

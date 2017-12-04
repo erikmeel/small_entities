@@ -37,6 +37,7 @@ import {
   INVALID_MATERIAL_INPUT,
   RESET_TO_INITIAL,
   CHECK_SALES_PERSON,
+  SET_USEWAREHOUSE
 } from './actionTypes'
 
 import _ from 'underscore'
@@ -112,8 +113,8 @@ export default {
 
   },
 
-  setMaterialValue(value) {
-    reactor.dispatch(SET_MATERIAL_VALUE, { value });
+  setMaterialValue(value,useCentralWarehouse) {
+    reactor.dispatch(SET_MATERIAL_VALUE, { value, useCentralWarehouse });
   },
   
   setSubConMaterialValue(value) {
@@ -124,11 +125,18 @@ export default {
     reactor.dispatch(INVALID_MATERIAL_INPUT)
   },
 
-  getMaterial(number) {
+  getMaterial(number,useCentralWarehouse) {
     reactor.dispatch(RECEIVE_MATERIAL_START)
-    backend.getMaterial(number, reactor.evaluateToJS(getters.job).main_workctr, material => {
-      reactor.dispatch(RECEIVE_MATERIAL_SUCCESS, {material})
-    }, () => {reactor.dispatch(RECEIVE_MATERIAL_FAILED)});
+    if(useCentralWarehouse) {
+    	backend.getMaterial(number, reactor.evaluateToJS(getters.job).plant+'1000', material => {
+    		reactor.dispatch(RECEIVE_MATERIAL_SUCCESS, {material})
+    	}, () => {reactor.dispatch(RECEIVE_MATERIAL_FAILED)});
+    }
+    else {
+    	backend.getMaterial(number, reactor.evaluateToJS(getters.job).main_workctr, material => {
+    		reactor.dispatch(RECEIVE_MATERIAL_SUCCESS, {material})
+    	}, () => {reactor.dispatch(RECEIVE_MATERIAL_FAILED)});
+    }
   },
   
   getSubConMaterial(number,plant) {
@@ -163,6 +171,10 @@ export default {
   
   checkSalesPerson(sales_person, plant) {
 	  reactor.dispatch(CHECK_SALES_PERSON, {sales_person, plant});
+  },
+  
+  setUseWarehouse(useCentralWarehouse) {
+	  reactor.dispatch(SET_USEWAREHOUSE, useCentralWarehouse);
   },
 
   submitJob() {

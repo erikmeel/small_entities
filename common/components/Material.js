@@ -13,12 +13,15 @@ var Material = React.createClass({
         <div className="form-group col-xs-3">
           <input type="text" className="form-control" placeholder="Material Number" value={this.props.material.id} readOnly />
         </div>
-        <div className="form-group col-xs-5">
+        <div className="form-group col-xs-4">
           <input type="text" className="form-control" placeholder="Material Number" value={this.props.material.name} readOnly />
         </div>
-        <div className="form-group col-xs-2">
+        <div className="form-group col-xs-1">
           <input type="text" className="form-control" placeholder="Stock" value={this.props.material.stock_quantity} readOnly />
         </div>
+        <div className="form-group col-xs-2">
+        <input type="text" className="form-control" placeholder="Location" value={this.props.material.storage_location} readOnly />
+      </div>
         <div className="form-group col-xs-2">
           <input type="number" className="form-control" placeholder="Quantity" value={this.props.material.quantity} onChange={this.props.handleMaterialQuantityChange.bind(null, this.props.material.id)} />
         </div>

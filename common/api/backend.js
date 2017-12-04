@@ -21,7 +21,7 @@ Backend.getEquipment = function (payload, lastEquipmentRequestId, cb, cb_error) 
     'serial_number': payload
   }
   request
-    .get(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY))
+    .get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, EQUIPMENT_ENTITY))
     .query({json: JSON.stringify(j)})
     .query({action: 'get_by_serial'})
     .accept('json')
@@ -84,7 +84,7 @@ Backend.getMaterial = function (number, workcenter, cb, cb_error) {
     'storage_location': workcenter.substring(4,8)
   }
   request
-    .get(sprintf('%s/%s/%s?sap-client=510&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
+    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
     .query({'action': 'GET_STOCK'})
     .query({'json': JSON.stringify(j)})
     .accept('json')
@@ -123,7 +123,7 @@ Backend.getSubConMaterial = function (number, plant, cb, cb_error) {
 	}
 	
 	request
-    .get(sprintf('%s/%s/%s?sap-client=510&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
+    .get(sprintf('%s/%s/%s?sap-client=500&sap-language=EN', BASE_URL, MATERIAL_ENTITY, number))
     .query({'action': 'GET_SUBCON'})
     .query({'json': JSON.stringify(j)})
     .accept('json')
@@ -153,7 +153,7 @@ Backend.getCustomer = function (payload, cb, cb_error) {
     'ids': [payload]
   }
   request
-    .get(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
+    .get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
     .query({'action': 'GET_ALL_IN_RANGE'})
     .query({'json': JSON.stringify(j)})
     .accept('json')
@@ -177,7 +177,7 @@ Backend.getSalesEmployee = function (sales_employee, plant, cb, cb_error) {
 	  'plant': [plant]
 	}
 	request
-		.get(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
+		.get(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, CUSTOMER_ENTITY))
 		.query({'action': 'GET_PERSON_IN_RANGE'})
 		.query({'json': JSON.stringify(j)})
 		.accept('json')
@@ -208,12 +208,13 @@ Backend.submitJob = function(job, equipment, operations, materials, cb, cb_error
   j.travel_dist_qty = operations.travel_dist_qty.quantity
   j.allowance_qty = operations.allowance_qty.quantity
   j.env_act_qty = operations.env_act_qty.quantity
+//  j.work_prep = operations.work_prep.quantity
   j.t_mat_used = materials
   
   //console.log("Params: " + JSON.stringify(job, null, 4))
   //console.log(JSON.stringify(j));
   request
-   .post(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, SME_ENTITY))
+   .post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, SME_ENTITY))
    .type('form')
    .send({json: JSON.stringify(j)})
    .send({action: 'create'})
@@ -246,7 +247,7 @@ Backend.submitReading = function(point, equipment, readDate, readTime, readBy, r
 		'mdtxt': readText
 	}; 
 	request
-		.post(sprintf('%s/%s?sap-client=510&sap-language=EN', BASE_URL, READING_ENTITY))
+		.post(sprintf('%s/%s?sap-client=500&sap-language=EN', BASE_URL, READING_ENTITY))
 		.type('form')
 		.send({json: JSON.stringify(j)})
 		.send({action: 'create'})

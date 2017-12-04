@@ -1,5 +1,7 @@
 import { Store, toImmutable } from 'nuclear-js'
-import { SET_EQUIPMENT_VALUE, RECEIVE_EQUIPMENT_START, RECEIVE_EQUIPMENT_SUCCESS, RECEIVE_EQUIPMENT_FAILED, CHOOSE_EQUIPMENT, EQUIPMENT_CHOSEN, RECEIVE_CUSTOMER_SUCCESS, CONFIRM_SUCCESS, SET_READINGS_VALUE, READING_SUCCESS } from '../actionTypes'
+import { SET_EQUIPMENT_VALUE, RECEIVE_EQUIPMENT_START, RECEIVE_EQUIPMENT_SUCCESS, RECEIVE_EQUIPMENT_FAILED, CHOOSE_EQUIPMENT, EQUIPMENT_CHOSEN, RECEIVE_CUSTOMER_SUCCESS, CONFIRM_SUCCESS, SET_READINGS_VALUE, READING_SUCCESS, SET_USEWAREHOUSE } from '../actionTypes'
+
+var _companies = require('../../common/api/companies.json')
 
 const initialState = toImmutable({
   lastEquipmentRequestId: '',
@@ -9,7 +11,8 @@ const initialState = toImmutable({
   equipment: {
     serial: "",
     name: "",
-  }
+  },
+  useCentralWarehouse: false
 })
 
 export default Store({
@@ -28,6 +31,7 @@ export default Store({
     this.on(CONFIRM_SUCCESS, confirmSuccess)
     this.on(SET_READINGS_VALUE, updateReadings)
     this.on(READING_SUCCESS, updateReadingList)
+    this.on(SET_USEWAREHOUSE, setUseWarehouse)
   }
 })
 
@@ -40,12 +44,24 @@ function startReceiveEquipment(state, { lastEquipmentRequestId }) {
 }
 
 function receiveEquipment(state, { equipment }) {
+	var companies = toImmutable(_companies).toMap().mapKeys((k, v) => v.get('key'))
+	var useCentralWarehouse = false;
+	if(companies.get(equipment.plant)) {
+		useCentralWarehouse = true
+	}
   return state.merge({
     "equipmentValid": true,
     "needToChooseEquipment": false,
     "possibleEquipments": [],
-    "equipment": equipment
+    "equipment": equipment,
+    "useCentralWarehouse": useCentralWarehouse
   })
+}
+
+function setUseWarehouse(state, useCentralWarehouse) {
+	return state.merge({
+		"useCentralWarehouse": useCentralWarehouse
+	})
 }
 
 function chooseEquipment(state, {equipments}) {

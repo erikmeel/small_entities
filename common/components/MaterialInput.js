@@ -11,7 +11,11 @@ var MaterialInput = React.createClass({
       if (this.props.availableAtStorageLocation) {
         help = this.props.material.name + " can be added to the job."
       } else {
-        help = this.props.material.name + " is not available for the technician."
+    	  if(this.props.useCentralWarehouse) {
+    		  help = this.props.material.name + " is not available in the warehouse."
+    	  } else {
+    		  help = this.props.material.name + " is not available for the technician."
+    	  }
       }
     }
     var materialInput = <Input type="text" placeholder="Input material number to add to the job" help={help} onChange={this.props.onChangeMaterial} value={this.props.material.id} />

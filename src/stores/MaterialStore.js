@@ -6,8 +6,10 @@ const initialState = toImmutable({
   'validMaterial': false,
   'validSubConMaterial': false,
   'material': {
-	  'id':''
+	  'id':'',
+	  'storageloc': ''
   },
+  'useCentralWarehouse':false,
   'selectSubConMaterial': false,
   'subcon_materials': [],
   'addedsubconmaterials': [],
@@ -17,7 +19,7 @@ const initialState = toImmutable({
 
 export default Store({
   getInitialState() {
-    return initialState
+	  return initialState
   },
 
   initialize() {
@@ -36,8 +38,10 @@ export default Store({
   }
 })
 
-function setMaterialValue(state, { value }) {
-  return state.setIn(['material','id'], value)
+function setMaterialValue(state, { value, useCentralWarehouse }) {
+  return state
+  	.setIn(['material','id'], value)
+  	.setIn(['useCentralWarehouse'], useCentralWarehouse)
 }
 
 function setSubConMaterialValue(state, { value }) {

@@ -37,7 +37,8 @@ Validator.validateExecutionDate = function (date) {
 };
 
 Validator.validateMainWorkcenter = function (workcenter) {
-  return workcenter && (workcenter.match(/^\w{2}\d{2}\w\d{3}$/) || workcenter.match(/^\w{2}\d{2}\w{2}\d{2}$/) ) !== null
+  //return workcenter && (workcenter.match(/^\w{2}\d{2}\w\d{3}$/) || workcenter.match(/^\w{2}\d{2}\w{2}\d{2}$/) ) !== null
+	return workcenter && (workcenter.match(/^\w{8}$/)) !== null
 };
 
 Validator.validateDisableInvoice = function (flow) {
@@ -49,7 +50,7 @@ Validator.validateDisableInvoice = function (flow) {
 }
 
 Validator.validatePlant = function (plant) {
-  return plant && plant.match(/^\w{2}\d{2}$/) !== null
+  return plant && plant.match(/^\w{4}$/) !== null
 };
 
 Validator.validateDescription = function (description) {

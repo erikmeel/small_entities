@@ -35,4 +35,5 @@ export default keyMirror({
     RESET_TO_INITIAL: null,
     WORKCENTER_INPUT_ENABLE: null,
     WORKCENTER_INPUT_DISABLE: null,
+    SET_USEWAREHOUSE: null
 })
