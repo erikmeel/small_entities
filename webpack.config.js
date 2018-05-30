@@ -39,7 +39,7 @@ module.exports = {
     lazy: true,
     stats: { colors: true },
     proxy: {
-      '/sap/zrest/*': 'http://aq1sapr3.emea.group.atlascopco.com:8075/'
+      '/sap/zrest/*': 'http://as1sapr3.emea.group.atlascopco.com:8060/'
     }
   }
 }

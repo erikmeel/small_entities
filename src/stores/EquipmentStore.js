@@ -77,6 +77,9 @@ function receiveCustomer(state, { customer, customerType }) {
   if (customerType === 'installed_at' && customer.contacts && customer.contacts.length > 0) {
     s = s.setIn(['equipment','contact'], customer.contacts[0])
   }
+  if (customerType === 'installed_at') {
+	s = s.setIn(['equipment','installed_at'], customer)
+  }
   if (customerType === 'bill_to') {
     s = s.setIn(['equipment','bill_to'], customer)
   }

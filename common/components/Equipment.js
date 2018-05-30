@@ -142,8 +142,8 @@ var EquipmentInfo = React.createClass({
               </div>
               <div className="panel-body">
                 <p className="address">{this.props.equipment.installed_at_name}</p>
-                <p className="address">{this.props.equipment.street} {this.props.equipment.house_number}</p>
-                <p className="address">{this.props.equipment.post_code} {this.props.equipment.city}</p>
+                <p className="address">{this.props.equipment.installed_at.street}</p>
+                <p className="address">{this.props.equipment.installed_at.post_code} {this.props.equipment.installed_at.city}</p>
                 {contact}
               </div>
             </div>
